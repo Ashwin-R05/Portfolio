@@ -5,7 +5,6 @@
 /// Features a subtle border glow in the primary color and smooth
 /// expand/collapse animation.
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/project.dart';
 import '../theme/app_colors.dart';
@@ -229,7 +228,7 @@ class _ProjectCardState extends State<ProjectCard> {
                           children: [
                             if (widget.project.githubUrl != null)
                               _ActionChip(
-                                icon: FontAwesomeIcons.github,
+                                icon: Icons.code_rounded,
                                 label: 'View Source',
                                 onTap: () =>
                                     _launchUrl(widget.project.githubUrl!),

@@ -4,7 +4,6 @@
 /// defined here as constants. To update your portfolio content, edit
 /// only this file — no widget code changes needed.
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../models/project.dart';
 import '../models/skill.dart';
 import '../models/social_link.dart';
@@ -51,23 +50,25 @@ class ProfileData {
   ];
 
   // ── Skills ─────────────────────────────────────────────────────────
+  // Using Material Icons to avoid font_awesome_flutter compatibility
+  // issues with newer Flutter versions where IconData is final.
   static const List<Skill> skills = [
     // Languages (inner ring)
     Skill(
       name: 'Java',
-      icon: FontAwesomeIcons.java,
+      icon: Icons.coffee_rounded,
       category: SkillCategory.language,
       proficiency: 0.75,
     ),
     Skill(
       name: 'Python',
-      icon: FontAwesomeIcons.python,
+      icon: Icons.pest_control_rounded,
       category: SkillCategory.language,
       proficiency: 0.7,
     ),
     Skill(
       name: 'JavaScript',
-      icon: FontAwesomeIcons.js,
+      icon: Icons.javascript_rounded,
       category: SkillCategory.language,
       proficiency: 0.8,
     ),
@@ -81,19 +82,19 @@ class ProfileData {
     ),
     Skill(
       name: 'React',
-      icon: FontAwesomeIcons.react,
+      icon: Icons.web_rounded,
       category: SkillCategory.framework,
       proficiency: 0.7,
     ),
     Skill(
       name: 'Node.js',
-      icon: FontAwesomeIcons.nodeJs,
+      icon: Icons.dns_rounded,
       category: SkillCategory.framework,
       proficiency: 0.75,
     ),
     Skill(
       name: 'Express',
-      icon: FontAwesomeIcons.server,
+      icon: Icons.route_rounded,
       category: SkillCategory.framework,
       proficiency: 0.75,
     ),
@@ -101,13 +102,13 @@ class ProfileData {
     // Databases (outer-middle ring)
     Skill(
       name: 'MySQL',
-      icon: FontAwesomeIcons.database,
+      icon: Icons.storage_rounded,
       category: SkillCategory.database,
       proficiency: 0.65,
     ),
     Skill(
       name: 'MongoDB',
-      icon: FontAwesomeIcons.leaf,
+      icon: Icons.eco_rounded,
       category: SkillCategory.database,
       proficiency: 0.7,
     ),
@@ -115,7 +116,7 @@ class ProfileData {
     // Cloud & Tools (outer ring)
     Skill(
       name: 'AWS',
-      icon: FontAwesomeIcons.aws,
+      icon: Icons.cloud_queue_rounded,
       category: SkillCategory.cloud,
       proficiency: 0.6,
     ),
@@ -166,26 +167,26 @@ class ProfileData {
     SocialLink(
       platform: 'GitHub',
       url: 'https://github.com/Ashwin-R05',
-      icon: FontAwesomeIcons.github,
+      icon: Icons.code_rounded,
       brandColor: AppColors.darkTextPrimary,
     ),
     SocialLink(
       platform: 'LinkedIn',
       url: 'https://linkedin.com/in/ashwin-r05',
-      icon: FontAwesomeIcons.linkedin,
+      icon: Icons.work_outline_rounded,
       brandColor: AppColors.linkedinColor,
     ),
     SocialLink(
       platform: 'Instagram',
       url: 'https://instagram.com/ashwin.r05',
-      icon: FontAwesomeIcons.instagram,
+      icon: Icons.camera_alt_outlined,
       brandColor: AppColors.instagramGradientStart,
       brandColorEnd: AppColors.instagramGradientEnd,
     ),
     SocialLink(
       platform: 'Email',
       url: 'mailto:ashwinr0205@gmail.com',
-      icon: FontAwesomeIcons.envelope,
+      icon: Icons.email_outlined,
       brandColor: AppColors.emailColor,
     ),
   ];
