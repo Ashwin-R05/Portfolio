@@ -89,8 +89,8 @@ class _DesktopOrbit extends StatelessWidget {
     }
 
     return SizedBox(
-      width: 500,
-      height: 500,
+      width: 600,
+      height: 600,
       child: AnimatedBuilder(
         animation: controller,
         builder: (context, _) {
@@ -140,7 +140,7 @@ class _DesktopOrbit extends StatelessWidget {
                   final ringIndex = entry.key;
                   final category = entry.value;
                   final ringSkills = grouped[category] ?? [];
-                  final ringRadius = 90.0 + (ringIndex * 65.0);
+                  final ringRadius = 80.0 + (ringIndex * 60.0);
 
                   // Different rotation speeds per ring.
                   final speed = (ringIndex.isEven ? 1 : -1) *
@@ -162,8 +162,8 @@ class _DesktopOrbit extends StatelessWidget {
                     final isHovered = hoveredSkill == skill.name;
 
                     return Positioned(
-                      left: 250 + x - 24,
-                      top: 250 + y - 24,
+                      left: 300 + x - (isHovered ? 28 : 24),
+                      top: 300 + y - (isHovered ? 28 : 24),
                       child: MouseRegion(
                         onEnter: (_) => onHover(skill.name),
                         onExit: (_) => onExit(),
@@ -238,7 +238,7 @@ class _OrbitRingPainter extends CustomPainter {
       ..strokeWidth = 1;
 
     for (int i = 0; i < ringCount; i++) {
-      final radius = 90.0 + (i * 65.0);
+      final radius = 80.0 + (i * 60.0);
       paint.color = primaryColor.withValues(
         alpha: isDark ? 0.08 + (i * 0.02) : 0.06 + (i * 0.02),
       );
