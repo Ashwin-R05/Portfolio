@@ -136,12 +136,12 @@ class _LogoBadgeState extends State<_LogoBadge> {
             colors: _hovered ? [Colors.white, Colors.white] : [primary, secondary],
           ).createShader(bounds),
           child: Text(
-            'AR',
+            'ASHWIN R',
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w800,
               color: Colors.white,
-              letterSpacing: -0.5,
+              letterSpacing: 0.5,
             ),
           ),
         ),

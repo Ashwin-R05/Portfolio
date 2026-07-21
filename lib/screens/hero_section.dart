@@ -3,13 +3,14 @@
 /// Full-viewport-height introduction with:
 /// - Animated particle canvas background with aurora vortex
 /// - Gradient-shimmer name in Space Grotesk (shader animation)
-/// - Animated role badge with pulsing border
+/// - Animated availability badge with pulsing border
+/// - Simple role title
 /// - Typewriter tagline cycling through phrases
-/// - Glowing CTA + outline secondary button
+/// - Glowing CTA + Download Resume button
 /// - Staggered entrance animations
-
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../animations/particle_canvas.dart';
 import '../data/profile_data.dart';
 import '../theme/app_colors.dart';
@@ -43,6 +44,16 @@ class _HeroSectionState extends State<HeroSection>
     super.dispose();
   }
 
+  Future<void> _downloadResume() async {
+    final Uri url = Uri.parse('assets/resume.pdf');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      final Uri fallbackUrl = Uri.parse('resume.pdf');
+      await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -60,7 +71,7 @@ class _HeroSectionState extends State<HeroSection>
           // ── Particle background ───────────────────────────────────────
           const Positioned.fill(child: ParticleCanvas()),
 
-          // ── Diagonal gradient overlay — bottom-left fade to bg ────────
+          // ── Diagonal gradient overlay ──────────────────────────────────
           Positioned.fill(
             child: DecoratedBox(
               decoration: BoxDecoration(
@@ -144,7 +155,7 @@ class _HeroSectionState extends State<HeroSection>
                                   ? theme.textTheme.displayMedium
                                   : theme.textTheme.displayLarge)
                               ?.copyWith(
-                            color: Colors.white, // masked by ShaderMask
+                            color: Colors.white,
                             fontWeight: FontWeight.w900,
                             letterSpacing: -1.5,
                             height: 1.0,
@@ -158,20 +169,23 @@ class _HeroSectionState extends State<HeroSection>
                       .fadeIn(duration: 600.ms, delay: 400.ms)
                       .slideY(begin: 0.2, end: 0, duration: 600.ms),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
 
-                  // ── Role with glowing underline ───────────────────
-                  _GlowingRole(
-                    role: ProfileData.role,
-                    theme: theme,
-                    primaryColor: primaryColor,
-                    isMobile: isMobile,
+                  // ── Simple clean role title ─────────────────────────
+                  Text(
+                    ProfileData.role,
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
+                      fontWeight: FontWeight.w300,
+                      letterSpacing: 0.5,
+                    ),
+                    textAlign: isMobile ? TextAlign.center : TextAlign.start,
                   )
                       .animate()
                       .fadeIn(duration: 600.ms, delay: 600.ms)
                       .slideY(begin: 0.2, end: 0, duration: 600.ms),
 
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 24),
 
                   // ── Typewriter tagline ────────────────────────────
                   AnimatedTypewriter(
@@ -186,7 +200,7 @@ class _HeroSectionState extends State<HeroSection>
                       .animate()
                       .fadeIn(duration: 600.ms, delay: 800.ms),
 
-                  const SizedBox(height: 52),
+                  const SizedBox(height: 48),
 
                   // ── CTA buttons ───────────────────────────────────
                   Wrap(
@@ -200,10 +214,10 @@ class _HeroSectionState extends State<HeroSection>
                         onPressed: widget.onExplorePressed,
                       ),
                       _OutlineButton(
-                        label: 'View GitHub',
-                        icon: Icons.code_rounded,
+                        label: 'Download Resume',
+                        icon: Icons.description_rounded,
                         primaryColor: primaryColor,
-                        onPressed: () {},
+                        onPressed: _downloadResume,
                       ),
                     ],
                   )
@@ -337,123 +351,6 @@ class _PulsingBadgeState extends State<_PulsingBadge>
       },
     );
   }
-}
-
-// ── Role text with scan-line underline ────────────────────────────────────────
-
-class _GlowingRole extends StatefulWidget {
-  final String role;
-  final ThemeData theme;
-  final Color primaryColor;
-  final bool isMobile;
-
-  const _GlowingRole({
-    required this.role,
-    required this.theme,
-    required this.primaryColor,
-    required this.isMobile,
-  });
-
-  @override
-  State<_GlowingRole> createState() => _GlowingRoleState();
-}
-
-class _GlowingRoleState extends State<_GlowingRole>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _scanController;
-
-  @override
-  void initState() {
-    super.initState();
-    _scanController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _scanController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: widget.isMobile
-          ? CrossAxisAlignment.center
-          : CrossAxisAlignment.start,
-      children: [
-        Text(
-          widget.role,
-          style: widget.theme.textTheme.headlineMedium?.copyWith(
-            color: widget.theme.colorScheme.onSurface.withValues(alpha: 0.75),
-            fontWeight: FontWeight.w300,
-            letterSpacing: 0.5,
-          ),
-          textAlign: widget.isMobile ? TextAlign.center : TextAlign.start,
-        ),
-        const SizedBox(height: 8),
-        AnimatedBuilder(
-          animation: _scanController,
-          builder: (context, _) {
-            return CustomPaint(
-              size: const Size(double.infinity, 2),
-              painter: _ScanLinePainter(
-                progress: _scanController.value,
-                color: widget.primaryColor,
-              ),
-            );
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class _ScanLinePainter extends CustomPainter {
-  final double progress;
-  final Color color;
-  const _ScanLinePainter({required this.progress, required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Background track
-    final trackPaint = Paint()
-      ..color = color.withValues(alpha: 0.12)
-      ..strokeWidth = 1.5
-      ..style = PaintingStyle.stroke;
-    canvas.drawLine(const Offset(0, 1), Offset(size.width, 1), trackPaint);
-
-    // Animated scan segment
-    final segLen = size.width * 0.35;
-    final start = (progress * (size.width + segLen)) - segLen;
-    final end = start + segLen;
-    final clampStart = start.clamp(0.0, size.width);
-    final clampEnd = end.clamp(0.0, size.width);
-
-    if (clampEnd > clampStart) {
-      final shader = LinearGradient(
-        colors: [
-          color.withValues(alpha: 0.0),
-          color.withValues(alpha: 0.9),
-          color.withValues(alpha: 0.0),
-        ],
-      ).createShader(Rect.fromLTWH(clampStart, 0, clampEnd - clampStart, 2));
-
-      canvas.drawLine(
-        Offset(clampStart, 1),
-        Offset(clampEnd, 1),
-        Paint()
-          ..shader = shader
-          ..strokeWidth = 2
-          ..style = PaintingStyle.stroke,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _ScanLinePainter old) => old.progress != progress;
 }
 
 // ── Outline secondary button ─────────────────────────────────────────────────

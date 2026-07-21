@@ -19,8 +19,8 @@ void main() {
     });
 
     await tester.pumpWidget(const PortfolioApp());
-    // Verify the app renders by checking for the nav bar "AR" logo.
-    expect(find.text('AR'), findsOneWidget);
+    // Verify the app renders by checking for the nav bar "ASHWIN R" logo.
+    expect(find.text('ASHWIN R'), findsOneWidget);
 
     // Dispose of the widget tree to cancel periodic timers and animation controllers
     await tester.pumpWidget(const SizedBox.shrink());
