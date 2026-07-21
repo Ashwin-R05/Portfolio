@@ -45,12 +45,18 @@ class _HeroSectionState extends State<HeroSection>
   }
 
   Future<void> _downloadResume() async {
-    final Uri url = Uri.parse('assets/resume.pdf');
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
-      final Uri fallbackUrl = Uri.parse('resume.pdf');
-      await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
+    final Uri url = Uri.parse('resume.pdf');
+    try {
+      await launchUrl(
+        url,
+        webOnlyWindowName: '_blank',
+      );
+    } catch (_) {
+      final Uri assetUrl = Uri.parse('assets/resume.pdf');
+      await launchUrl(
+        assetUrl,
+        webOnlyWindowName: '_blank',
+      );
     }
   }
 
