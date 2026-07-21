@@ -1,18 +1,17 @@
 /// Floating glassmorphism navigation bar.
 ///
-/// Desktop: horizontal nav with section links + theme toggle.
-/// Mobile: hamburger icon opening a drawer.
-/// Features transparent blur background, active section highlighting
-/// via scroll spy, and smooth scroll-to-section on tap.
+/// Desktop: horizontal nav with section links + sliding active-indicator bar
+/// + theme toggle.
+/// Mobile: hamburger icon opening a bottom-sheet drawer.
+/// The active indicator is a gradient pill that smoothly slides between nav
+/// items via AnimatedPositioned.
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import 'theme_toggle.dart';
 
-/// Navigation items with their labels and scroll keys.
 class NavItem {
   final String label;
   final GlobalKey sectionKey;
-
   const NavItem({required this.label, required this.sectionKey});
 }
 
@@ -48,40 +47,35 @@ class NavBar extends StatelessWidget {
         vertical: 12,
       ),
       decoration: BoxDecoration(
-        // Glassmorphism effect
         color: isDark
-            ? AppColors.darkSurface.withValues(alpha: 0.75)
-            : AppColors.lightSurface.withValues(alpha: 0.8),
+            ? AppColors.darkSurface.withValues(alpha: 0.7)
+            : AppColors.lightSurface.withValues(alpha: 0.82),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isDark
-              ? Colors.white.withValues(alpha: 0.08)
-              : Colors.black.withValues(alpha: 0.06),
+              ? Colors.white.withValues(alpha: 0.07)
+              : Colors.black.withValues(alpha: 0.05),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
-            blurRadius: 24,
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.07),
+            blurRadius: 28,
             offset: const Offset(0, 4),
+          ),
+          BoxShadow(
+            color: (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
+                .withValues(alpha: 0.03),
+            blurRadius: 60,
           ),
         ],
       ),
       child: Row(
         children: [
-          // Logo / Name
-          Text(
-            'AR',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
-              letterSpacing: -0.5,
-            ),
-          ),
+          // ── Logo ──────────────────────────────────────────────────────
+          _LogoBadge(isDark: isDark),
           const Spacer(),
 
           if (isMobile)
-            // Mobile: hamburger menu
             _MobileMenuButton(
               items: items,
               activeIndex: activeIndex,
@@ -90,26 +84,14 @@ class NavBar extends StatelessWidget {
               onItemTap: onItemTap,
             )
           else ...[
-            // Desktop: horizontal nav items
-            ...items.asMap().entries.map((entry) {
-              final index = entry.key;
-              final item = entry.value;
-              final isActive = index == activeIndex;
-
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: _NavLink(
-                  label: item.label,
-                  isActive: isActive,
-                  onTap: () => onItemTap(index),
-                ),
-              );
-            }),
-            const SizedBox(width: 16),
-            ThemeToggle(
-              isDarkMode: isDarkMode,
-              onToggle: onThemeToggle,
+            _DesktopNav(
+              items: items,
+              activeIndex: activeIndex,
+              isDark: isDark,
+              onItemTap: onItemTap,
             ),
+            const SizedBox(width: 16),
+            ThemeToggle(isDarkMode: isDarkMode, onToggle: onThemeToggle),
           ],
         ],
       ),
@@ -117,16 +99,108 @@ class NavBar extends StatelessWidget {
   }
 }
 
-/// Individual nav link with animated active indicator.
+// ── Logo badge ─────────────────────────────────────────────────────────────────
+
+class _LogoBadge extends StatefulWidget {
+  final bool isDark;
+  const _LogoBadge({required this.isDark});
+
+  @override
+  State<_LogoBadge> createState() => _LogoBadgeState();
+}
+
+class _LogoBadgeState extends State<_LogoBadge> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = widget.isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
+    final secondary = widget.isDark ? AppColors.darkSecondary : AppColors.lightSecondary;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      cursor: SystemMouseCursors.click,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          gradient: _hovered
+              ? LinearGradient(colors: [primary, secondary])
+              : null,
+          color: _hovered ? null : primary.withValues(alpha: 0.1),
+        ),
+        child: ShaderMask(
+          shaderCallback: (bounds) => LinearGradient(
+            colors: _hovered ? [Colors.white, Colors.white] : [primary, secondary],
+          ).createShader(bounds),
+          child: Text(
+            'AR',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+              letterSpacing: -0.5,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Desktop nav with sliding indicator ────────────────────────────────────────
+
+class _DesktopNav extends StatelessWidget {
+  final List<NavItem> items;
+  final int activeIndex;
+  final bool isDark;
+  final ValueChanged<int> onItemTap;
+
+  const _DesktopNav({
+    required this.items,
+    required this.activeIndex,
+    required this.isDark,
+    required this.onItemTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: items.asMap().entries.map((entry) {
+        final index = entry.key;
+        final item = entry.value;
+        final isActive = index == activeIndex;
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2),
+          child: _NavLink(
+            label: item.label,
+            isActive: isActive,
+            onTap: () => onItemTap(index),
+            isDark: isDark,
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+// ── Individual nav link ───────────────────────────────────────────────────────
+
 class _NavLink extends StatefulWidget {
   final String label;
   final bool isActive;
   final VoidCallback onTap;
+  final bool isDark;
 
   const _NavLink({
     required this.label,
     required this.isActive,
     required this.onTap,
+    required this.isDark,
   });
 
   @override
@@ -138,10 +212,9 @@ class _NavLinkState extends State<_NavLink> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryColor =
-        isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+    final primary = widget.isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
+    final secondary = widget.isDark ? AppColors.darkSecondary : AppColors.lightSecondary;
+    final textColor = widget.isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -149,36 +222,76 @@ class _NavLinkState extends State<_NavLink> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: widget.isActive
-                ? primaryColor.withValues(alpha: 0.1)
-                : _isHovered
-                    ? (isDark
-                        ? Colors.white.withValues(alpha: 0.05)
-                        : Colors.black.withValues(alpha: 0.03))
-                    : Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Text(
-            widget.label,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight:
-                  widget.isActive ? FontWeight.w600 : FontWeight.w400,
-              color: widget.isActive ? primaryColor : textColor.withValues(alpha: 0.7),
-              letterSpacing: 0.3,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: widget.isActive
+                    ? primary.withValues(alpha: 0.1)
+                    : _isHovered
+                        ? (widget.isDark
+                            ? Colors.white.withValues(alpha: 0.04)
+                            : Colors.black.withValues(alpha: 0.03))
+                        : Colors.transparent,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ShaderMask(
+                shaderCallback: (bounds) {
+                  if (widget.isActive || _isHovered) {
+                    return LinearGradient(colors: [primary, secondary])
+                        .createShader(bounds);
+                  }
+                  return LinearGradient(
+                    colors: [
+                      textColor.withValues(alpha: 0.65),
+                      textColor.withValues(alpha: 0.65),
+                    ],
+                  ).createShader(bounds);
+                },
+                child: Text(
+                  widget.label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: widget.isActive ? FontWeight.w600 : FontWeight.w400,
+                    color: Colors.white, // masked by ShaderMask
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ),
             ),
-          ),
+
+            // ── Sliding gradient underline indicator ───────────────────
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeOut,
+              height: 2,
+              width: widget.isActive ? 28 : (_isHovered ? 14 : 0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(1),
+                gradient: LinearGradient(
+                  colors: [primary, secondary],
+                ),
+                boxShadow: [
+                  if (widget.isActive)
+                    BoxShadow(
+                      color: primary.withValues(alpha: 0.55),
+                      blurRadius: 6,
+                    ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-/// Mobile hamburger menu button that opens a bottom sheet.
+// ── Mobile hamburger menu ─────────────────────────────────────────────────────
+
 class _MobileMenuButton extends StatelessWidget {
   final List<NavItem> items;
   final int activeIndex;
@@ -210,8 +323,8 @@ class _MobileMenuButton extends StatelessWidget {
 
   void _showMenu(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryColor =
-        isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
+    final primaryColor = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
+    final secondaryColor = isDark ? AppColors.darkSecondary : AppColors.lightSecondary;
 
     showModalBottomSheet(
       context: context,
@@ -226,15 +339,15 @@ class _MobileMenuButton extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Drag handle
+                // Gradient drag handle
                 Container(
-                  width: 40,
+                  width: 44,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: isDark
-                        ? Colors.white.withValues(alpha: 0.2)
-                        : Colors.black.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(2),
+                    gradient: LinearGradient(
+                      colors: [primaryColor, secondaryColor],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -244,17 +357,29 @@ class _MobileMenuButton extends StatelessWidget {
                   final isActive = index == activeIndex;
 
                   return ListTile(
-                    title: Text(
-                      item.label,
-                      style: TextStyle(
-                        fontWeight:
-                            isActive ? FontWeight.w600 : FontWeight.w400,
-                        color: isActive ? primaryColor : null,
+                    title: ShaderMask(
+                      shaderCallback: (bounds) => LinearGradient(
+                        colors: isActive
+                            ? [primaryColor, secondaryColor]
+                            : [
+                                (isDark
+                                    ? AppColors.darkTextPrimary
+                                    : AppColors.lightTextPrimary),
+                                (isDark
+                                    ? AppColors.darkTextPrimary
+                                    : AppColors.lightTextPrimary),
+                              ],
+                      ).createShader(bounds),
+                      child: Text(
+                        item.label,
+                        style: TextStyle(
+                          fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                     leading: isActive
-                        ? Icon(Icons.arrow_right_rounded,
-                            color: primaryColor)
+                        ? Icon(Icons.arrow_right_rounded, color: primaryColor)
                         : const SizedBox(width: 24),
                     onTap: () {
                       Navigator.pop(context);

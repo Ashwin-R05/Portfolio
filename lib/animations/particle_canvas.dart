@@ -1,18 +1,20 @@
 /// Interactive particle canvas background using CustomPainter.
 ///
-/// Renders a constellation of floating particles connected by faint lines,
-/// creating a living tech-aesthetic backdrop. Particles respond to cursor
-/// proximity (web) and animate continuously.
+/// Renders a constellation of floating particles in three hues (indigo, cyan,
+/// amber) connected by faint lines, with comet-trail history and a radial
+/// aurora glow that pulses from the canvas center. Particles react to cursor
+/// proximity — they glow brighter and are gently repelled.
 ///
-/// Performance considerations:
-/// - Particle count scales with screen size (fewer on mobile)
-/// - Uses RepaintBoundary to avoid repainting the rest of the tree
-/// - Lines are only drawn between particles within a threshold distance
+/// Performance:
+/// - Particle count scales with screen area (fewer on mobile)
+/// - RepaintBoundary prevents repainting the rest of the tree
+/// - Lines only drawn within threshold distance
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 
-/// A single particle in the constellation.
+// ── Particle ──────────────────────────────────────────────────────────────────
+
 class _Particle {
   double x;
   double y;
@@ -20,6 +22,11 @@ class _Particle {
   double vy;
   double radius;
   double opacity;
+  /// 0 = indigo, 1 = cyan, 2 = amber
+  int colorIndex;
+  /// Recent positions for comet trail
+  final List<Offset> trail = [];
+  static const int maxTrail = 8;
 
   _Particle({
     required this.x,
@@ -28,24 +35,24 @@ class _Particle {
     required this.vy,
     required this.radius,
     required this.opacity,
+    required this.colorIndex,
   });
+
+  void recordTrail() {
+    trail.add(Offset(x, y));
+    if (trail.length > maxTrail) trail.removeAt(0);
+  }
 }
 
-/// Full-screen animated particle background.
-///
-/// Place this behind your content using a Stack. The canvas automatically
-/// sizes to fill its parent.
-class ParticleCanvas extends StatefulWidget {
-  /// Number of particles. Defaults to 80, but the widget will
-  /// automatically reduce this on smaller screens.
-  final int particleCount;
+// ── Widget ────────────────────────────────────────────────────────────────────
 
-  /// Whether to react to mouse/touch position.
+class ParticleCanvas extends StatefulWidget {
+  final int particleCount;
   final bool interactive;
 
   const ParticleCanvas({
     super.key,
-    this.particleCount = 80,
+    this.particleCount = 90,
     this.interactive = true,
   });
 
@@ -60,74 +67,69 @@ class _ParticleCanvasState extends State<ParticleCanvas>
   final Random _random = Random();
   Offset? _mousePosition;
   Size _canvasSize = Size.zero;
+  double _auroraPhase = 0;
 
   @override
   void initState() {
     super.initState();
-    // Run at 60fps — the controller drives continuous repaints.
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
     )..repeat();
   }
 
-  /// Initialize particles when the canvas size is known.
   void _initParticles(Size size) {
     if (size == _canvasSize && _particles.isNotEmpty) return;
     _canvasSize = size;
     _particles.clear();
 
-    // Scale particle count based on screen area (fewer on mobile).
     final area = size.width * size.height;
     final count = (widget.particleCount * (area / (1920 * 1080)))
-        .clamp(20, widget.particleCount)
+        .clamp(25, widget.particleCount.toDouble())
         .toInt();
 
     for (int i = 0; i < count; i++) {
       _particles.add(_Particle(
         x: _random.nextDouble() * size.width,
         y: _random.nextDouble() * size.height,
-        vx: (_random.nextDouble() - 0.5) * 0.5,
-        vy: (_random.nextDouble() - 0.5) * 0.5,
-        radius: _random.nextDouble() * 2 + 1,
-        opacity: _random.nextDouble() * 0.5 + 0.2,
+        vx: (_random.nextDouble() - 0.5) * 0.4,
+        vy: (_random.nextDouble() - 0.5) * 0.4,
+        radius: _random.nextDouble() * 2.2 + 0.8,
+        opacity: _random.nextDouble() * 0.45 + 0.2,
+        colorIndex: _random.nextInt(3),
       ));
     }
   }
 
-  /// Update particle positions each frame.
   void _updateParticles() {
+    _auroraPhase += 0.012;
+
     for (final p in _particles) {
+      p.recordTrail();
       p.x += p.vx;
       p.y += p.vy;
 
-      // Wrap around edges for seamless movement.
+      // Wrap edges
       if (p.x < 0) p.x = _canvasSize.width;
       if (p.x > _canvasSize.width) p.x = 0;
       if (p.y < 0) p.y = _canvasSize.height;
       if (p.y > _canvasSize.height) p.y = 0;
 
-      // Cursor proximity effect: particles near the mouse glow brighter
-      // and are gently pushed away.
+      // Mouse interaction
       if (_mousePosition != null && widget.interactive) {
         final dx = p.x - _mousePosition!.dx;
         final dy = p.y - _mousePosition!.dy;
         final dist = sqrt(dx * dx + dy * dy);
-        if (dist < 150) {
-          // Gentle repulsion
-          final force = (150 - dist) / 150 * 0.3;
+        if (dist < 160 && dist > 0) {
+          final force = (160 - dist) / 160 * 0.28;
           p.vx += dx / dist * force;
           p.vy += dy / dist * force;
-          // Brighten
-          p.opacity = (p.opacity + 0.02).clamp(0.0, 0.9);
+          p.opacity = (p.opacity + 0.025).clamp(0.0, 1.0);
         } else {
-          // Slowly return to base opacity
-          p.opacity = (p.opacity - 0.005).clamp(0.2, 0.9);
+          p.opacity = (p.opacity - 0.004).clamp(0.18, 0.75);
         }
-
-        // Dampen velocity to prevent particles from flying off.
-        p.vx *= 0.99;
-        p.vy *= 0.99;
+        p.vx *= 0.988;
+        p.vy *= 0.988;
       }
     }
   }
@@ -140,27 +142,28 @@ class _ParticleCanvasState extends State<ParticleCanvas>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return RepaintBoundary(
       child: MouseRegion(
         onHover: widget.interactive
-            ? (event) => _mousePosition = event.localPosition
+            ? (e) => setState(() => _mousePosition = e.localPosition)
             : null,
-        onExit: widget.interactive ? (_) => _mousePosition = null : null,
+        onExit: widget.interactive ? (_) => setState(() => _mousePosition = null) : null,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final size = Size(constraints.maxWidth, constraints.maxHeight);
             _initParticles(size);
-
             return AnimatedBuilder(
               animation: _controller,
-              builder: (context, child) {
+              builder: (context, _) {
                 _updateParticles();
                 return CustomPaint(
                   size: size,
                   painter: _ParticlePainter(
                     particles: _particles,
                     mousePosition: _mousePosition,
-                    isDark: Theme.of(context).brightness == Brightness.dark,
+                    isDark: isDark,
+                    auroraPhase: _auroraPhase,
                   ),
                 );
               },
@@ -172,79 +175,111 @@ class _ParticleCanvasState extends State<ParticleCanvas>
   }
 }
 
-/// CustomPainter that renders particles and their connecting lines.
+// ── Painter ───────────────────────────────────────────────────────────────────
+
 class _ParticlePainter extends CustomPainter {
   final List<_Particle> particles;
   final Offset? mousePosition;
   final bool isDark;
+  final double auroraPhase;
 
-  /// Max distance between particles for a connecting line.
-  static const double _connectionDistance = 120;
+  static const double _connDist = 130;
+
+  // Three particle hues: indigo, cyan, amber
+  static const List<Color> _lightColors = [
+    Color(0xFF6366F1),
+    Color(0xFF22D3EE),
+    Color(0xFFF59E0B),
+  ];
+  static const List<Color> _darkColors = [
+    Color(0xFF818CF8),
+    Color(0xFF67E8F9),
+    Color(0xFFFBBF24),
+  ];
 
   _ParticlePainter({
     required this.particles,
     this.mousePosition,
     required this.isDark,
+    required this.auroraPhase,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final particlePaint = Paint()..style = PaintingStyle.fill;
-    final linePaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.5;
+    final colors = isDark ? _darkColors : _lightColors;
+    final center = Offset(size.width / 2, size.height / 2);
 
-    final baseColor =
-        isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
-    final lineColor =
-        isDark ? AppColors.particleLine : AppColors.lightPrimary.withValues(alpha: 0.12);
+    // ── 1. Pulsing aurora vortex at canvas center ──────────────────────
+    final auroraRadius = 220 + sin(auroraPhase) * 30;
+    for (int i = 0; i < 3; i++) {
+      final hue = colors[i];
+      final alpha = (0.04 + sin(auroraPhase + i * 2.1) * 0.015).clamp(0.0, 1.0);
+      final glowPaint = Paint()
+        ..shader = RadialGradient(
+          colors: [hue.withValues(alpha: alpha), Colors.transparent],
+        ).createShader(
+          Rect.fromCircle(center: center, radius: auroraRadius + i * 40),
+        );
+      canvas.drawCircle(center, auroraRadius + i * 40, glowPaint);
+    }
 
-    // Draw connecting lines between nearby particles.
+    // ── 2. Connecting lines ────────────────────────────────────────────
+    final linePaint = Paint()..style = PaintingStyle.stroke..strokeWidth = 0.6;
     for (int i = 0; i < particles.length; i++) {
       for (int j = i + 1; j < particles.length; j++) {
-        final dx = particles[i].x - particles[j].x;
-        final dy = particles[i].y - particles[j].y;
+        final pi = particles[i];
+        final pj = particles[j];
+        final dx = pi.x - pj.x;
+        final dy = pi.y - pj.y;
         final dist = sqrt(dx * dx + dy * dy);
-
-        if (dist < _connectionDistance) {
-          final opacity = (1 - dist / _connectionDistance) * 0.4;
-          linePaint.color = lineColor.withValues(alpha: opacity);
-          canvas.drawLine(
-            Offset(particles[i].x, particles[i].y),
-            Offset(particles[j].x, particles[j].y),
-            linePaint,
-          );
+        if (dist < _connDist) {
+          final t = 1 - dist / _connDist;
+          // Blend the two particle hues
+          final c1 = colors[pi.colorIndex];
+          final c2 = colors[pj.colorIndex];
+          linePaint.color = Color.lerp(c1, c2, 0.5)!.withValues(alpha: t * 0.3);
+          canvas.drawLine(Offset(pi.x, pi.y), Offset(pj.x, pj.y), linePaint);
         }
       }
     }
 
-    // Draw cursor glow radius.
+    // ── 3. Cursor glow ─────────────────────────────────────────────────
     if (mousePosition != null) {
       final glowPaint = Paint()
-        ..shader = RadialGradient(
-          colors: [
-            AppColors.cyanGlow,
-            Colors.transparent,
-          ],
-        ).createShader(
-          Rect.fromCircle(center: mousePosition!, radius: 150),
-        );
-      canvas.drawCircle(mousePosition!, 150, glowPaint);
+        ..shader = RadialGradient(colors: [
+          AppColors.cyanGlow,
+          Colors.transparent,
+        ]).createShader(Rect.fromCircle(center: mousePosition!, radius: 160));
+      canvas.drawCircle(mousePosition!, 160, glowPaint);
     }
 
-    // Draw particles.
+    // ── 4. Comet trails + particles ────────────────────────────────────
     for (final p in particles) {
-      particlePaint.color = baseColor.withValues(alpha: p.opacity);
-      canvas.drawCircle(Offset(p.x, p.y), p.radius, particlePaint);
+      final baseColor = colors[p.colorIndex];
 
-      // Subtle outer glow on brighter particles.
-      if (p.opacity > 0.5) {
-        particlePaint.color = baseColor.withValues(alpha: p.opacity * 0.2);
-        canvas.drawCircle(Offset(p.x, p.y), p.radius * 3, particlePaint);
+      // Comet trail — faded history dots
+      for (int t = 0; t < p.trail.length; t++) {
+        final trailAlpha = (t / p.trail.length) * p.opacity * 0.35;
+        final trailRadius = p.radius * (t / p.trail.length) * 0.8;
+        final trailPaint = Paint()
+          ..color = baseColor.withValues(alpha: trailAlpha);
+        canvas.drawCircle(p.trail[t], trailRadius, trailPaint);
+      }
+
+      // Core particle
+      final paint = Paint()..color = baseColor.withValues(alpha: p.opacity);
+      canvas.drawCircle(Offset(p.x, p.y), p.radius, paint);
+
+      // Outer glow for bright particles
+      if (p.opacity > 0.45) {
+        final glowPaint = Paint()
+          ..color = baseColor.withValues(alpha: p.opacity * 0.18)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+        canvas.drawCircle(Offset(p.x, p.y), p.radius * 3.5, glowPaint);
       }
     }
   }
 
   @override
-  bool shouldRepaint(covariant _ParticlePainter oldDelegate) => true;
+  bool shouldRepaint(covariant _ParticlePainter old) => true;
 }

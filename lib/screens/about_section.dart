@@ -1,8 +1,9 @@
-/// About section with visual representation of focus areas.
+/// About section with terminal-style bio reveal and glassmorphism focus cards.
 ///
-/// Split layout: animated focus-area badges with icons on the left,
-/// bio text on the right (stacks vertically on mobile).
-/// Each item enters with a staggered animation on scroll.
+/// Split layout:
+/// - Left: Terminal-style animated bio + info chips
+/// - Right: Glassmorphism focus-area cards with icon and category gradient accent
+/// (stacks vertically on mobile)
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../data/profile_data.dart';
@@ -18,62 +19,53 @@ class AboutSection extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 900;
-    final primaryColor =
-        isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
-    final secondaryColor =
-        isDark ? AppColors.darkSecondary : AppColors.lightSecondary;
+    final primaryColor = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
+    final secondaryColor = isDark ? AppColors.darkSecondary : AppColors.lightSecondary;
 
     return SectionWrapper(
       sectionId: 'about',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Section title
           _SectionTitle(title: 'About Me', color: primaryColor),
-          const SizedBox(height: 48),
+          const SizedBox(height: 56),
 
-          // Main content — responsive split
           isMobile
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _BioText(theme: theme),
-                    const SizedBox(height: 40),
-                    _FocusAreas(
+                    _TerminalBio(
+                      theme: theme,
                       isDark: isDark,
                       primaryColor: primaryColor,
                       secondaryColor: secondaryColor,
-                      theme: theme,
                     ),
-                    const SizedBox(height: 32),
-                    _InfoCards(
-                      isDark: isDark,
-                      primaryColor: primaryColor,
-                      theme: theme,
-                    ),
+                    const SizedBox(height: 28),
+                    _InfoCards(isDark: isDark, primaryColor: primaryColor, theme: theme),
+                    const SizedBox(height: 40),
+                    _FocusAreas(isDark: isDark, primaryColor: primaryColor, secondaryColor: secondaryColor, theme: theme),
                   ],
                 )
               : Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Left: Bio + Info cards
                     Expanded(
                       flex: 5,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _BioText(theme: theme),
-                          const SizedBox(height: 32),
-                          _InfoCards(
+                          _TerminalBio(
+                            theme: theme,
                             isDark: isDark,
                             primaryColor: primaryColor,
-                            theme: theme,
+                            secondaryColor: secondaryColor,
                           ),
+                          const SizedBox(height: 28),
+                          _InfoCards(isDark: isDark, primaryColor: primaryColor, theme: theme),
                         ],
                       ),
                     ),
-                    const SizedBox(width: 64),
-                    // Right: Focus areas
+                    const SizedBox(width: 56),
                     Expanded(
                       flex: 4,
                       child: _FocusAreas(
@@ -91,11 +83,11 @@ class AboutSection extends StatelessWidget {
   }
 }
 
-/// Section title with accent underline.
+// ── Section title ──────────────────────────────────────────────────────────────
+
 class _SectionTitle extends StatelessWidget {
   final String title;
   final Color color;
-
   const _SectionTitle({required this.title, required this.color});
 
   @override
@@ -118,9 +110,7 @@ class _SectionTitle extends StatelessWidget {
           height: 4,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(2),
-            gradient: LinearGradient(
-              colors: [color, color.withValues(alpha: 0.3)],
-            ),
+            gradient: LinearGradient(colors: [color, color.withValues(alpha: 0.3)]),
           ),
         ).animate().scaleX(
               begin: 0,
@@ -134,25 +124,219 @@ class _SectionTitle extends StatelessWidget {
   }
 }
 
-/// Bio paragraph text.
-class _BioText extends StatelessWidget {
-  final ThemeData theme;
+// ── Terminal-style bio card ────────────────────────────────────────────────────
 
-  const _BioText({required this.theme});
+class _TerminalBio extends StatefulWidget {
+  final ThemeData theme;
+  final bool isDark;
+  final Color primaryColor;
+  final Color secondaryColor;
+
+  const _TerminalBio({
+    required this.theme,
+    required this.isDark,
+    required this.primaryColor,
+    required this.secondaryColor,
+  });
+
+  @override
+  State<_TerminalBio> createState() => _TerminalBioState();
+}
+
+class _TerminalBioState extends State<_TerminalBio>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _cursorCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _cursorCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _cursorCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      ProfileData.bio,
-      style: theme.textTheme.bodyLarge?.copyWith(height: 1.8),
-    )
-        .animate()
-        .fadeIn(duration: 600.ms, delay: 300.ms)
-        .slideY(begin: 0.1, end: 0, duration: 600.ms);
+    final terminalBg = widget.isDark
+        ? const Color(0xFF0D1117)
+        : const Color(0xFFF0F4F8);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: terminalBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: widget.primaryColor.withValues(alpha: 0.15),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: widget.primaryColor.withValues(alpha: 0.06),
+            blurRadius: 24,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Terminal title bar ───────────────────────────────────────
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: widget.isDark
+                  ? Colors.white.withValues(alpha: 0.04)
+                  : Colors.black.withValues(alpha: 0.04),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              border: Border(
+                bottom: BorderSide(
+                  color: widget.primaryColor.withValues(alpha: 0.1),
+                ),
+              ),
+            ),
+            child: Row(
+              children: [
+                // Traffic lights
+                _Dot(color: const Color(0xFFFF5F57)),
+                const SizedBox(width: 8),
+                _Dot(color: const Color(0xFFFFBD2E)),
+                const SizedBox(width: 8),
+                _Dot(color: const Color(0xFF28C840)),
+                const SizedBox(width: 16),
+                Text(
+                  'ashwin@portfolio ~ %',
+                  style: TextStyle(
+                    fontFamily: 'monospace',
+                    fontSize: 12,
+                    color: widget.isDark
+                        ? Colors.white.withValues(alpha: 0.4)
+                        : Colors.black.withValues(alpha: 0.4),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // ── Terminal body ────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _TerminalLine(
+                  prompt: '→',
+                  command: 'cat bio.md',
+                  promptColor: widget.secondaryColor,
+                  isDark: widget.isDark,
+                ).animate().fadeIn(duration: 400.ms, delay: 200.ms),
+
+                const SizedBox(height: 14),
+
+                Text(
+                  ProfileData.bio,
+                  style: widget.theme.textTheme.bodyLarge?.copyWith(
+                    height: 1.85,
+                    color: widget.isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ).animate().fadeIn(duration: 600.ms, delay: 400.ms),
+
+                const SizedBox(height: 16),
+
+                Row(
+                  children: [
+                    _TerminalLine(
+                      prompt: '→',
+                      command: '',
+                      promptColor: widget.secondaryColor,
+                      isDark: widget.isDark,
+                    ),
+                    AnimatedBuilder(
+                      animation: _cursorCtrl,
+                      builder: (context, child) => Opacity(
+                        opacity: _cursorCtrl.value,
+                        child: Container(
+                          width: 9,
+                          height: 18,
+                          color: widget.secondaryColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ).animate().fadeIn(duration: 400.ms, delay: 800.ms),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 600.ms, delay: 300.ms).slideY(begin: 0.1, end: 0, duration: 600.ms);
   }
 }
 
-/// Location and Education info cards.
+class _Dot extends StatelessWidget {
+  final Color color;
+  const _Dot({required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 12,
+      height: 12,
+      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+    );
+  }
+}
+
+class _TerminalLine extends StatelessWidget {
+  final String prompt;
+  final String command;
+  final Color promptColor;
+  final bool isDark;
+
+  const _TerminalLine({
+    required this.prompt,
+    required this.command,
+    required this.promptColor,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          prompt,
+          style: TextStyle(
+            fontFamily: 'monospace',
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: promptColor,
+          ),
+        ),
+        const SizedBox(width: 10),
+        Text(
+          command,
+          style: TextStyle(
+            fontFamily: 'monospace',
+            fontSize: 13,
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.55)
+                : Colors.black.withValues(alpha: 0.5),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ── Info chips ─────────────────────────────────────────────────────────────────
+
 class _InfoCards extends StatelessWidget {
   final bool isDark;
   final Color primaryColor;
@@ -167,8 +351,8 @@ class _InfoCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 16,
-      runSpacing: 16,
+      spacing: 12,
+      runSpacing: 12,
       children: [
         _InfoChip(
           icon: Icons.location_on_rounded,
@@ -176,37 +360,27 @@ class _InfoCards extends StatelessWidget {
           isDark: isDark,
           color: primaryColor,
           theme: theme,
-        )
-            .animate()
-            .fadeIn(duration: 500.ms, delay: 400.ms)
-            .slideX(begin: -0.1, end: 0),
+        ).animate().fadeIn(duration: 500.ms, delay: 400.ms).slideX(begin: -0.1, end: 0),
         _InfoChip(
           icon: Icons.school_rounded,
           label: ProfileData.education,
           isDark: isDark,
           color: primaryColor,
           theme: theme,
-        )
-            .animate()
-            .fadeIn(duration: 500.ms, delay: 500.ms)
-            .slideX(begin: -0.1, end: 0),
+        ).animate().fadeIn(duration: 500.ms, delay: 500.ms).slideX(begin: -0.1, end: 0),
         _InfoChip(
           icon: Icons.auto_stories_rounded,
           label: 'Currently learning Java & DSA',
           isDark: isDark,
           color: primaryColor,
           theme: theme,
-        )
-            .animate()
-            .fadeIn(duration: 500.ms, delay: 600.ms)
-            .slideX(begin: -0.1, end: 0),
+        ).animate().fadeIn(duration: 500.ms, delay: 600.ms).slideX(begin: -0.1, end: 0),
       ],
     );
   }
 }
 
-/// Small info chip with icon.
-class _InfoChip extends StatelessWidget {
+class _InfoChip extends StatefulWidget {
   final IconData icon;
   final String label;
   final bool isDark;
@@ -222,35 +396,64 @@ class _InfoChip extends StatelessWidget {
   });
 
   @override
+  State<_InfoChip> createState() => _InfoChipState();
+}
+
+class _InfoChipState extends State<_InfoChip> {
+  bool _hovered = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.15)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 18, color: color),
-          const SizedBox(width: 10),
-          Flexible(
-            child: Text(
-              label,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurface,
-                fontWeight: FontWeight.w500,
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: _hovered
+              ? widget.color.withValues(alpha: 0.14)
+              : widget.color.withValues(alpha: 0.07),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: _hovered
+                ? widget.color.withValues(alpha: 0.4)
+                : widget.color.withValues(alpha: 0.15),
+          ),
+          boxShadow: _hovered
+              ? [BoxShadow(color: widget.color.withValues(alpha: 0.12), blurRadius: 12)]
+              : [],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(widget.icon, size: 17, color: widget.color),
+            const SizedBox(width: 10),
+            Flexible(
+              child: Text(
+                widget.label,
+                style: widget.theme.textTheme.bodySmall?.copyWith(
+                  color: widget.theme.colorScheme.onSurface,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-/// Animated focus area badges.
+// ── Focus areas — glassmorphism cards ─────────────────────────────────────────
+
+// Each area gets its own gradient
+const List<List<Color>> _areaGradients = [
+  [Color(0xFF6366F1), Color(0xFF818CF8)],
+  [Color(0xFF22D3EE), Color(0xFF0891B2)],
+  [Color(0xFF10B981), Color(0xFF059669)],
+];
+
 class _FocusAreas extends StatelessWidget {
   final bool isDark;
   final Color primaryColor;
@@ -274,23 +477,21 @@ class _FocusAreas extends StatelessWidget {
           style: theme.textTheme.headlineSmall?.copyWith(
             color: theme.colorScheme.onSurface,
           ),
-        )
-            .animate()
-            .fadeIn(duration: 500.ms, delay: 300.ms),
+        ).animate().fadeIn(duration: 500.ms, delay: 300.ms),
         const SizedBox(height: 20),
         ...ProfileData.focusAreas.asMap().entries.map((entry) {
           final index = entry.key;
           final area = entry.value;
           final delay = 400 + (index * 150);
+          final gradColors = _areaGradients[index % _areaGradients.length];
 
           return Padding(
             padding: const EdgeInsets.only(bottom: 16),
-            child: _FocusBadge(
+            child: _GlassFocusBadge(
               icon: area['icon'] as IconData,
               label: area['label'] as String,
               isDark: isDark,
-              primaryColor: primaryColor,
-              secondaryColor: secondaryColor,
+              gradColors: gradColors,
               theme: theme,
             )
                 .animate()
@@ -303,39 +504,39 @@ class _FocusAreas extends StatelessWidget {
   }
 }
 
-/// Individual focus area badge with icon and animated hover.
-class _FocusBadge extends StatefulWidget {
+class _GlassFocusBadge extends StatefulWidget {
   final IconData icon;
   final String label;
   final bool isDark;
-  final Color primaryColor;
-  final Color secondaryColor;
+  final List<Color> gradColors;
   final ThemeData theme;
 
-  const _FocusBadge({
+  const _GlassFocusBadge({
     required this.icon,
     required this.label,
     required this.isDark,
-    required this.primaryColor,
-    required this.secondaryColor,
+    required this.gradColors,
     required this.theme,
   });
 
   @override
-  State<_FocusBadge> createState() => _FocusBadgeState();
+  State<_GlassFocusBadge> createState() => _GlassFocusBadgeState();
 }
 
-class _FocusBadgeState extends State<_FocusBadge> {
+class _GlassFocusBadgeState extends State<_GlassFocusBadge> {
   bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
+    final primary = widget.gradColors[0];
+    final secondary = widget.gradColors[1];
+
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
           color: widget.isDark
               ? AppColors.darkSurface
@@ -343,17 +544,16 @@ class _FocusBadgeState extends State<_FocusBadge> {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: _isHovered
-                ? widget.secondaryColor.withValues(alpha: 0.5)
-                : (widget.isDark
-                    ? AppColors.darkBorder
-                    : AppColors.lightBorder)
-                    .withValues(alpha: 0.3),
+                ? primary.withValues(alpha: 0.6)
+                : primary.withValues(alpha: 0.15),
+            width: _isHovered ? 1.5 : 1,
           ),
           boxShadow: _isHovered
               ? [
                   BoxShadow(
-                    color: widget.secondaryColor.withValues(alpha: 0.15),
-                    blurRadius: 20,
+                    color: primary.withValues(alpha: 0.18),
+                    blurRadius: 22,
+                    spreadRadius: 0,
                   ),
                 ]
               : [],
@@ -362,19 +562,25 @@ class _FocusBadgeState extends State<_FocusBadge> {
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 250),
-              width: 44,
-              height: 44,
+              width: 46,
+              height: 46,
               decoration: BoxDecoration(
-                color: _isHovered
-                    ? widget.secondaryColor.withValues(alpha: 0.15)
-                    : widget.primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
+                gradient: _isHovered
+                    ? LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [primary, secondary],
+                      )
+                    : null,
+                color: _isHovered ? null : primary.withValues(alpha: 0.1),
+                boxShadow: _isHovered
+                    ? [BoxShadow(color: primary.withValues(alpha: 0.4), blurRadius: 14)]
+                    : [],
               ),
               child: Icon(
                 widget.icon,
-                color: _isHovered
-                    ? widget.secondaryColor
-                    : widget.primaryColor,
+                color: _isHovered ? Colors.white : primary,
                 size: 22,
               ),
             ),
@@ -384,7 +590,16 @@ class _FocusBadgeState extends State<_FocusBadge> {
                 widget.label,
                 style: widget.theme.textTheme.titleMedium?.copyWith(
                   color: widget.theme.colorScheme.onSurface,
+                  fontWeight: FontWeight.w500,
                 ),
+              ),
+            ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              child: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 14,
+                color: _isHovered ? primary : primary.withValues(alpha: 0.3),
               ),
             ),
           ],
