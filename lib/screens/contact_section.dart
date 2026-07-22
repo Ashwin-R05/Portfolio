@@ -31,23 +31,42 @@ class _ContactSectionState extends State<ContactSection> {
     super.dispose();
   }
 
-  /// Opens the user's mail client with pre-filled fields.
+  static final RegExp _emailRegExp = RegExp(
+    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+  );
+
+  void _showErrorSnackBar(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Theme.of(context).colorScheme.error,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+
+  /// Opens the user's mail client with pre-filled fields after validation.
   Future<void> _sendEmail() async {
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final message = _messageController.text.trim();
 
     if (name.isEmpty || email.isEmpty || message.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Please fill in all fields.'),
-          backgroundColor: Theme.of(context).colorScheme.error,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-      );
+      _showErrorSnackBar('Please fill in all fields.');
+      return;
+    }
+
+    if (!_emailRegExp.hasMatch(email)) {
+      _showErrorSnackBar('Please enter a valid email address.');
+      return;
+    }
+
+    if (name.length > 100 || email.length > 100 || message.length > 2000) {
+      _showErrorSnackBar('Input text exceeds maximum allowed length.');
       return;
     }
 
@@ -198,10 +217,12 @@ class _ContactForm extends StatelessWidget {
       children: [
         TextField(
           controller: nameController,
+          maxLength: 100,
           style: TextStyle(color: theme.colorScheme.onSurface),
           decoration: const InputDecoration(
             labelText: 'Your Name',
             prefixIcon: Icon(Icons.person_outline_rounded),
+            counterText: '',
           ),
         )
             .animate()
@@ -210,11 +231,13 @@ class _ContactForm extends StatelessWidget {
         const SizedBox(height: 20),
         TextField(
           controller: emailController,
+          maxLength: 100,
           keyboardType: TextInputType.emailAddress,
           style: TextStyle(color: theme.colorScheme.onSurface),
           decoration: const InputDecoration(
             labelText: 'Your Email',
             prefixIcon: Icon(Icons.email_outlined),
+            counterText: '',
           ),
         )
             .animate()
@@ -223,6 +246,7 @@ class _ContactForm extends StatelessWidget {
         const SizedBox(height: 20),
         TextField(
           controller: messageController,
+          maxLength: 2000,
           maxLines: 5,
           style: TextStyle(color: theme.colorScheme.onSurface),
           decoration: const InputDecoration(
@@ -232,6 +256,7 @@ class _ContactForm extends StatelessWidget {
               child: Icon(Icons.message_outlined),
             ),
             alignLabelWithHint: true,
+            counterText: '',
           ),
         )
             .animate()

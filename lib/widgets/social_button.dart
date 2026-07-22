@@ -24,9 +24,14 @@ class _SocialButtonState extends State<SocialButton> {
   bool _isHovered = false;
 
   Future<void> _launchUrl() async {
-    final uri = Uri.parse(widget.link.url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    final uri = Uri.tryParse(widget.link.url);
+    if (uri != null &&
+        (uri.scheme == 'http' ||
+            uri.scheme == 'https' ||
+            uri.scheme == 'mailto')) {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
     }
   }
 
