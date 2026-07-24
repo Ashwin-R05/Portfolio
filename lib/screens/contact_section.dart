@@ -42,9 +42,7 @@ class _ContactSectionState extends State<ContactSection> {
             ? Theme.of(context).colorScheme.error
             : AppColors.darkSecondary,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }
@@ -93,10 +91,12 @@ class _ContactSectionState extends State<ContactSection> {
     final isDark = theme.brightness == Brightness.dark;
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 900;
-    final primaryColor =
-        isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
-    final secondaryColor =
-        isDark ? AppColors.darkSecondary : AppColors.lightSecondary;
+    final primaryColor = isDark
+        ? AppColors.darkPrimary
+        : AppColors.lightPrimary;
+    final secondaryColor = isDark
+        ? AppColors.darkSecondary
+        : AppColors.lightSecondary;
 
     return SectionWrapper(
       sectionId: 'contact',
@@ -109,7 +109,10 @@ class _ContactSectionState extends State<ContactSection> {
             children: [
               // Category Tag
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
@@ -144,14 +147,15 @@ class _ContactSectionState extends State<ContactSection> {
                 ).createShader(bounds),
                 child: Text(
                   'Let\'s Build Something Great Together',
-                  style: (isMobile
-                          ? theme.textTheme.headlineMedium
-                          : theme.textTheme.displaySmall)
-                      ?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: -0.5,
-                  ),
+                  style:
+                      (isMobile
+                              ? theme.textTheme.headlineMedium
+                              : theme.textTheme.displaySmall)
+                          ?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -0.5,
+                          ),
                 ),
               ).animate().fadeIn(duration: 600.ms, delay: 100.ms),
 
@@ -160,10 +164,11 @@ class _ContactSectionState extends State<ContactSection> {
               Text(
                 "Have a project in mind, an opportunity, or just want to connect? Send me a message below or reach out directly.",
                 style: theme.textTheme.bodyLarge?.copyWith(
-                  color: (isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary)
-                      .withValues(alpha: 0.8),
+                  color:
+                      (isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary)
+                          .withValues(alpha: 0.8),
                   height: 1.5,
                 ),
               ).animate().fadeIn(duration: 600.ms, delay: 200.ms),
@@ -268,135 +273,143 @@ class _ContactFormCard extends StatelessWidget {
         : Colors.white.withValues(alpha: 0.9);
 
     return Container(
-      padding: const EdgeInsets.all(28),
-      decoration: BoxDecoration(
-        color: cardBg,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: primaryColor.withValues(alpha: 0.25),
-          width: 1.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: primaryColor.withValues(alpha: 0.08),
-            blurRadius: 24,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Form Title
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: primaryColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(Icons.send_rounded, color: primaryColor, size: 20),
-              ),
-              const SizedBox(width: 14),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Send a Message',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'I\'ll get back to you as soon as possible',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: (isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary)
-                          .withValues(alpha: 0.7),
-                    ),
-                  ),
-                ],
+          padding: const EdgeInsets.all(28),
+          decoration: BoxDecoration(
+            color: cardBg,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: primaryColor.withValues(alpha: 0.25),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: primaryColor.withValues(alpha: 0.08),
+                blurRadius: 24,
+                offset: const Offset(0, 10),
               ),
             ],
           ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Form Title
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: primaryColor.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.send_rounded,
+                      color: primaryColor,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Send a Message',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'I\'ll get back to you as soon as possible',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color:
+                              (isDark
+                                      ? AppColors.darkTextSecondary
+                                      : AppColors.lightTextSecondary)
+                                  .withValues(alpha: 0.7),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
 
-          const SizedBox(height: 28),
+              const SizedBox(height: 28),
 
-          // Name Input
-          _StyledTextField(
-            controller: nameController,
-            label: 'Your Name',
-            hint: 'Ashwin R',
-            icon: Icons.person_outline_rounded,
-            primaryColor: primaryColor,
-            isDark: isDark,
-          ),
+              // Name Input
+              _StyledTextField(
+                controller: nameController,
+                label: 'Your Name',
+                hint: 'Ashwin R',
+                icon: Icons.person_outline_rounded,
+                primaryColor: primaryColor,
+                isDark: isDark,
+              ),
 
-          const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-          // Email Input
-          _StyledTextField(
-            controller: emailController,
-            label: 'Your Email',
-            hint: 'ashwin@example.com',
-            icon: Icons.email_outlined,
-            keyboardType: TextInputType.emailAddress,
-            primaryColor: primaryColor,
-            isDark: isDark,
-          ),
+              // Email Input
+              _StyledTextField(
+                controller: emailController,
+                label: 'Your Email',
+                hint: 'ashwin@example.com',
+                icon: Icons.email_outlined,
+                keyboardType: TextInputType.emailAddress,
+                primaryColor: primaryColor,
+                isDark: isDark,
+              ),
 
-          const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-          // Message Input
-          _StyledTextField(
-            controller: messageController,
-            label: 'Your Message',
-            hint: 'Tell me about your project or idea...',
-            icon: Icons.chat_bubble_outline_rounded,
-            maxLines: 5,
-            primaryColor: primaryColor,
-            isDark: isDark,
-          ),
+              // Message Input
+              _StyledTextField(
+                controller: messageController,
+                label: 'Your Message',
+                hint: 'Tell me about your project or idea...',
+                icon: Icons.chat_bubble_outline_rounded,
+                maxLines: 5,
+                primaryColor: primaryColor,
+                isDark: isDark,
+              ),
 
-          const SizedBox(height: 28),
+              const SizedBox(height: 28),
 
-          // Submit Button
-          SizedBox(
-            width: double.infinity,
-            height: 52,
-            child: ElevatedButton.icon(
-              onPressed: onSend,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColor,
-                foregroundColor: Colors.white,
-                elevation: 4,
-                shadowColor: primaryColor.withValues(alpha: 0.4),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+              // Submit Button
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton.icon(
+                  onPressed: onSend,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    foregroundColor: Colors.white,
+                    elevation: 4,
+                    shadowColor: primaryColor.withValues(alpha: 0.4),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  icon: const Icon(Icons.send_rounded, size: 18),
+                  label: const Text(
+                    'Send Message',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
                 ),
               ),
-              icon: const Icon(Icons.send_rounded, size: 18),
-              label: const Text(
-                'Send Message',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.5,
-                ),
-              ),
-            ),
+            ],
           ),
-        ],
-      ),
-    ).animate().fadeIn(duration: 600.ms, delay: 300.ms).slideY(begin: 0.1, end: 0);
+        )
+        .animate()
+        .fadeIn(duration: 600.ms, delay: 300.ms)
+        .slideY(begin: 0.1, end: 0);
   }
 }
 
@@ -456,38 +469,30 @@ class _StyledTextField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
-              color: (isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary)
-                  .withValues(alpha: 0.4),
+              color:
+                  (isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary)
+                      .withValues(alpha: 0.4),
               fontSize: 14,
             ),
-            alignLabelWithHint: maxLines > 1,
-            prefixIcon: maxLines > 1
-                ? Container(
-                    width: 48,
-                    alignment: Alignment.topCenter,
-                    padding: const EdgeInsets.only(top: 14),
-                    child: Icon(
-                      icon,
-                      size: 20,
-                      color: primaryColor.withValues(alpha: 0.8),
-                    ),
-                  )
-                : Icon(
-                    icon,
-                    size: 20,
-                    color: primaryColor.withValues(alpha: 0.8),
-                  ),
+            prefixIcon: Icon(
+              icon,
+              size: 20,
+              color: primaryColor.withValues(alpha: 0.8),
+            ),
             filled: true,
             fillColor: fieldBg,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide(
-                color: (isDark ? Colors.white : Colors.black)
-                    .withValues(alpha: 0.1),
+                color: (isDark ? Colors.white : Colors.black).withValues(
+                  alpha: 0.1,
+                ),
               ),
             ),
             focusedBorder: OutlineInputBorder(
@@ -528,182 +533,204 @@ class _ContactInfoColumn extends StatelessWidget {
       children: [
         // Email Glass Card
         Container(
-          padding: const EdgeInsets.all(22),
-          decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: secondaryColor.withValues(alpha: 0.25),
-              width: 1.2,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: secondaryColor.withValues(alpha: 0.06),
-                blurRadius: 16,
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: secondaryColor.withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
+              padding: const EdgeInsets.all(22),
+              decoration: BoxDecoration(
+                color: cardBg,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: secondaryColor.withValues(alpha: 0.25),
+                  width: 1.2,
                 ),
-                child: Icon(Icons.alternate_email_rounded,
-                    color: secondaryColor, size: 22),
+                boxShadow: [
+                  BoxShadow(
+                    color: secondaryColor.withValues(alpha: 0.06),
+                    blurRadius: 16,
+                  ),
+                ],
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Direct Email',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: secondaryColor,
-                      ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: secondaryColor.withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
                     ),
-                    const SizedBox(height: 3),
-                    SelectableText(
-                      ProfileData.email,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary,
-                      ),
+                    child: Icon(
+                      Icons.alternate_email_rounded,
+                      color: secondaryColor,
+                      size: 22,
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '⚡ Active & responds within 24h',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: const Color(0xFF10B981),
-                        fontWeight: FontWeight.w500,
-                      ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Direct Email',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: secondaryColor,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        SelectableText(
+                          ProfileData.email,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '⚡ Active & responds within 24h',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: const Color(0xFF10B981),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  IconButton(
+                    onPressed: onCopyEmail,
+                    tooltip: 'Copy Email',
+                    icon: Icon(
+                      isCopied
+                          ? Icons.check_circle_rounded
+                          : Icons.copy_rounded,
+                      color: isCopied
+                          ? const Color(0xFF10B981)
+                          : secondaryColor,
+                      size: 20,
+                    ),
+                  ),
+                ],
               ),
-              IconButton(
-                onPressed: onCopyEmail,
-                tooltip: 'Copy Email',
-                icon: Icon(
-                  isCopied ? Icons.check_circle_rounded : Icons.copy_rounded,
-                  color: isCopied ? const Color(0xFF10B981) : secondaryColor,
-                  size: 20,
-                ),
-              ),
-            ],
-          ),
-        ).animate().fadeIn(duration: 600.ms, delay: 400.ms).slideY(begin: 0.1, end: 0),
+            )
+            .animate()
+            .fadeIn(duration: 600.ms, delay: 400.ms)
+            .slideY(begin: 0.1, end: 0),
 
         const SizedBox(height: 20),
 
         // Location Glass Card
         Container(
-          padding: const EdgeInsets.all(22),
-          decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: primaryColor.withValues(alpha: 0.2),
-              width: 1.2,
-            ),
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: primaryColor.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(Icons.location_on_rounded,
-                    color: primaryColor, size: 22),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Location',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: primaryColor,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      ProfileData.location,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '🌐 Available for Remote & On-site',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: (isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary)
-                            .withValues(alpha: 0.7),
-                      ),
-                    ),
-                  ],
+              padding: const EdgeInsets.all(22),
+              decoration: BoxDecoration(
+                color: cardBg,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: primaryColor.withValues(alpha: 0.2),
+                  width: 1.2,
                 ),
               ),
-            ],
-          ),
-        ).animate().fadeIn(duration: 600.ms, delay: 500.ms).slideY(begin: 0.1, end: 0),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: primaryColor.withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.location_on_rounded,
+                      color: primaryColor,
+                      size: 22,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Location',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: primaryColor,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          ProfileData.location,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '🌐 Available for Remote & On-site',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color:
+                                (isDark
+                                        ? AppColors.darkTextSecondary
+                                        : AppColors.lightTextSecondary)
+                                    .withValues(alpha: 0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            )
+            .animate()
+            .fadeIn(duration: 600.ms, delay: 500.ms)
+            .slideY(begin: 0.1, end: 0),
 
         const SizedBox(height: 20),
 
         // Social Link Tiles Hub
         Container(
-          padding: const EdgeInsets.all(22),
-          decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.1),
-              width: 1.2,
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Connect Across Platforms',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w800,
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
+              padding: const EdgeInsets.all(22),
+              decoration: BoxDecoration(
+                color: cardBg,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: (isDark ? Colors.white : Colors.black).withValues(
+                    alpha: 0.1,
+                  ),
+                  width: 1.2,
                 ),
               ),
-              const SizedBox(height: 14),
-              Column(
-                children: ProfileData.socialLinks.map((link) {
-                  return _SocialHubTile(link: link, isDark: isDark);
-                }).toList(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Connect Across Platforms',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Column(
+                    children: ProfileData.socialLinks.map((link) {
+                      return _SocialHubTile(link: link, isDark: isDark);
+                    }).toList(),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ).animate().fadeIn(duration: 600.ms, delay: 600.ms).slideY(begin: 0.1, end: 0),
+            )
+            .animate()
+            .fadeIn(duration: 600.ms, delay: 600.ms)
+            .slideY(begin: 0.1, end: 0),
       ],
     );
   }
@@ -748,8 +775,9 @@ class _SocialHubTileState extends State<_SocialHubTile> {
           decoration: BoxDecoration(
             color: _isHovered
                 ? brandColor.withValues(alpha: 0.12)
-                : (widget.isDark ? Colors.white : Colors.black)
-                    .withValues(alpha: 0.03),
+                : (widget.isDark ? Colors.white : Colors.black).withValues(
+                    alpha: 0.03,
+                  ),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: _isHovered
@@ -766,11 +794,7 @@ class _SocialHubTileState extends State<_SocialHubTile> {
                   color: brandColor.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  widget.link.icon,
-                  size: 16,
-                  color: brandColor,
-                ),
+                child: Icon(widget.link.icon, size: 16, color: brandColor),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -791,9 +815,9 @@ class _SocialHubTileState extends State<_SocialHubTile> {
                 color: _isHovered
                     ? brandColor
                     : (widget.isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary)
-                        .withValues(alpha: 0.4),
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary)
+                          .withValues(alpha: 0.4),
               ),
             ],
           ),
@@ -822,17 +846,19 @@ class _Footer extends StatelessWidget {
       child: Column(
         children: [
           Divider(
-            color: (isDark ? Colors.white : Colors.black)
-                .withValues(alpha: 0.1),
+            color: (isDark ? Colors.white : Colors.black).withValues(
+              alpha: 0.1,
+            ),
           ),
           const SizedBox(height: 24),
           Text(
             '© ${DateTime.now().year} ${ProfileData.name}. All rights reserved.',
             style: theme.textTheme.bodySmall?.copyWith(
-              color: (isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary)
-                  .withValues(alpha: 0.6),
+              color:
+                  (isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary)
+                      .withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: 8),
@@ -842,31 +868,25 @@ class _Footer extends StatelessWidget {
               Text(
                 'Crafted with ',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: (isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary)
-                      .withValues(alpha: 0.6),
+                  color:
+                      (isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary)
+                          .withValues(alpha: 0.6),
                 ),
               ),
-              Icon(
-                Icons.favorite_rounded,
-                size: 14,
-                color: Colors.redAccent,
-              ),
+              Icon(Icons.favorite_rounded, size: 14, color: Colors.redAccent),
               Text(
                 ' & ',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: (isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary)
-                      .withValues(alpha: 0.6),
+                  color:
+                      (isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary)
+                          .withValues(alpha: 0.6),
                 ),
               ),
-              Icon(
-                Icons.flutter_dash_rounded,
-                size: 16,
-                color: primaryColor,
-              ),
+              Icon(Icons.flutter_dash_rounded, size: 16, color: primaryColor),
               Text(
                 ' Flutter',
                 style: TextStyle(
@@ -882,4 +902,3 @@ class _Footer extends StatelessWidget {
     ).animate().fadeIn(duration: 500.ms, delay: 800.ms);
   }
 }
-
