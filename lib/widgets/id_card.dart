@@ -58,7 +58,55 @@ class _DeveloperIdCardState extends State<DeveloperIdCard> {
         ? const Color(0xFF0F172A).withValues(alpha: 0.85)
         : Colors.white.withValues(alpha: 0.90);
 
-    return // ── 3D Interactive Card Body ─────────────────────────────────
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // ── Sleek Lanyard Strap ──────────────────────────────────────
+        Container(
+          width: 4,
+          height: 36,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                primaryColor.withValues(alpha: 0.2),
+                primaryColor.withValues(alpha: 0.6),
+                secondaryColor.withValues(alpha: 0.8),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+
+        // ── Minimal Badge Clip ───────────────────────────────────────
+        Container(
+          width: 32,
+          height: 10,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                const Color(0xFF64748B),
+                const Color(0xFFCBD5E1),
+                const Color(0xFF94A3B8),
+                const Color(0xFFCBD5E1),
+                const Color(0xFF64748B),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(3),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.25),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 2),
+
+        // ── 3D Interactive Card Body ─────────────────────────────────
         LayoutBuilder(
           builder: (context, constraints) {
             final cardWidth = math.min(340.0, MediaQuery.of(context).size.width - 48);
@@ -408,7 +456,9 @@ class _DeveloperIdCardState extends State<DeveloperIdCard> {
               ),
             );
           },
-        );
+        ),
+      ],
+    );
   }
 }
 
