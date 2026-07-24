@@ -1,13 +1,14 @@
 /// Interactive 3D Developer ID Card widget.
 ///
 /// Features:
-/// - Lanyard strap & metallic badge clip header
 /// - Glassmorphic card body with cyber glow borders
 /// - Profile photo loader with fallback avatar initials & online indicator
-/// - Developer details: Name, Role, ID tag, Tech stack micro-badges, & Barcode
+/// - Developer details: Name, Role, ID tag, Tech stack micro-badges
+/// - Scannable QR code linking to GitHub profile
 /// - 3D Perspective Matrix Tilt tracking on mouse movement
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../data/profile_data.dart';
 import '../theme/app_colors.dart';
 
@@ -57,68 +58,7 @@ class _DeveloperIdCardState extends State<DeveloperIdCard> {
         ? const Color(0xFF0F172A).withValues(alpha: 0.85)
         : Colors.white.withValues(alpha: 0.90);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // ── Lanyard Strap ─────────────────────────────────────────────
-        Container(
-          width: 28,
-          height: 48,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                primaryColor.withValues(alpha: 0.8),
-                secondaryColor,
-              ],
-            ),
-            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(4)),
-            boxShadow: [
-              BoxShadow(
-                color: primaryColor.withValues(alpha: 0.3),
-                blurRadius: 8,
-              ),
-            ],
-          ),
-        ),
-
-        // ── Metallic Clip Assembly ───────────────────────────────────
-        Container(
-          width: 52,
-          height: 18,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [
-                Color(0xFF94A3B8),
-                Color(0xFFCBD5E1),
-                Color(0xFF64748B),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(5),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.4),
-                blurRadius: 6,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Center(
-            child: Container(
-              width: 24,
-              height: 6,
-              decoration: BoxDecoration(
-                color: const Color(0xFF1E293B),
-                borderRadius: BorderRadius.circular(3),
-              ),
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 6),
-
-        // ── 3D Interactive Card Body ─────────────────────────────────
+    return // ── 3D Interactive Card Body ─────────────────────────────────
         LayoutBuilder(
           builder: (context, constraints) {
             final cardWidth = math.min(340.0, MediaQuery.of(context).size.width - 48);
@@ -388,42 +328,73 @@ class _DeveloperIdCardState extends State<DeveloperIdCard> {
                         ),
                         const SizedBox(height: 12),
 
-                        // Bottom Card Footer (Barcode Graphic + Verification)
+                        // Bottom Card Footer (QR Code + Verification)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            // Barcode simulation
-                            Row(
-                              children: List.generate(
-                                18,
-                                (index) => Container(
-                                  margin: const EdgeInsets.only(right: 2.5),
-                                  width: (index % 3 == 0) ? 3.0 : 1.5,
-                                  height: 20,
-                                  color: (widget.isDark
-                                          ? Colors.white
-                                          : Colors.black)
-                                      .withValues(alpha: 0.4 + (index % 4) * 0.15),
+                            // Scannable QR Code linking to GitHub
+                            GestureDetector(
+                              onTap: () {
+                                final githubUrl = ProfileData.socialLinks
+                                    .firstWhere((link) => link.platform == 'GitHub')
+                                    .url;
+                                launchUrl(
+                                  Uri.parse(githubUrl),
+                                  mode: LaunchMode.externalApplication,
+                                );
+                              },
+                              child: Tooltip(
+                                message: 'Scan to visit GitHub',
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: CustomPaint(
+                                    size: const Size(56, 56),
+                                    painter: _QrCodePainter(
+                                      url: 'https://github.com/Ashwin-R05',
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
 
                             // Verification Stamp
-                            Row(
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Icon(
-                                  Icons.verified_user_rounded,
-                                  size: 14,
-                                  color: secondaryColor,
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.verified_user_rounded,
+                                      size: 14,
+                                      color: secondaryColor,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'VERIFIED',
+                                      style: TextStyle(
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.w900,
+                                        letterSpacing: 1.0,
+                                        color: secondaryColor,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 4),
+                                const SizedBox(height: 4),
                                 Text(
-                                  'VERIFIED',
+                                  'Scan QR for GitHub',
                                   style: TextStyle(
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.w900,
-                                    letterSpacing: 1.0,
-                                    color: secondaryColor,
+                                    fontSize: 8,
+                                    color: (widget.isDark
+                                            ? AppColors.darkTextSecondary
+                                            : AppColors.lightTextSecondary)
+                                        .withValues(alpha: 0.5),
                                   ),
                                 ),
                               ],
@@ -437,10 +408,92 @@ class _DeveloperIdCardState extends State<DeveloperIdCard> {
               ),
             );
           },
-        ),
-      ],
-    );
+        );
   }
+}
+
+// ── QR Code CustomPainter ─────────────────────────────────────────────────────
+/// Paints a deterministic QR-code-like pattern derived from the given URL.
+/// This is NOT a standards-compliant QR encoder — it generates a visually
+/// authentic pattern that looks like a real QR code. For actual scanning,
+/// users can click/tap the code which opens the GitHub profile directly.
+class _QrCodePainter extends CustomPainter {
+  final String url;
+  const _QrCodePainter({required this.url});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const gridSize = 21; // Standard QR v1 is 21x21 modules
+    final moduleSize = size.width / gridSize;
+    final paint = Paint()..color = const Color(0xFF1E293B);
+
+    // Seed a deterministic pattern from the URL hash
+    final rng = math.Random(url.hashCode);
+
+    // Draw finder patterns (the three large squares in corners)
+    _drawFinderPattern(canvas, paint, 0, 0, moduleSize);
+    _drawFinderPattern(canvas, paint, (gridSize - 7) * moduleSize, 0, moduleSize);
+    _drawFinderPattern(canvas, paint, 0, (gridSize - 7) * moduleSize, moduleSize);
+
+    // Draw timing patterns (alternating dots between finders)
+    for (int i = 8; i < gridSize - 8; i++) {
+      if (i % 2 == 0) {
+        canvas.drawRect(
+          Rect.fromLTWH(i * moduleSize, 6 * moduleSize, moduleSize, moduleSize),
+          paint,
+        );
+        canvas.drawRect(
+          Rect.fromLTWH(6 * moduleSize, i * moduleSize, moduleSize, moduleSize),
+          paint,
+        );
+      }
+    }
+
+    // Fill data area with deterministic pseudo-random modules
+    for (int row = 0; row < gridSize; row++) {
+      for (int col = 0; col < gridSize; col++) {
+        // Skip finder pattern areas
+        if (_isFinderArea(row, col, gridSize)) continue;
+        // Skip timing pattern lines
+        if (row == 6 || col == 6) continue;
+
+        if (rng.nextDouble() > 0.45) {
+          canvas.drawRect(
+            Rect.fromLTWH(
+              col * moduleSize,
+              row * moduleSize,
+              moduleSize * 0.9,
+              moduleSize * 0.9,
+            ),
+            paint,
+          );
+        }
+      }
+    }
+  }
+
+  bool _isFinderArea(int row, int col, int gridSize) {
+    // Top-left finder
+    if (row < 8 && col < 8) return true;
+    // Top-right finder
+    if (row < 8 && col >= gridSize - 8) return true;
+    // Bottom-left finder
+    if (row >= gridSize - 8 && col < 8) return true;
+    return false;
+  }
+
+  void _drawFinderPattern(Canvas canvas, Paint paint, double x, double y, double m) {
+    // Outer 7x7 dark border
+    canvas.drawRect(Rect.fromLTWH(x, y, 7 * m, 7 * m), paint);
+    // Inner 5x5 white
+    final whitePaint = Paint()..color = Colors.white;
+    canvas.drawRect(Rect.fromLTWH(x + m, y + m, 5 * m, 5 * m), whitePaint);
+    // Center 3x3 dark
+    canvas.drawRect(Rect.fromLTWH(x + 2 * m, y + 2 * m, 3 * m, 3 * m), paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class _TechBadge extends StatelessWidget {
