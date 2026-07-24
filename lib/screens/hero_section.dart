@@ -175,7 +175,7 @@ class _HeroSectionState extends State<HeroSection>
             .animate()
             .fadeIn(duration: 600.ms, delay: 800.ms),
 
-        const SizedBox(height: 36),
+        const SizedBox(height: 32),
 
         // ── CTA buttons ───────────────────────────────────
         Wrap(
@@ -199,6 +199,19 @@ class _HeroSectionState extends State<HeroSection>
             .animate()
             .fadeIn(duration: 600.ms, delay: 1000.ms)
             .slideY(begin: 0.4, end: 0, duration: 600.ms),
+
+        const SizedBox(height: 36),
+
+        // ── Quick Glassmorphic Stats Row ──────────────────────
+        _HeroStatsRow(
+          isDark: isDark,
+          primaryColor: primaryColor,
+          secondaryColor: secondaryColor,
+          isMobile: isMobile,
+        )
+            .animate()
+            .fadeIn(duration: 600.ms, delay: 1200.ms)
+            .slideY(begin: 0.3, end: 0, duration: 600.ms),
       ],
     );
 
@@ -236,6 +249,42 @@ class _HeroSectionState extends State<HeroSection>
           // ── Particle background ───────────────────────────────────────
           const Positioned.fill(child: ParticleCanvas()),
 
+          // ── Ambient Glow Orbs in background ───────────────────────────
+          Positioned(
+            left: screenWidth * 0.15,
+            top: MediaQuery.of(context).size.height * 0.2,
+            child: Container(
+              width: 320,
+              height: 320,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    primaryColor.withValues(alpha: 0.18),
+                    primaryColor.withValues(alpha: 0.0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            right: screenWidth * 0.15,
+            bottom: MediaQuery.of(context).size.height * 0.15,
+            child: Container(
+              width: 380,
+              height: 380,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    secondaryColor.withValues(alpha: 0.15),
+                    secondaryColor.withValues(alpha: 0.0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
           // ── Diagonal gradient overlay ──────────────────────────────────
           Positioned.fill(
             child: DecoratedBox(
@@ -254,39 +303,42 @@ class _HeroSectionState extends State<HeroSection>
             ),
           ),
 
-          // ── Content ───────────────────────────────────────────────────
+          // ── Main Content Container ─────────────────────────────────────
           Center(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: isMobile ? 24 : 70,
-                  vertical: 40,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1200),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 24 : 48,
+                    vertical: 40,
+                  ),
+                  child: isMobile
+                      ? Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(height: 40),
+                            idCardWidget,
+                            const SizedBox(height: 36),
+                            textContent,
+                          ],
+                        )
+                      : Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              flex: 6,
+                              child: textContent,
+                            ),
+                            const SizedBox(width: 48),
+                            Expanded(
+                              flex: 5,
+                              child: Center(child: idCardWidget),
+                            ),
+                          ],
+                        ),
                 ),
-                child: isMobile
-                    ? Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(height: 40),
-                          idCardWidget,
-                          const SizedBox(height: 36),
-                          textContent,
-                        ],
-                      )
-                    : Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            flex: 6,
-                            child: textContent,
-                          ),
-                          const SizedBox(width: 32),
-                          Expanded(
-                            flex: 5,
-                            child: Center(child: idCardWidget),
-                          ),
-                        ],
-                      ),
               ),
             ),
           ),
@@ -487,3 +539,112 @@ class _OutlineButtonState extends State<_OutlineButton> {
     );
   }
 }
+
+// ── Glassmorphic Hero Quick Stats Row ────────────────────────────────────────
+
+class _HeroStatsRow extends StatelessWidget {
+  final bool isDark;
+  final Color primaryColor;
+  final Color secondaryColor;
+  final bool isMobile;
+
+  const _HeroStatsRow({
+    required this.isDark,
+    required this.primaryColor,
+    required this.secondaryColor,
+    required this.isMobile,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final stats = [
+      {
+        'value': '5+',
+        'title': 'Projects Built',
+        'icon': Icons.space_dashboard_rounded,
+      },
+      {
+        'value': 'B.Tech IT',
+        'title': 'Software Student',
+        'icon': Icons.school_rounded,
+      },
+      {
+        'value': 'Flutter & Web',
+        'title': 'Cross-Platform',
+        'icon': Icons.devices_rounded,
+      },
+    ];
+
+    return Wrap(
+      spacing: 16,
+      runSpacing: 14,
+      alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
+      children: stats.map((stat) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.04),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: primaryColor.withValues(alpha: 0.2),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: primaryColor.withValues(alpha: 0.05),
+                blurRadius: 10,
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: primaryColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  stat['icon'] as IconData,
+                  size: 18,
+                  color: primaryColor,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    stat['value'] as String,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    stat['title'] as String,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w400,
+                      color: (isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary)
+                          .withValues(alpha: 0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+

@@ -40,10 +40,7 @@ class _DeveloperIdCardState extends State<DeveloperIdCard>
     )..repeat(reverse: true);
 
     _swayAnimation = Tween<double>(begin: -0.018, end: 0.018).animate(
-      CurvedAnimation(
-        parent: _swayController,
-        curve: Curves.easeInOutSine,
-      ),
+      CurvedAnimation(parent: _swayController, curve: Curves.easeInOutSine),
     );
   }
 
@@ -62,7 +59,7 @@ class _DeveloperIdCardState extends State<DeveloperIdCard>
 
     setState(() {
       _rotateX = -dy * 0.25; // Tilt up/down (Max ~14 deg)
-      _rotateY = dx * 0.25;  // Tilt left/right (Max ~14 deg)
+      _rotateY = dx * 0.25; // Tilt left/right (Max ~14 deg)
       _isHovered = true;
     });
   }
@@ -77,10 +74,12 @@ class _DeveloperIdCardState extends State<DeveloperIdCard>
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor =
-        widget.isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
-    final secondaryColor =
-        widget.isDark ? AppColors.darkSecondary : AppColors.lightSecondary;
+    final primaryColor = widget.isDark
+        ? AppColors.darkPrimary
+        : AppColors.lightPrimary;
+    final secondaryColor = widget.isDark
+        ? AppColors.darkSecondary
+        : AppColors.lightSecondary;
     final cardBg = widget.isDark
         ? const Color(0xFF0F172A).withValues(alpha: 0.85)
         : Colors.white.withValues(alpha: 0.90);
@@ -99,430 +98,371 @@ class _DeveloperIdCardState extends State<DeveloperIdCard>
           child: child,
         );
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // ── Fabric Lanyard Strap ───────────────────────────────────
-          // Broad strap extending tall from the top, like a real badge
-          Container(
-            width: 22,
-            height: 80,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  primaryColor.withValues(alpha: 0.5),
-                  primaryColor.withValues(alpha: 0.7),
-                  secondaryColor.withValues(alpha: 0.85),
-                  secondaryColor,
-                ],
-                stops: const [0.0, 0.3, 0.7, 1.0],
-              ),
-              borderRadius: const BorderRadius.vertical(
-                bottom: Radius.circular(3),
-              ),
-              border: Border.symmetric(
-                vertical: BorderSide(
-                  color: Colors.white.withValues(alpha: 0.08),
-                  width: 1,
-                ),
-              ),
-            ),
-          ),
+      child: // ── 3D Interactive Card Body ─────────────────────────────────
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final cardWidth = math.min(
+                340.0,
+                MediaQuery.of(context).size.width - 48,
+              );
 
-          // ── Badge Clip ─────────────────────────────────────────────
-          Container(
-            width: 44,
-            height: 16,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xFF475569),
-                  Color(0xFF94A3B8),
-                  Color(0xFFCBD5E1),
-                  Color(0xFFE2E8F0),
-                  Color(0xFFCBD5E1),
-                  Color(0xFF94A3B8),
-                  Color(0xFF475569),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(4),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.35),
-                  blurRadius: 6,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Center(
-              child: Container(
-                width: 18,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 4),
-
-        // ── 3D Interactive Card Body ─────────────────────────────────
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final cardWidth = math.min(340.0, MediaQuery.of(context).size.width - 48);
-
-            return MouseRegion(
-              onHover: (e) => _onHover(e, Size(cardWidth, 480)),
-              onExit: _onExit,
-              cursor: SystemMouseCursors.click,
-              child: AnimatedContainer(
-                duration: _isHovered
-                    ? const Duration(milliseconds: 80)
-                    : const Duration(milliseconds: 500),
-                curve: Curves.easeOutCubic,
-                transform: Matrix4.identity()
-                  ..setEntry(3, 2, 0.001) // Perspective
-                  ..rotateX(_rotateX)
-                  ..rotateY(_rotateY),
-                transformAlignment: Alignment.center,
-                child: AnimatedScale(
-                  scale: _isHovered ? 1.03 : 1.0,
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeOut,
-                  child: Container(
-                    width: cardWidth,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: cardBg,
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(
-                        color: _isHovered
-                            ? primaryColor
-                            : primaryColor.withValues(alpha: 0.35),
-                        width: 1.8,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: (_isHovered ? primaryColor : Colors.black)
-                              .withValues(alpha: _isHovered ? 0.35 : 0.25),
-                          blurRadius: _isHovered ? 32 : 20,
-                          spreadRadius: _isHovered ? 2 : 0,
-                          offset: const Offset(0, 12),
+              return MouseRegion(
+                onHover: (e) => _onHover(e, Size(cardWidth, 480)),
+                onExit: _onExit,
+                cursor: SystemMouseCursors.click,
+                child: AnimatedContainer(
+                  duration: _isHovered
+                      ? const Duration(milliseconds: 80)
+                      : const Duration(milliseconds: 500),
+                  curve: Curves.easeOutCubic,
+                  transform: Matrix4.identity()
+                    ..setEntry(3, 2, 0.001) // Perspective
+                    ..rotateX(_rotateX)
+                    ..rotateY(_rotateY),
+                  transformAlignment: Alignment.center,
+                  child: AnimatedScale(
+                    scale: _isHovered ? 1.03 : 1.0,
+                    duration: const Duration(milliseconds: 250),
+                    curve: Curves.easeOut,
+                    child: Container(
+                      width: cardWidth,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: cardBg,
+                        borderRadius: BorderRadius.circular(22),
+                        border: Border.all(
+                          color: _isHovered
+                              ? primaryColor
+                              : primaryColor.withValues(alpha: 0.35),
+                          width: 1.8,
                         ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Card Header Barcode / Title
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.badge_rounded,
-                                  size: 16,
-                                  color: primaryColor,
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  'DEV PASS',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 1.5,
+                        boxShadow: [
+                          BoxShadow(
+                            color: (_isHovered ? primaryColor : Colors.black)
+                                .withValues(alpha: _isHovered ? 0.35 : 0.25),
+                            blurRadius: _isHovered ? 32 : 20,
+                            spreadRadius: _isHovered ? 2 : 0,
+                            offset: const Offset(0, 12),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Card Header Barcode / Title
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.badge_rounded,
+                                    size: 16,
                                     color: primaryColor,
                                   ),
-                                ),
-                              ],
-                            ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 3,
-                              ),
-                              decoration: BoxDecoration(
-                                color: secondaryColor.withValues(alpha: 0.15),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: secondaryColor.withValues(alpha: 0.4),
-                                  width: 0.8,
-                                ),
-                              ),
-                              child: Text(
-                                ProfileData.idNumber,
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  fontFamily: 'monospace',
-                                  fontWeight: FontWeight.w700,
-                                  color: secondaryColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 16),
-
-                        // Profile Photo Container
-                        Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // Ambient Glow Ring
-                            AnimatedContainer(
-                              duration: const Duration(milliseconds: 300),
-                              width: 116,
-                              height: 116,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: LinearGradient(
-                                  colors: [
-                                    primaryColor,
-                                    secondaryColor,
-                                    AppColors.darkAccent,
-                                  ],
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: primaryColor.withValues(alpha: 0.4),
-                                    blurRadius: _isHovered ? 20 : 12,
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'DEV PASS',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 1.5,
+                                      color: primaryColor,
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-
-                            // Photo / Avatar Frame
-                            Container(
-                              width: 108,
-                              height: 108,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: widget.isDark
-                                    ? const Color(0xFF1E293B)
-                                    : const Color(0xFFF1F5F9),
-                                border: Border.all(
-                                  color: cardBg,
-                                  width: 3,
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 3,
                                 ),
-                              ),
-                              child: ClipOval(
-                                child: Image.asset(
-                                  ProfileData.profilePhotoPath,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    // Fallback Avatar if image asset is missing
-                                    return Container(
-                                      color: primaryColor.withValues(alpha: 0.15),
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.person_rounded,
-                                              size: 48,
-                                              color: primaryColor,
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Text(
-                                              'AR',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w900,
-                                                color: primaryColor,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-
-                            // Active Online Indicator Badge
-                            Positioned(
-                              bottom: 4,
-                              right: 4,
-                              child: Container(
-                                padding: const EdgeInsets.all(3),
                                 decoration: BoxDecoration(
-                                  color: cardBg,
-                                  shape: BoxShape.circle,
+                                  color: secondaryColor.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: secondaryColor.withValues(
+                                      alpha: 0.4,
+                                    ),
+                                    width: 0.8,
+                                  ),
                                 ),
-                                child: Container(
-                                  width: 14,
-                                  height: 14,
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFF10B981), // Vivid Emerald Green
-                                    shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Color(0xFF10B981),
-                                        blurRadius: 6,
-                                      ),
+                                child: Text(
+                                  ProfileData.idNumber,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontFamily: 'monospace',
+                                    fontWeight: FontWeight.w700,
+                                    color: secondaryColor,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          // Profile Photo Container
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              // Ambient Glow Ring
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                width: 116,
+                                height: 116,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      primaryColor,
+                                      secondaryColor,
+                                      AppColors.darkAccent,
                                     ],
                                   ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 16),
-
-                        // Name
-                        Text(
-                          ProfileData.name,
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -0.5,
-                            color: widget.isDark
-                                ? AppColors.darkTextPrimary
-                                : AppColors.lightTextPrimary,
-                          ),
-                        ),
-
-                        const SizedBox(height: 4),
-
-                        // Role Tag
-                        Text(
-                          ProfileData.role,
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: primaryColor,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-
-                        const SizedBox(height: 4),
-
-                        // Subtitle
-                        Text(
-                          ProfileData.location,
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: (widget.isDark
-                                    ? AppColors.darkTextSecondary
-                                    : AppColors.lightTextSecondary)
-                                .withValues(alpha: 0.7),
-                          ),
-                        ),
-
-                        const SizedBox(height: 14),
-
-                        // Tech Stack Micro Badges
-                        Wrap(
-                          spacing: 6,
-                          runSpacing: 6,
-                          alignment: WrapAlignment.center,
-                          children: const [
-                            _TechBadge(label: 'Flutter'),
-                            _TechBadge(label: 'React'),
-                            _TechBadge(label: 'Node.js'),
-                            _TechBadge(label: 'AWS'),
-                          ],
-                        ),
-
-                        const SizedBox(height: 16),
-                        Divider(
-                          color: (widget.isDark ? Colors.white : Colors.black)
-                              .withValues(alpha: 0.1),
-                          height: 1,
-                        ),
-                        const SizedBox(height: 12),
-
-                        // Bottom Card Footer (QR Code + Verification)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            // Scannable QR Code linking to GitHub
-                            GestureDetector(
-                              onTap: () {
-                                final githubUrl = ProfileData.socialLinks
-                                    .firstWhere((link) => link.platform == 'GitHub')
-                                    .url;
-                                launchUrl(
-                                  Uri.parse(githubUrl),
-                                  mode: LaunchMode.externalApplication,
-                                );
-                              },
-                              child: Tooltip(
-                                message: 'Scan to visit GitHub',
-                                child: Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: CustomPaint(
-                                    size: const Size(56, 56),
-                                    painter: _QrCodePainter(
-                                      url: 'https://github.com/Ashwin-R05',
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            // Verification Stamp
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.verified_user_rounded,
-                                      size: 14,
-                                      color: secondaryColor,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      'VERIFIED',
-                                      style: TextStyle(
-                                        fontSize: 9,
-                                        fontWeight: FontWeight.w900,
-                                        letterSpacing: 1.0,
-                                        color: secondaryColor,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: primaryColor.withValues(
+                                        alpha: 0.4,
                                       ),
+                                      blurRadius: _isHovered ? 20 : 12,
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Scan QR for GitHub',
-                                  style: TextStyle(
-                                    fontSize: 8,
-                                    color: (widget.isDark
-                                            ? AppColors.darkTextSecondary
-                                            : AppColors.lightTextSecondary)
-                                        .withValues(alpha: 0.5),
+                              ),
+
+                              // Photo / Avatar Frame
+                              Container(
+                                width: 108,
+                                height: 108,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: widget.isDark
+                                      ? const Color(0xFF1E293B)
+                                      : const Color(0xFFF1F5F9),
+                                  border: Border.all(color: cardBg, width: 3),
+                                ),
+                                child: ClipOval(
+                                  child: Image.asset(
+                                    ProfileData.profilePhotoPath,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      // Fallback Avatar if image asset is missing
+                                      return Container(
+                                        color: primaryColor.withValues(
+                                          alpha: 0.15,
+                                        ),
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.person_rounded,
+                                                size: 48,
+                                                color: primaryColor,
+                                              ),
+                                              const SizedBox(height: 2),
+                                              Text(
+                                                'AR',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w900,
+                                                  color: primaryColor,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
-                              ],
+                              ),
+
+                              // Active Online Indicator Badge
+                              Positioned(
+                                bottom: 4,
+                                right: 4,
+                                child: Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: BoxDecoration(
+                                    color: cardBg,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Container(
+                                    width: 14,
+                                    height: 14,
+                                    decoration: const BoxDecoration(
+                                      color: Color(
+                                        0xFF10B981,
+                                      ), // Vivid Emerald Green
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(0xFF10B981),
+                                          blurRadius: 6,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          // Name
+                          Text(
+                            ProfileData.name,
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: -0.5,
+                              color: widget.isDark
+                                  ? AppColors.darkTextPrimary
+                                  : AppColors.lightTextPrimary,
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+
+                          const SizedBox(height: 4),
+
+                          // Role Tag
+                          Text(
+                            ProfileData.role,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: primaryColor,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+
+                          const SizedBox(height: 4),
+
+                          // Subtitle
+                          Text(
+                            ProfileData.location,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color:
+                                  (widget.isDark
+                                          ? AppColors.darkTextSecondary
+                                          : AppColors.lightTextSecondary)
+                                      .withValues(alpha: 0.7),
+                            ),
+                          ),
+
+                          const SizedBox(height: 14),
+
+                          // Tech Stack Micro Badges
+                          Wrap(
+                            spacing: 6,
+                            runSpacing: 6,
+                            alignment: WrapAlignment.center,
+                            children: const [
+                              _TechBadge(label: 'Flutter'),
+                              _TechBadge(label: 'React'),
+                              _TechBadge(label: 'Node.js'),
+                              _TechBadge(label: 'AWS'),
+                            ],
+                          ),
+
+                          const SizedBox(height: 16),
+                          Divider(
+                            color: (widget.isDark ? Colors.white : Colors.black)
+                                .withValues(alpha: 0.1),
+                            height: 1,
+                          ),
+                          const SizedBox(height: 12),
+
+                          // Bottom Card Footer (QR Code + Verification)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              // Scannable QR Code linking to GitHub
+                              GestureDetector(
+                                onTap: () {
+                                  final githubUrl = ProfileData.socialLinks
+                                      .firstWhere(
+                                        (link) => link.platform == 'GitHub',
+                                      )
+                                      .url;
+                                  launchUrl(
+                                    Uri.parse(githubUrl),
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                },
+                                child: Tooltip(
+                                  message: 'Scan to visit GitHub',
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: CustomPaint(
+                                      size: const Size(56, 56),
+                                      painter: _QrCodePainter(
+                                        url: 'https://github.com/Ashwin-R05',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              // Verification Stamp
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.verified_user_rounded,
+                                        size: 14,
+                                        color: secondaryColor,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        'VERIFIED',
+                                        style: TextStyle(
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.w900,
+                                          letterSpacing: 1.0,
+                                          color: secondaryColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Scan QR for GitHub',
+                                    style: TextStyle(
+                                      fontSize: 8,
+                                      color:
+                                          (widget.isDark
+                                                  ? AppColors.darkTextSecondary
+                                                  : AppColors
+                                                        .lightTextSecondary)
+                                              .withValues(alpha: 0.5),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
-        ),
-        ],
-      ),
+              );
+            },
+          ),
     );
   }
 }
@@ -547,8 +487,20 @@ class _QrCodePainter extends CustomPainter {
 
     // Draw finder patterns (the three large squares in corners)
     _drawFinderPattern(canvas, paint, 0, 0, moduleSize);
-    _drawFinderPattern(canvas, paint, (gridSize - 7) * moduleSize, 0, moduleSize);
-    _drawFinderPattern(canvas, paint, 0, (gridSize - 7) * moduleSize, moduleSize);
+    _drawFinderPattern(
+      canvas,
+      paint,
+      (gridSize - 7) * moduleSize,
+      0,
+      moduleSize,
+    );
+    _drawFinderPattern(
+      canvas,
+      paint,
+      0,
+      (gridSize - 7) * moduleSize,
+      moduleSize,
+    );
 
     // Draw timing patterns (alternating dots between finders)
     for (int i = 8; i < gridSize - 8; i++) {
@@ -597,7 +549,13 @@ class _QrCodePainter extends CustomPainter {
     return false;
   }
 
-  void _drawFinderPattern(Canvas canvas, Paint paint, double x, double y, double m) {
+  void _drawFinderPattern(
+    Canvas canvas,
+    Paint paint,
+    double x,
+    double y,
+    double m,
+  ) {
     // Outer 7x7 dark border
     canvas.drawRect(Rect.fromLTWH(x, y, 7 * m, 7 * m), paint);
     // Inner 5x5 white
