@@ -462,11 +462,23 @@ class _StyledTextField extends StatelessWidget {
                   .withValues(alpha: 0.4),
               fontSize: 14,
             ),
-            prefixIcon: Icon(
-              icon,
-              size: 20,
-              color: primaryColor.withValues(alpha: 0.8),
-            ),
+            alignLabelWithHint: maxLines > 1,
+            prefixIcon: maxLines > 1
+                ? Container(
+                    width: 48,
+                    alignment: Alignment.topCenter,
+                    padding: const EdgeInsets.only(top: 14),
+                    child: Icon(
+                      icon,
+                      size: 20,
+                      color: primaryColor.withValues(alpha: 0.8),
+                    ),
+                  )
+                : Icon(
+                    icon,
+                    size: 20,
+                    color: primaryColor.withValues(alpha: 0.8),
+                  ),
             filled: true,
             fillColor: fieldBg,
             contentPadding:
