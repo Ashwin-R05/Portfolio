@@ -102,50 +102,73 @@ class _DeveloperIdCardState extends State<DeveloperIdCard>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ── Sleek Lanyard Strap ──────────────────────────────────────
+          // ── Fabric Lanyard Strap ───────────────────────────────────
+          // Broad strap extending tall from the top, like a real badge
           Container(
-            width: 4,
-            height: 36,
+            width: 22,
+            height: 80,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  primaryColor.withValues(alpha: 0.2),
-                  primaryColor.withValues(alpha: 0.6),
-                  secondaryColor.withValues(alpha: 0.8),
+                  primaryColor.withValues(alpha: 0.5),
+                  primaryColor.withValues(alpha: 0.7),
+                  secondaryColor.withValues(alpha: 0.85),
+                  secondaryColor,
                 ],
+                stops: const [0.0, 0.3, 0.7, 1.0],
               ),
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(3),
+              ),
+              border: Border.symmetric(
+                vertical: BorderSide(
+                  color: Colors.white.withValues(alpha: 0.08),
+                  width: 1,
+                ),
+              ),
             ),
           ),
 
-          // ── Minimal Badge Clip ───────────────────────────────────────
+          // ── Badge Clip ─────────────────────────────────────────────
           Container(
-            width: 32,
-            height: 10,
+            width: 44,
+            height: 16,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
+              gradient: const LinearGradient(
                 colors: [
-                  const Color(0xFF64748B),
-                  const Color(0xFFCBD5E1),
-                  const Color(0xFF94A3B8),
-                  const Color(0xFFCBD5E1),
-                  const Color(0xFF64748B),
+                  Color(0xFF475569),
+                  Color(0xFF94A3B8),
+                  Color(0xFFCBD5E1),
+                  Color(0xFFE2E8F0),
+                  Color(0xFFCBD5E1),
+                  Color(0xFF94A3B8),
+                  Color(0xFF475569),
                 ],
               ),
-              borderRadius: BorderRadius.circular(3),
+              borderRadius: BorderRadius.circular(4),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.25),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
+                  color: Colors.black.withValues(alpha: 0.35),
+                  blurRadius: 6,
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
+            child: Center(
+              child: Container(
+                width: 18,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E293B),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
           ),
 
-          const SizedBox(height: 2),
+          const SizedBox(height: 4),
 
         // ── 3D Interactive Card Body ─────────────────────────────────
         LayoutBuilder(
