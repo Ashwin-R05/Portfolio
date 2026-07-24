@@ -415,7 +415,7 @@ class _ContactFormCard extends StatelessWidget {
 
 // ── Custom Styled Text Field ──────────────────────────────────────────────────
 
-class _StyledTextField extends StatelessWidget {
+class _StyledTextField extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final String hint;
@@ -437,68 +437,115 @@ class _StyledTextField extends StatelessWidget {
   });
 
   @override
+  State<_StyledTextField> createState() => _StyledTextFieldState();
+}
+
+class _StyledTextFieldState extends State<_StyledTextField> {
+  final FocusNode _focusNode = FocusNode();
+  bool _isFocused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      if (mounted) {
+        setState(() => _isFocused = _focusNode.hasFocus);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final fieldBg = isDark
+    final fieldBg = widget.isDark
         ? const Color(0xFF1E293B).withValues(alpha: 0.6)
         : const Color(0xFFF1F5F9);
+    final isMultiLine = widget.maxLines > 1;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          widget.label,
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: isDark
+            color: widget.isDark
                 ? AppColors.darkTextPrimary
                 : AppColors.lightTextPrimary,
           ),
         ),
         const SizedBox(height: 8),
-        TextField(
-          controller: controller,
-          maxLines: maxLines,
-          keyboardType: keyboardType,
-          style: TextStyle(
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
-            fontSize: 14,
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: fieldBg,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: _isFocused
+                  ? widget.primaryColor
+                  : (widget.isDark ? Colors.white : Colors.black)
+                      .withValues(alpha: 0.1),
+              width: _isFocused ? 1.8 : 1.0,
+            ),
+            boxShadow: _isFocused
+                ? [
+                    BoxShadow(
+                      color: widget.primaryColor.withValues(alpha: 0.15),
+                      blurRadius: 10,
+                    ),
+                  ]
+                : [],
           ),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: TextStyle(
-              color:
-                  (isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary)
-                      .withValues(alpha: 0.4),
-              fontSize: 14,
-            ),
-            prefixIcon: Icon(
-              icon,
-              size: 20,
-              color: primaryColor.withValues(alpha: 0.8),
-            ),
-            filled: true,
-            fillColor: fieldBg,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(
-                color: (isDark ? Colors.white : Colors.black).withValues(
-                  alpha: 0.1,
+          child: Row(
+            crossAxisAlignment: isMultiLine
+                ? CrossAxisAlignment.start
+                : CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  top: isMultiLine ? 2.0 : 0.0,
+                  right: 12.0,
+                ),
+                child: Icon(
+                  widget.icon,
+                  size: 20,
+                  color: _isFocused
+                      ? widget.primaryColor
+                      : widget.primaryColor.withValues(alpha: 0.7),
                 ),
               ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: primaryColor, width: 1.8),
-            ),
+              Expanded(
+                child: TextField(
+                  controller: widget.controller,
+                  focusNode: _focusNode,
+                  maxLines: widget.maxLines,
+                  keyboardType: widget.keyboardType,
+                  style: TextStyle(
+                    color: widget.isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.lightTextPrimary,
+                    fontSize: 14,
+                  ),
+                  decoration: InputDecoration.collapsed(
+                    hintText: widget.hint,
+                    hintStyle: TextStyle(
+                      color: (widget.isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary)
+                          .withValues(alpha: 0.4),
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],
