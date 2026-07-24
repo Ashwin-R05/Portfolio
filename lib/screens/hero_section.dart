@@ -16,6 +16,7 @@ import '../data/profile_data.dart';
 import '../theme/app_colors.dart';
 import '../widgets/animated_text.dart';
 import '../widgets/glow_button.dart';
+import '../widgets/id_card.dart';
 
 class HeroSection extends StatefulWidget {
   final VoidCallback onExplorePressed;
@@ -65,9 +66,158 @@ class _HeroSectionState extends State<HeroSection>
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 768;
+    final isMobile = screenWidth < 900;
     final primaryColor = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
     final secondaryColor = isDark ? AppColors.darkSecondary : AppColors.lightSecondary;
+
+    // Text content column
+    final textContent = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment:
+          isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: [
+        // ── Animated badge ──────────────────────────────────
+        _PulsingBadge(
+          text: '⚡ Available for opportunities',
+          primaryColor: primaryColor,
+          secondaryColor: secondaryColor,
+          isDark: isDark,
+        )
+            .animate()
+            .fadeIn(duration: 700.ms, delay: 100.ms)
+            .slideY(begin: -0.3, end: 0, duration: 700.ms),
+
+        const SizedBox(height: 20),
+
+        // ── Greeting ──────────────────────────────────────
+        Text(
+          'Hello, I\'m',
+          style: theme.textTheme.headlineSmall?.copyWith(
+            color: primaryColor,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 2,
+          ),
+        )
+            .animate()
+            .fadeIn(duration: 600.ms, delay: 200.ms)
+            .slideX(begin: -0.2, end: 0, duration: 600.ms),
+
+        const SizedBox(height: 8),
+
+        // ── Name with shimmer gradient ─────────────────────
+        AnimatedBuilder(
+          animation: _shimmerController,
+          builder: (context, _) {
+            return ShaderMask(
+              shaderCallback: (bounds) {
+                final shimmerOffset = _shimmerController.value;
+                return LinearGradient(
+                  begin: Alignment(-1.5 + shimmerOffset * 4, 0),
+                  end: Alignment(1.5 + shimmerOffset * 4, 0),
+                  colors: [
+                    primaryColor,
+                    secondaryColor,
+                    primaryColor,
+                    AppColors.darkAccent,
+                    primaryColor,
+                  ],
+                  stops: const [0.0, 0.2, 0.4, 0.6, 1.0],
+                ).createShader(bounds);
+              },
+              child: Text(
+                ProfileData.name,
+                style: (isMobile
+                        ? theme.textTheme.displayMedium
+                        : theme.textTheme.displayLarge)
+                    ?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -1.5,
+                  height: 1.0,
+                ),
+                textAlign: isMobile ? TextAlign.center : TextAlign.start,
+              ),
+            );
+          },
+        )
+            .animate()
+            .fadeIn(duration: 600.ms, delay: 400.ms)
+            .slideY(begin: 0.2, end: 0, duration: 600.ms),
+
+        const SizedBox(height: 12),
+
+        // ── Role title ─────────────────────────
+        Text(
+          ProfileData.role,
+          style: theme.textTheme.headlineMedium?.copyWith(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
+            fontWeight: FontWeight.w300,
+            letterSpacing: 0.5,
+          ),
+          textAlign: isMobile ? TextAlign.center : TextAlign.start,
+        )
+            .animate()
+            .fadeIn(duration: 600.ms, delay: 600.ms)
+            .slideY(begin: 0.2, end: 0, duration: 600.ms),
+
+        const SizedBox(height: 20),
+
+        // ── Typewriter tagline ────────────────────────────
+        AnimatedTypewriter(
+          phrases: ProfileData.heroTypingPhrases,
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: isDark
+                ? AppColors.darkSecondary
+                : AppColors.lightSecondary,
+            fontWeight: FontWeight.w400,
+          ),
+        )
+            .animate()
+            .fadeIn(duration: 600.ms, delay: 800.ms),
+
+        const SizedBox(height: 36),
+
+        // ── CTA buttons ───────────────────────────────────
+        Wrap(
+          spacing: 16,
+          runSpacing: 12,
+          alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
+          children: [
+            GlowButton(
+              label: 'Explore My Work',
+              icon: Icons.arrow_downward_rounded,
+              onPressed: widget.onExplorePressed,
+            ),
+            _OutlineButton(
+              label: 'Download Resume',
+              icon: Icons.description_rounded,
+              primaryColor: primaryColor,
+              onPressed: _downloadResume,
+            ),
+          ],
+        )
+            .animate()
+            .fadeIn(duration: 600.ms, delay: 1000.ms)
+            .slideY(begin: 0.4, end: 0, duration: 600.ms),
+      ],
+    );
+
+    // Falling ID Card widget
+    final idCardWidget = DeveloperIdCard(isDark: isDark)
+        .animate()
+        .fadeIn(duration: 800.ms, delay: 300.ms)
+        .slideY(
+          begin: -1.2,
+          end: 0,
+          duration: 1100.ms,
+          curve: Curves.easeOutBack,
+        )
+        .rotate(
+          begin: 0.02,
+          end: 0,
+          duration: 1200.ms,
+          curve: Curves.easeInOutCubic,
+        );
 
     return SizedBox(
       width: double.infinity,
@@ -97,140 +247,37 @@ class _HeroSectionState extends State<HeroSection>
 
           // ── Content ───────────────────────────────────────────────────
           Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: isMobile ? 24 : 80,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: isMobile
-                    ? CrossAxisAlignment.center
-                    : CrossAxisAlignment.start,
-                children: [
-                  // ── Animated badge ──────────────────────────────────
-                  _PulsingBadge(
-                    text: '⚡ Available for opportunities',
-                    primaryColor: primaryColor,
-                    secondaryColor: secondaryColor,
-                    isDark: isDark,
-                  )
-                      .animate()
-                      .fadeIn(duration: 700.ms, delay: 100.ms)
-                      .slideY(begin: -0.3, end: 0, duration: 700.ms),
-
-                  const SizedBox(height: 20),
-
-                  // ── Greeting ──────────────────────────────────────
-                  Text(
-                    'Hello, I\'m',
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      color: primaryColor,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 2,
-                    ),
-                  )
-                      .animate()
-                      .fadeIn(duration: 600.ms, delay: 200.ms)
-                      .slideX(begin: -0.2, end: 0, duration: 600.ms),
-
-                  const SizedBox(height: 8),
-
-                  // ── Name with shimmer gradient ─────────────────────
-                  AnimatedBuilder(
-                    animation: _shimmerController,
-                    builder: (context, _) {
-                      return ShaderMask(
-                        shaderCallback: (bounds) {
-                          final shimmerOffset = _shimmerController.value;
-                          return LinearGradient(
-                            begin: Alignment(-1.5 + shimmerOffset * 4, 0),
-                            end: Alignment(1.5 + shimmerOffset * 4, 0),
-                            colors: [
-                              primaryColor,
-                              secondaryColor,
-                              primaryColor,
-                              AppColors.darkAccent,
-                              primaryColor,
-                            ],
-                            stops: const [0.0, 0.2, 0.4, 0.6, 1.0],
-                          ).createShader(bounds);
-                        },
-                        child: Text(
-                          ProfileData.name,
-                          style: (isMobile
-                                  ? theme.textTheme.displayMedium
-                                  : theme.textTheme.displayLarge)
-                              ?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -1.5,
-                            height: 1.0,
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: isMobile ? 24 : 70,
+                  vertical: 40,
+                ),
+                child: isMobile
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(height: 40),
+                          idCardWidget,
+                          const SizedBox(height: 36),
+                          textContent,
+                        ],
+                      )
+                    : Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 6,
+                            child: textContent,
                           ),
-                          textAlign: isMobile ? TextAlign.center : TextAlign.start,
-                        ),
-                      );
-                    },
-                  )
-                      .animate()
-                      .fadeIn(duration: 600.ms, delay: 400.ms)
-                      .slideY(begin: 0.2, end: 0, duration: 600.ms),
-
-                  const SizedBox(height: 12),
-
-                  // ── Simple clean role title ─────────────────────────
-                  Text(
-                    ProfileData.role,
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
-                      fontWeight: FontWeight.w300,
-                      letterSpacing: 0.5,
-                    ),
-                    textAlign: isMobile ? TextAlign.center : TextAlign.start,
-                  )
-                      .animate()
-                      .fadeIn(duration: 600.ms, delay: 600.ms)
-                      .slideY(begin: 0.2, end: 0, duration: 600.ms),
-
-                  const SizedBox(height: 24),
-
-                  // ── Typewriter tagline ────────────────────────────
-                  AnimatedTypewriter(
-                    phrases: ProfileData.heroTypingPhrases,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      color: isDark
-                          ? AppColors.darkSecondary
-                          : AppColors.lightSecondary,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  )
-                      .animate()
-                      .fadeIn(duration: 600.ms, delay: 800.ms),
-
-                  const SizedBox(height: 48),
-
-                  // ── CTA buttons ───────────────────────────────────
-                  Wrap(
-                    spacing: 16,
-                    runSpacing: 12,
-                    alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
-                    children: [
-                      GlowButton(
-                        label: 'Explore My Work',
-                        icon: Icons.arrow_downward_rounded,
-                        onPressed: widget.onExplorePressed,
+                          const SizedBox(width: 32),
+                          Expanded(
+                            flex: 5,
+                            child: Center(child: idCardWidget),
+                          ),
+                        ],
                       ),
-                      _OutlineButton(
-                        label: 'Download Resume',
-                        icon: Icons.description_rounded,
-                        primaryColor: primaryColor,
-                        onPressed: _downloadResume,
-                      ),
-                    ],
-                  )
-                      .animate()
-                      .fadeIn(duration: 600.ms, delay: 1000.ms)
-                      .slideY(begin: 0.4, end: 0, duration: 600.ms),
-                ],
               ),
             ),
           ),

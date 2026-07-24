@@ -20,6 +20,8 @@ class ProfileData {
   static const String email = 'ashwinr0205@gmail.com';
   static const String location = 'Trichy, Tamil Nadu, India';
   static const String education = 'B.Tech Information Technology';
+  static const String idNumber = 'DEV-2026-AR05';
+  static const String profilePhotoPath = 'assets/images/profile.jpg';
 
   /// Short bio for the About section — conversational, not a résumé dump.
   static const String bio =
