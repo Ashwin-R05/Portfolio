@@ -20,11 +20,38 @@ class DeveloperIdCard extends StatefulWidget {
   State<DeveloperIdCard> createState() => _DeveloperIdCardState();
 }
 
-class _DeveloperIdCardState extends State<DeveloperIdCard> {
+class _DeveloperIdCardState extends State<DeveloperIdCard>
+    with TickerProviderStateMixin {
   // Mouse hover 3D tilt coordinates
   double _rotateX = 0.0;
   double _rotateY = 0.0;
   bool _isHovered = false;
+
+  // Continuous pendulum sway — makes the card feel like it's hanging
+  late AnimationController _swayController;
+  late Animation<double> _swayAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _swayController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 3200),
+    )..repeat(reverse: true);
+
+    _swayAnimation = Tween<double>(begin: -0.018, end: 0.018).animate(
+      CurvedAnimation(
+        parent: _swayController,
+        curve: Curves.easeInOutSine,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _swayController.dispose();
+    super.dispose();
+  }
 
   void _onHover(PointerEvent event, Size size) {
     if (size.width == 0 || size.height == 0) return;
@@ -58,53 +85,67 @@ class _DeveloperIdCardState extends State<DeveloperIdCard> {
         ? const Color(0xFF0F172A).withValues(alpha: 0.85)
         : Colors.white.withValues(alpha: 0.90);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // ── Sleek Lanyard Strap ──────────────────────────────────────
-        Container(
-          width: 4,
-          height: 36,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                primaryColor.withValues(alpha: 0.2),
-                primaryColor.withValues(alpha: 0.6),
-                secondaryColor.withValues(alpha: 0.8),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
+    return AnimatedBuilder(
+      animation: _swayAnimation,
+      builder: (context, child) {
+        // When hovered, mouse tilt overrides the idle sway
+        final swayAngle = _isHovered ? 0.0 : _swayAnimation.value;
 
-        // ── Minimal Badge Clip ───────────────────────────────────────
-        Container(
-          width: 32,
-          height: 10,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                const Color(0xFF64748B),
-                const Color(0xFFCBD5E1),
-                const Color(0xFF94A3B8),
-                const Color(0xFFCBD5E1),
-                const Color(0xFF64748B),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(3),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.25),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
+        return Transform(
+          alignment: Alignment.topCenter, // Pivot from the lanyard attachment
+          transform: Matrix4.identity()
+            ..setEntry(3, 2, 0.0008) // Subtle perspective
+            ..rotateZ(swayAngle),
+          child: child,
+        );
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Sleek Lanyard Strap ──────────────────────────────────────
+          Container(
+            width: 4,
+            height: 36,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  primaryColor.withValues(alpha: 0.2),
+                  primaryColor.withValues(alpha: 0.6),
+                  secondaryColor.withValues(alpha: 0.8),
+                ],
               ),
-            ],
+              borderRadius: BorderRadius.circular(2),
+            ),
           ),
-        ),
 
-        const SizedBox(height: 2),
+          // ── Minimal Badge Clip ───────────────────────────────────────
+          Container(
+            width: 32,
+            height: 10,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xFF64748B),
+                  const Color(0xFFCBD5E1),
+                  const Color(0xFF94A3B8),
+                  const Color(0xFFCBD5E1),
+                  const Color(0xFF64748B),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(3),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.25),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 2),
 
         // ── 3D Interactive Card Body ─────────────────────────────────
         LayoutBuilder(
@@ -457,7 +498,8 @@ class _DeveloperIdCardState extends State<DeveloperIdCard> {
             );
           },
         ),
-      ],
+        ],
+      ),
     );
   }
 }

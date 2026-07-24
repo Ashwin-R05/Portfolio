@@ -202,21 +202,30 @@ class _HeroSectionState extends State<HeroSection>
       ],
     );
 
-    // Falling ID Card widget
+    // Falling ID Card widget — realistic free-fall with pendulum settle
     final idCardWidget = DeveloperIdCard(isDark: isDark)
         .animate()
-        .fadeIn(duration: 800.ms, delay: 300.ms)
+        .fadeIn(duration: 400.ms, delay: 200.ms)
         .slideY(
-          begin: -1.2,
+          begin: -2.0,
           end: 0,
-          duration: 1100.ms,
-          curve: Curves.easeOutBack,
+          duration: 1400.ms,
+          delay: 200.ms,
+          curve: Curves.bounceOut,
         )
         .rotate(
-          begin: 0.02,
+          begin: 0.06,
           end: 0,
-          duration: 1200.ms,
-          curve: Curves.easeInOutCubic,
+          duration: 1800.ms,
+          delay: 400.ms,
+          curve: Curves.elasticOut,
+        )
+        .scale(
+          begin: const Offset(0.85, 0.85),
+          end: const Offset(1.0, 1.0),
+          duration: 800.ms,
+          delay: 200.ms,
+          curve: Curves.easeOutBack,
         );
 
     return SizedBox(
