@@ -363,10 +363,10 @@ class _DeveloperIdCardState extends State<DeveloperIdCard>
                             runSpacing: 6,
                             alignment: WrapAlignment.center,
                             children: const [
-                              _TechBadge(label: 'Flutter'),
-                              _TechBadge(label: 'React'),
+                              _TechBadge(label: 'Linux (Kali)'),
+                              _TechBadge(label: 'Recon & Nmap'),
+                              _TechBadge(label: 'OAuth 2.0'),
                               _TechBadge(label: 'Node.js'),
-                              _TechBadge(label: 'AWS'),
                             ],
                           ),
 

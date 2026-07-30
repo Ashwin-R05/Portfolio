@@ -14,59 +14,68 @@ class ProfileData {
 
   // ── Personal Info ──────────────────────────────────────────────────
   static const String name = 'Ashwin R';
-  static const String role = 'Emerging Software Developer';
+  static const String role =
+      'Aspiring Cybersecurity Intern | Backend & Security-Focused Developer';
   static const String tagline =
-      'Full-Stack Developer • UI/UX Enthusiast • Cloud Explorer';
-  static const String email = 'ashwinr0205@gmail.com';
+      'Cybersecurity Enthusiast • Linux & Networking • OAuth 2.0 & Backend Security';
+  static const String email = 'ashwinindira05@gmail.com';
   static const String location = 'Trichy, Tamil Nadu, India';
   static const String education = 'B.Tech Information Technology';
-  static const String idNumber = 'DEV-2026-AR05';
+  static const String idNumber = 'SEC-2026-AR05';
   static const String profilePhotoPath = 'assets/images/profile.jpg';
 
-  /// Short bio for the About section — conversational, not a résumé dump.
+  /// Short bio for the About section — conversational & beginner-friendly.
   static const String bio =
-      "I'm a B.Tech Information Technology student passionate about "
-      "building software that's both powerful and beautiful. I love the "
-      "intersection of clean architecture and great user experience — "
-      "whether that's crafting a responsive Flutter UI, designing a "
-      "scalable Node.js backend, or deploying to the cloud.\n\n"
-      "Currently sharpening my skills in Java and Data Structures & "
-      "Algorithms, while building real-world projects that push me "
-      "to learn something new every day.";
+      "I am a pre-final year B.Tech Information Technology student building a solid "
+      "foundation in cybersecurity on top of hands-on backend development experience.\n\n"
+      "I am comfortable working daily in Linux (Fedora and Kali), with practical grounding "
+      "in core networking concepts (TCP/IP, DNS, ports, HTTP/HTTPS) and reconnaissance "
+      "techniques (WHOIS, WhatWeb, Wappalyzer, dig, nslookup, basic Nmap scanning). Having "
+      "designed and built OAuth 2.0 & JWT-based authentication systems, I bring first-hand "
+      "insight into access control, secure API design, and authentication attack vectors.\n\n"
+      "Actively practicing on TryHackMe, Wireshark, and exploring the OWASP Top 10, I am "
+      "seeking a Cybersecurity Internship to build on this foundation through vulnerability "
+      "assessment, security monitoring, and real-world threat research, with a long-term "
+      "interest in Cloud Security and DevSecOps.";
 
   /// Animated typewriter phrases that cycle on the hero section.
   static const List<String> heroTypingPhrases = [
-    'Building full-stack applications.',
-    'Crafting beautiful user interfaces.',
-    'Exploring cloud architectures.',
-    'Learning Data Structures & Algorithms.',
-    'Turning ideas into code.',
+    'Aspiring Cybersecurity Intern.',
+    'Comfortable working in Linux (Fedora & Kali).',
+    'Practicing Reconnaissance & Network Tools.',
+    'Building OAuth 2.0 & JWT Auth Systems.',
+    'Learning OWASP Top 10 & TryHackMe Labs.',
+    'Exploring Cloud Security & DevSecOps.',
   ];
 
   /// What I currently focus on — displayed as animated badges.
   static const List<Map<String, dynamic>> focusAreas = [
-    {'label': 'Full-Stack Development', 'icon': Icons.layers_rounded},
-    {'label': 'UI/UX Design', 'icon': Icons.palette_rounded},
-    {'label': 'Cloud Computing', 'icon': Icons.cloud_rounded},
-    {'label': 'DSA & Problem Solving', 'icon': Icons.code_rounded},
+    {'label': 'Security Fundamentals & Recon (Nmap, WHOIS, dig)', 'icon': Icons.shield_rounded},
+    {'label': 'Linux Systems & Networking (Fedora, Kali, TCP/IP, DNS)', 'icon': Icons.terminal_rounded},
+    {'label': 'Backend & Auth Security (OAuth 2.0, JWT, PKCE, RBAC)', 'icon': Icons.lock_rounded},
+    {'label': 'Cloud Security & DevSecOps Basics (AWS, Docker, CI/CD)', 'icon': Icons.cloud_rounded},
   ];
 
   // ── Skills ─────────────────────────────────────────────────────────
-  // Using Material Icons to avoid font_awesome_flutter compatibility
-  // issues with newer Flutter versions where IconData is final.
   static const List<Skill> skills = [
-    // Languages (inner ring)
+    // Languages & Operating Systems (inner ring)
+    Skill(
+      name: 'Linux (Kali & Fedora)',
+      icon: Icons.terminal_rounded,
+      category: SkillCategory.language,
+      proficiency: 0.85,
+    ),
     Skill(
       name: 'Java',
       icon: Icons.coffee_rounded,
       category: SkillCategory.language,
-      proficiency: 0.75,
+      proficiency: 0.8,
     ),
     Skill(
       name: 'Python',
       icon: Icons.pest_control_rounded,
       category: SkillCategory.language,
-      proficiency: 0.7,
+      proficiency: 0.75,
     ),
     Skill(
       name: 'JavaScript',
@@ -74,93 +83,139 @@ class ProfileData {
       category: SkillCategory.language,
       proficiency: 0.8,
     ),
-
-    // Frameworks (middle ring)
     Skill(
-      name: 'Flutter',
+      name: 'Dart',
       icon: Icons.flutter_dash_rounded,
+      category: SkillCategory.language,
+      proficiency: 0.75,
+    ),
+
+    // Frameworks, Auth & Recon Tools (middle ring)
+    Skill(
+      name: 'OAuth 2.0 & JWT',
+      icon: Icons.lock_rounded,
       category: SkillCategory.framework,
       proficiency: 0.85,
     ),
     Skill(
-      name: 'React',
-      icon: Icons.web_rounded,
+      name: 'Networking (TCP/IP, DNS)',
+      icon: Icons.lan_rounded,
       category: SkillCategory.framework,
-      proficiency: 0.7,
+      proficiency: 0.75,
     ),
     Skill(
-      name: 'Node.js',
+      name: 'Recon (Nmap, dig, WHOIS)',
+      icon: Icons.search_rounded,
+      category: SkillCategory.framework,
+      proficiency: 0.75,
+    ),
+    Skill(
+      name: 'Node.js & Express',
       icon: Icons.dns_rounded,
       category: SkillCategory.framework,
       proficiency: 0.75,
     ),
     Skill(
-      name: 'Express',
-      icon: Icons.route_rounded,
+      name: 'Flutter & React',
+      icon: Icons.web_rounded,
       category: SkillCategory.framework,
-      proficiency: 0.75,
+      proficiency: 0.8,
     ),
 
-    // Databases (outer-middle ring)
-    Skill(
-      name: 'MySQL',
-      icon: Icons.storage_rounded,
-      category: SkillCategory.database,
-      proficiency: 0.65,
-    ),
+    // Databases & Storage (outer-middle ring)
     Skill(
       name: 'MongoDB',
       icon: Icons.eco_rounded,
       category: SkillCategory.database,
       proficiency: 0.7,
     ),
-
-    // Cloud & Tools (outer ring)
     Skill(
-      name: 'AWS',
+      name: 'SQLite',
+      icon: Icons.data_array_rounded,
+      category: SkillCategory.database,
+      proficiency: 0.75,
+    ),
+    Skill(
+      name: 'MySQL',
+      icon: Icons.storage_rounded,
+      category: SkillCategory.database,
+      proficiency: 0.65,
+    ),
+
+    // Cloud, DevSecOps & Security Practice (outer ring)
+    Skill(
+      name: 'TryHackMe & OWASP',
+      icon: Icons.security_rounded,
+      category: SkillCategory.cloud,
+      proficiency: 0.7,
+    ),
+    Skill(
+      name: 'Wireshark Analysis',
+      icon: Icons.insights_rounded,
+      category: SkillCategory.cloud,
+      proficiency: 0.65,
+    ),
+    Skill(
+      name: 'Docker & CI/CD',
+      icon: Icons.developer_board_rounded,
+      category: SkillCategory.cloud,
+      proficiency: 0.75,
+    ),
+    Skill(
+      name: 'AWS Cloud',
       icon: Icons.cloud_queue_rounded,
       category: SkillCategory.cloud,
-      proficiency: 0.6,
+      proficiency: 0.65,
     ),
   ];
 
   // ── Projects ───────────────────────────────────────────────────────
   static const List<Project> projects = [
     Project(
-      title: 'Summarizit',
-      subtitle: 'AI-Powered Summarization App',
+      title: 'AuthForge',
+      subtitle: 'Centralized OAuth 2.0 / OpenID Connect Identity Provider',
       problem:
-          'Information overload is real — long articles, research papers, '
-          'and documents take too much time to digest. Summarizit solves '
-          'this by providing instant AI-generated summaries with a clean, '
-          'intuitive mobile interface.',
-      stack: ['Flutter', 'Dart', 'Clean Architecture', 'REST API'],
+          'Campus ecosystems require centralized identity management to prevent '
+          'credential leaks and token attack vectors. Designed AuthForge as a centralized '
+          'OAuth 2.0 / OpenID Connect server handling authentication across multiple applications.',
+      stack: ['Java', 'Node.js', 'OAuth 2.0', 'PKCE', 'JWT', 'SQLite', 'Distributed Systems'],
       features: [
-        'AI-powered text summarization via external API integration',
-        'Clean Architecture with separation of concerns',
-        'Responsive Flutter UI with smooth animations',
-        'Supports multiple content formats',
-        'Offline-capable with local caching',
+        'Centralized OAuth 2.0 & OpenID Connect identity provider for campus services',
+        'Implemented full authorization code flow with PKCE to prevent auth code interception',
+        'JWT-based access control with secure refresh token rotation addressing token theft and replay vectors',
+        'Applied security-first design principles to build a reliable, scalable auth infrastructure',
       ],
-      githubUrl: 'https://github.com/Ashwin-R05/Summarizit',
+      githubUrl: 'https://github.com/Ashwin-R05',
     ),
     Project(
       title: 'Task_Flow',
-      subtitle: 'Multi-Tenant Task Management Platform',
+      subtitle: 'Multi-Tenant Distributed Task Management System',
       problem:
-          'Teams need secure, isolated task management without data '
-          'leaking between organizations. Task_Flow is a full-stack '
-          'platform with enterprise-grade multi-tenancy, role-based '
-          'access control, and JWT authentication.',
-      stack: ['Node.js', 'Express', 'MongoDB', 'JWT', 'REST API'],
+          'Multi-tenant enterprise backends must strictly isolate data between organizations '
+          'to prevent cross-tenant data leaks. Task_Flow is a full-stack platform built with '
+          'strict tenant isolation, RBAC, and password hashing.',
+      stack: ['Java', 'Node.js', 'MongoDB', 'JWT', 'Docker', 'GitHub Actions', 'REST API'],
       features: [
-        'Multi-tenant architecture with secure data isolation',
-        'JWT-based authentication & authorization',
-        'Role-based access control (Admin, Manager, Member)',
-        'RESTful API design with proper error handling',
-        'Task CRUD with filtering, sorting, and assignment',
+        'Multi-tenant architecture with strict data isolation using shared-database, shared-collection pattern',
+        'Role-based access control (RBAC) & secure token-based authentication with bcrypt hashing',
+        'Restricted API endpoints designed to prevent cross-tenant data exposure',
+        'Containerized full stack with Docker; automated CI/CD deployments via GitHub Actions',
       ],
       githubUrl: 'https://github.com/Ashwin-R05/Task_Flow',
+    ),
+    Project(
+      title: 'Summarizit',
+      subtitle: 'Cross-Platform AI Summarization Application',
+      problem:
+          'Processing external API communications securely requires separating concerns across '
+          'data, domain, and presentation layers to reduce attack surface and maintain testability.',
+      stack: ['Dart', 'Flutter', 'REST API', 'Clean Architecture', 'Android / iOS / Web / Desktop'],
+      features: [
+        'Built with Clean Architecture to separate concerns and reduce attack surface',
+        'Integrated external AI summarization API handling payload processing securely',
+        'Ships to 6 platforms (Android, iOS, Web, Windows, Linux, macOS) from a single codebase',
+      ],
+      githubUrl: 'https://github.com/Ashwin-R05/summarizit',
     ),
   ];
 
@@ -187,7 +242,7 @@ class ProfileData {
     ),
     SocialLink(
       platform: 'Email',
-      url: 'mailto:ashwinr0205@gmail.com',
+      url: 'mailto:ashwinindira05@gmail.com',
       icon: Icons.email_outlined,
       brandColor: AppColors.emailColor,
     ),

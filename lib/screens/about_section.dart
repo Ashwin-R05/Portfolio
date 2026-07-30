@@ -369,8 +369,8 @@ class _InfoCards extends StatelessWidget {
           theme: theme,
         ).animate().fadeIn(duration: 500.ms, delay: 500.ms).slideX(begin: -0.1, end: 0),
         _InfoChip(
-          icon: Icons.auto_stories_rounded,
-          label: 'Currently learning Java & DSA',
+          icon: Icons.shield_outlined,
+          label: 'Practicing Recon, Security Tools & TryHackMe',
           isDark: isDark,
           color: primaryColor,
           theme: theme,
