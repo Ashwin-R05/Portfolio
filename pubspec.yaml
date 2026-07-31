@@ -33,4 +33,5 @@ flutter:
   assets:
     - assets/resume.pdf
     - assets/images/profile.jpg
+    - assets/images/github_qr.png
 

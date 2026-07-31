@@ -399,15 +399,34 @@ class _DeveloperIdCardState extends State<DeveloperIdCard>
                                 child: Tooltip(
                                   message: 'Scan to visit GitHub',
                                   child: Container(
+                                    width: 64,
+                                    height: 64,
                                     padding: const EdgeInsets.all(4),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
-                                      borderRadius: BorderRadius.circular(4),
+                                      borderRadius: BorderRadius.circular(8),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.15),
+                                          blurRadius: 6,
+                                        ),
+                                      ],
                                     ),
-                                    child: CustomPaint(
-                                      size: const Size(56, 56),
-                                      painter: _QrCodePainter(
-                                        url: 'https://github.com/Ashwin-R05',
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(4),
+                                      child: Image.asset(
+                                        'assets/images/github_qr.png',
+                                        width: 56,
+                                        height: 56,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return CustomPaint(
+                                            size: const Size(56, 56),
+                                            painter: _QrCodePainter(
+                                              url: 'https://github.com/Ashwin-R05',
+                                            ),
+                                          );
+                                        },
                                       ),
                                     ),
                                   ),
