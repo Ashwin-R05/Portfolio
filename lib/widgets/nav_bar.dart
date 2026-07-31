@@ -122,28 +122,105 @@ class _LogoBadgeState extends State<_LogoBadge> {
       onExit: (_) => setState(() => _hovered = false),
       cursor: SystemMouseCursors.click,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        duration: const Duration(milliseconds: 250),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          gradient: _hovered
-              ? LinearGradient(colors: [primary, secondary])
-              : null,
-          color: _hovered ? null : primary.withValues(alpha: 0.1),
-        ),
-        child: ShaderMask(
-          shaderCallback: (bounds) => LinearGradient(
-            colors: _hovered ? [Colors.white, Colors.white] : [primary, secondary],
-          ).createShader(bounds),
-          child: Text(
-            'ASHWIN R',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: Colors.white,
-              letterSpacing: 0.5,
-            ),
+          borderRadius: BorderRadius.circular(14),
+          color: _hovered
+              ? primary.withValues(alpha: 0.12)
+              : widget.isDark
+                  ? Colors.white.withValues(alpha: 0.03)
+                  : Colors.black.withValues(alpha: 0.03),
+          border: Border.all(
+            color: _hovered
+                ? secondary.withValues(alpha: 0.6)
+                : primary.withValues(alpha: 0.2),
+            width: 1.2,
           ),
+          boxShadow: [
+            if (_hovered)
+              BoxShadow(
+                color: secondary.withValues(alpha: 0.25),
+                blurRadius: 16,
+                spreadRadius: 1,
+              ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ── Glowing Cyber Emblem Icon Badge ─────────────────────
+            AnimatedRotation(
+              turns: _hovered ? 0.05 : 0.0,
+              duration: const Duration(milliseconds: 250),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [primary, secondary],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: primary.withValues(alpha: _hovered ? 0.6 : 0.35),
+                      blurRadius: _hovered ? 12 : 6,
+                    ),
+                  ],
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.shield_rounded,
+                    size: 18,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+
+            // ── Monogram & Sub-label Text ─────────────────────────────
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ShaderMask(
+                  shaderCallback: (bounds) => LinearGradient(
+                    colors: _hovered
+                        ? [secondary, primary]
+                        : [
+                            widget.isDark ? Colors.white : AppColors.lightTextPrimary,
+                            primary,
+                          ],
+                  ).createShader(bounds),
+                  child: const Text(
+                    'ASHWIN R',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      letterSpacing: 1.0,
+                      height: 1.1,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 1),
+                Text(
+                  'CYBER // SEC',
+                  style: TextStyle(
+                    fontSize: 8,
+                    fontWeight: FontWeight.w700,
+                    color: secondary.withValues(alpha: 0.85),
+                    letterSpacing: 1.5,
+                    height: 1.0,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
