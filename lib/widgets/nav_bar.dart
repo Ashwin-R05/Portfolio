@@ -209,7 +209,7 @@ class _LogoBadgeState extends State<_LogoBadge> {
                 ),
                 const SizedBox(height: 1),
                 Text(
-                  'DEV // SEC',
+                  'DEV // CLOUD-SEC',
                   style: TextStyle(
                     fontSize: 8,
                     fontWeight: FontWeight.w700,

@@ -366,7 +366,7 @@ class _DeveloperIdCardState extends State<DeveloperIdCard>
                               _TechBadge(label: 'Flutter & Web'),
                               _TechBadge(label: 'Node.js & Express'),
                               _TechBadge(label: 'React'),
-                              _TechBadge(label: 'Cyber & Cloud'),
+                              _TechBadge(label: 'Cloud Security'),
                             ],
                           ),
 

@@ -14,41 +14,43 @@ class ProfileData {
 
   // ── Personal Info ──────────────────────────────────────────────────
   static const String name = 'Ashwin R';
-  static const String role = 'Full-Stack Developer & Software Engineer';
+  static const String role =
+      'Full-Stack Developer | Aspiring Cloud Security Enthusiast';
   static const String tagline =
-      'Full-Stack Developer • UI/UX & Mobile • Cybersecurity & Cloud Explorer';
+      'Full-Stack Web & Mobile • Scalable Architecture • Cloud Security & DevSecOps Explorer';
   static const String email = 'ashwinindira05@gmail.com';
   static const String location = 'Trichy, Tamil Nadu, India';
   static const String education = 'B.Tech Information Technology';
-  static const String idNumber = 'DEV-2026-AR05';
+  static const String idNumber = 'DEV-SEC-2026-AR05';
   static const String profilePhotoPath = 'assets/images/profile.jpg';
 
-  /// Short bio for the About section — balanced full-stack & security learning profile.
+  /// Short bio for the About section terminal (`cat bio.md`) — structured & professional.
   static const String bio =
-      "I'm a pre-final year B.Tech Information Technology student specializing in "
-      "full-stack web and cross-platform software development.\n\n"
-      "My core strength lies in building scalable, production-ready web and mobile "
-      "applications using Flutter, Node.js, Express, React, and MongoDB/MySQL. "
-      "I focus on clean architecture, responsive UI/UX design, and robust RESTful API design.\n\n"
-      "Alongside full-stack engineering, I am actively expanding my foundation in "
-      "cybersecurity, Linux environments (Fedora & Kali), core networking concepts (TCP/IP, DNS), "
-      "and authentication security (OAuth 2.0, JWT, PKCE), with a strong interest in DevSecOps and Cloud Security.";
+      "I am a pre-final year B.Tech Information Technology student combining a strong "
+      "foundation in Full-Stack Web & Mobile Development with an active focus on Cloud Security and DevSecOps.\n\n"
+      "Core Engineering: Hands-on experience architecting production-ready applications with "
+      "Flutter, Node.js, Express, React, and MongoDB/MySQL, focusing on clean architecture, "
+      "responsive UI/UX, and robust RESTful API design.\n\n"
+      "Security & Cloud Domain Transition: Daily practice in Linux (Fedora & Kali), core networking "
+      "fundamentals (TCP/IP, DNS, ports), and hands-on experience designing OAuth 2.0, JWT, and PKCE "
+      "authentication systems. Actively practicing on TryHackMe, Wireshark, and OWASP Top 10 to bridge "
+      "software development with cloud security engineering.";
 
   /// Animated typewriter phrases that cycle on the hero section.
   static const List<String> heroTypingPhrases = [
-    'Building full-stack web & mobile apps.',
-    'Designing RESTful APIs & scalable backends.',
-    'Crafting clean UIs with Flutter & React.',
-    'Practicing Linux & Core Networking.',
-    'Exploring Cybersecurity & Cloud Security.',
+    'Full-Stack Developer & Software Engineer.',
+    'Building scalable Web & Mobile applications.',
+    'Aspiring Cloud Security Enthusiast.',
+    'Practicing Linux, Networking & OWASP Top 10.',
+    'Exploring DevSecOps & Cloud Security.',
   ];
 
   /// What I currently focus on — displayed as animated badges.
   static const List<Map<String, dynamic>> focusAreas = [
-    {'label': 'Full-Stack Web & Mobile Dev', 'icon': Icons.layers_rounded},
-    {'label': 'Backend Architecture & REST APIs', 'icon': Icons.dns_rounded},
-    {'label': 'Linux & Core Networking (TCP/IP, DNS)', 'icon': Icons.terminal_rounded},
-    {'label': 'Cybersecurity & Auth (OAuth 2.0, JWT)', 'icon': Icons.security_rounded},
+    {'label': 'Full-Stack Web & Mobile Engineering', 'icon': Icons.layers_rounded},
+    {'label': 'Cloud Security & DevSecOps Exploration', 'icon': Icons.cloud_rounded},
+    {'label': 'Linux Systems & Core Networking (TCP/IP, DNS)', 'icon': Icons.terminal_rounded},
+    {'label': 'Backend & Auth Security (OAuth 2.0, JWT, PKCE)', 'icon': Icons.security_rounded},
   ];
 
   // ── Skills ─────────────────────────────────────────────────────────
