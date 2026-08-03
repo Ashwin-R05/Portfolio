@@ -14,54 +14,49 @@ class ProfileData {
 
   // ── Personal Info ──────────────────────────────────────────────────
   static const String name = 'Ashwin R';
-  static const String role =
-      'Aspiring Cybersecurity Intern | Backend & Security-Focused Developer';
+  static const String role = 'Full-Stack Developer & Software Engineer';
   static const String tagline =
-      'Cybersecurity Enthusiast • Linux & Networking • OAuth 2.0 & Backend Security';
+      'Full-Stack Developer • UI/UX & Mobile • Cybersecurity & Cloud Explorer';
   static const String email = 'ashwinindira05@gmail.com';
   static const String location = 'Trichy, Tamil Nadu, India';
   static const String education = 'B.Tech Information Technology';
-  static const String idNumber = 'SEC-2026-AR05';
+  static const String idNumber = 'DEV-2026-AR05';
   static const String profilePhotoPath = 'assets/images/profile.jpg';
 
-  /// Short bio for the About section — conversational & beginner-friendly.
+  /// Short bio for the About section — balanced full-stack & security learning profile.
   static const String bio =
-      "I am a pre-final year B.Tech Information Technology student building a solid "
-      "foundation in cybersecurity on top of hands-on backend development experience.\n\n"
-      "I am comfortable working daily in Linux (Fedora and Kali), with practical grounding "
-      "in core networking concepts (TCP/IP, DNS, ports, HTTP/HTTPS) and reconnaissance "
-      "techniques (WHOIS, WhatWeb, Wappalyzer, dig, nslookup, basic Nmap scanning). Having "
-      "designed and built OAuth 2.0 & JWT-based authentication systems, I bring first-hand "
-      "insight into access control, secure API design, and authentication attack vectors.\n\n"
-      "Actively practicing on TryHackMe, Wireshark, and exploring the OWASP Top 10, I am "
-      "seeking a Cybersecurity Internship to build on this foundation through vulnerability "
-      "assessment, security monitoring, and real-world threat research, with a long-term "
-      "interest in Cloud Security and DevSecOps.";
+      "I'm a pre-final year B.Tech Information Technology student specializing in "
+      "full-stack web and cross-platform software development.\n\n"
+      "My core strength lies in building scalable, production-ready web and mobile "
+      "applications using Flutter, Node.js, Express, React, and MongoDB/MySQL. "
+      "I focus on clean architecture, responsive UI/UX design, and robust RESTful API design.\n\n"
+      "Alongside full-stack engineering, I am actively expanding my foundation in "
+      "cybersecurity, Linux environments (Fedora & Kali), core networking concepts (TCP/IP, DNS), "
+      "and authentication security (OAuth 2.0, JWT, PKCE), with a strong interest in DevSecOps and Cloud Security.";
 
   /// Animated typewriter phrases that cycle on the hero section.
   static const List<String> heroTypingPhrases = [
-    'Aspiring Cybersecurity Intern.',
-    'Comfortable working in Linux (Fedora & Kali).',
-    'Practicing Reconnaissance & Network Tools.',
-    'Building OAuth 2.0 & JWT Auth Systems.',
-    'Learning OWASP Top 10 & TryHackMe Labs.',
-    'Exploring Cloud Security & DevSecOps.',
+    'Building full-stack web & mobile apps.',
+    'Designing RESTful APIs & scalable backends.',
+    'Crafting clean UIs with Flutter & React.',
+    'Practicing Linux & Core Networking.',
+    'Exploring Cybersecurity & Cloud Security.',
   ];
 
   /// What I currently focus on — displayed as animated badges.
   static const List<Map<String, dynamic>> focusAreas = [
-    {'label': 'Security Fundamentals & Recon (Nmap, WHOIS, dig)', 'icon': Icons.shield_rounded},
-    {'label': 'Linux Systems & Networking (Fedora, Kali, TCP/IP, DNS)', 'icon': Icons.terminal_rounded},
-    {'label': 'Backend & Auth Security (OAuth 2.0, JWT, PKCE, RBAC)', 'icon': Icons.lock_rounded},
-    {'label': 'Cloud Security & DevSecOps Basics (AWS, Docker, CI/CD)', 'icon': Icons.cloud_rounded},
+    {'label': 'Full-Stack Web & Mobile Dev', 'icon': Icons.layers_rounded},
+    {'label': 'Backend Architecture & REST APIs', 'icon': Icons.dns_rounded},
+    {'label': 'Linux & Core Networking (TCP/IP, DNS)', 'icon': Icons.terminal_rounded},
+    {'label': 'Cybersecurity & Auth (OAuth 2.0, JWT)', 'icon': Icons.security_rounded},
   ];
 
   // ── Skills ─────────────────────────────────────────────────────────
   static const List<Skill> skills = [
     // Languages & Operating Systems (inner ring)
     Skill(
-      name: 'Linux (Kali & Fedora)',
-      icon: Icons.terminal_rounded,
+      name: 'JavaScript',
+      icon: Icons.javascript_rounded,
       category: SkillCategory.language,
       proficiency: 0.85,
     ),
@@ -72,62 +67,68 @@ class ProfileData {
       proficiency: 0.8,
     ),
     Skill(
+      name: 'Dart',
+      icon: Icons.flutter_dash_rounded,
+      category: SkillCategory.language,
+      proficiency: 0.85,
+    ),
+    Skill(
       name: 'Python',
       icon: Icons.pest_control_rounded,
       category: SkillCategory.language,
       proficiency: 0.75,
     ),
     Skill(
-      name: 'JavaScript',
-      icon: Icons.javascript_rounded,
+      name: 'Linux (Fedora/Kali)',
+      icon: Icons.terminal_rounded,
       category: SkillCategory.language,
       proficiency: 0.8,
     ),
-    Skill(
-      name: 'Dart',
-      icon: Icons.flutter_dash_rounded,
-      category: SkillCategory.language,
-      proficiency: 0.75,
-    ),
 
-    // Frameworks, Auth & Recon Tools (middle ring)
+    // Frameworks & Web (middle ring)
     Skill(
-      name: 'OAuth 2.0 & JWT',
-      icon: Icons.lock_rounded,
+      name: 'Flutter',
+      icon: Icons.flutter_dash_rounded,
       category: SkillCategory.framework,
-      proficiency: 0.85,
-    ),
-    Skill(
-      name: 'Networking (TCP/IP, DNS)',
-      icon: Icons.lan_rounded,
-      category: SkillCategory.framework,
-      proficiency: 0.75,
-    ),
-    Skill(
-      name: 'Recon (Nmap, dig, WHOIS)',
-      icon: Icons.search_rounded,
-      category: SkillCategory.framework,
-      proficiency: 0.75,
+      proficiency: 0.88,
     ),
     Skill(
       name: 'Node.js & Express',
       icon: Icons.dns_rounded,
       category: SkillCategory.framework,
+      proficiency: 0.82,
+    ),
+    Skill(
+      name: 'React',
+      icon: Icons.web_rounded,
+      category: SkillCategory.framework,
       proficiency: 0.75,
     ),
     Skill(
-      name: 'Flutter & React',
-      icon: Icons.web_rounded,
+      name: 'OAuth 2.0 & JWT',
+      icon: Icons.lock_rounded,
       category: SkillCategory.framework,
       proficiency: 0.8,
     ),
+    Skill(
+      name: 'REST APIs',
+      icon: Icons.route_rounded,
+      category: SkillCategory.framework,
+      proficiency: 0.85,
+    ),
 
-    // Databases & Storage (outer-middle ring)
+    // Databases (outer-middle ring)
     Skill(
       name: 'MongoDB',
       icon: Icons.eco_rounded,
       category: SkillCategory.database,
-      proficiency: 0.7,
+      proficiency: 0.78,
+    ),
+    Skill(
+      name: 'MySQL',
+      icon: Icons.storage_rounded,
+      category: SkillCategory.database,
+      proficiency: 0.72,
     ),
     Skill(
       name: 'SQLite',
@@ -135,25 +136,13 @@ class ProfileData {
       category: SkillCategory.database,
       proficiency: 0.75,
     ),
-    Skill(
-      name: 'MySQL',
-      icon: Icons.storage_rounded,
-      category: SkillCategory.database,
-      proficiency: 0.65,
-    ),
 
-    // Cloud, DevSecOps & Security Practice (outer ring)
+    // Cloud, Tools & Security (outer ring)
     Skill(
-      name: 'TryHackMe & OWASP',
-      icon: Icons.security_rounded,
+      name: 'AWS Cloud',
+      icon: Icons.cloud_queue_rounded,
       category: SkillCategory.cloud,
-      proficiency: 0.7,
-    ),
-    Skill(
-      name: 'Wireshark Analysis',
-      icon: Icons.insights_rounded,
-      category: SkillCategory.cloud,
-      proficiency: 0.65,
+      proficiency: 0.68,
     ),
     Skill(
       name: 'Docker & CI/CD',
@@ -162,44 +151,35 @@ class ProfileData {
       proficiency: 0.75,
     ),
     Skill(
-      name: 'AWS Cloud',
-      icon: Icons.cloud_queue_rounded,
+      name: 'Git & GitHub',
+      icon: Icons.code_rounded,
       category: SkillCategory.cloud,
-      proficiency: 0.65,
+      proficiency: 0.85,
+    ),
+    Skill(
+      name: 'Recon & Security Tools',
+      icon: Icons.security_rounded,
+      category: SkillCategory.cloud,
+      proficiency: 0.7,
     ),
   ];
 
   // ── Projects ───────────────────────────────────────────────────────
   static const List<Project> projects = [
     Project(
-      title: 'AuthForge',
-      subtitle: 'Centralized OAuth 2.0 / OpenID Connect Identity Provider',
-      problem:
-          'Campus ecosystems require centralized identity management to prevent '
-          'credential leaks and token attack vectors. Designed AuthForge as a centralized '
-          'OAuth 2.0 / OpenID Connect server handling authentication across multiple applications.',
-      stack: ['Java', 'Node.js', 'OAuth 2.0', 'PKCE', 'JWT', 'SQLite', 'Distributed Systems'],
-      features: [
-        'Centralized OAuth 2.0 & OpenID Connect identity provider for campus services',
-        'Implemented full authorization code flow with PKCE to prevent auth code interception',
-        'JWT-based access control with secure refresh token rotation addressing token theft and replay vectors',
-        'Applied security-first design principles to build a reliable, scalable auth infrastructure',
-      ],
-      githubUrl: 'https://github.com/Ashwin-R05',
-    ),
-    Project(
       title: 'Task_Flow',
-      subtitle: 'Multi-Tenant Distributed Task Management System',
+      subtitle: 'Multi-Tenant Distributed Task Management Platform',
       problem:
-          'Multi-tenant enterprise backends must strictly isolate data between organizations '
-          'to prevent cross-tenant data leaks. Task_Flow is a full-stack platform built with '
-          'strict tenant isolation, RBAC, and password hashing.',
-      stack: ['Java', 'Node.js', 'MongoDB', 'JWT', 'Docker', 'GitHub Actions', 'REST API'],
+          'Teams and enterprises need isolated task management without risk of cross-tenant '
+          'data exposure. Task_Flow is a full-stack platform with multi-tenancy architecture, '
+          'role-based access control (RBAC), and JWT authentication.',
+      stack: ['Node.js', 'Express', 'MongoDB', 'JWT', 'Docker', 'GitHub Actions', 'REST API'],
       features: [
-        'Multi-tenant architecture with strict data isolation using shared-database, shared-collection pattern',
-        'Role-based access control (RBAC) & secure token-based authentication with bcrypt hashing',
-        'Restricted API endpoints designed to prevent cross-tenant data exposure',
+        'Multi-tenant architecture with secure data isolation using shared-database pattern',
+        'JWT-based authentication & role-based access control (RBAC) with bcrypt password hashing',
+        'RESTful API design with comprehensive input validation and error handling',
         'Containerized full stack with Docker; automated CI/CD deployments via GitHub Actions',
+        'Task CRUD with filtering, sorting, and organizational workspace assignment',
       ],
       githubUrl: 'https://github.com/Ashwin-R05/Task_Flow',
     ),
@@ -207,15 +187,32 @@ class ProfileData {
       title: 'Summarizit',
       subtitle: 'Cross-Platform AI Summarization Application',
       problem:
-          'Processing external API communications securely requires separating concerns across '
-          'data, domain, and presentation layers to reduce attack surface and maintain testability.',
+          'Information overload makes long documents and articles tedious to digest. '
+          'Summarizit provides instant AI summaries with a clean, responsive interface '
+          'built using Clean Architecture.',
       stack: ['Dart', 'Flutter', 'REST API', 'Clean Architecture', 'Android / iOS / Web / Desktop'],
       features: [
-        'Built with Clean Architecture to separate concerns and reduce attack surface',
-        'Integrated external AI summarization API handling payload processing securely',
+        'Designed using Clean Architecture to separate data, domain, and presentation layers',
+        'AI-powered text summarization via external REST API integration',
+        'Responsive Flutter UI with dynamic animations across mobile and web',
         'Ships to 6 platforms (Android, iOS, Web, Windows, Linux, macOS) from a single codebase',
       ],
       githubUrl: 'https://github.com/Ashwin-R05/summarizit',
+    ),
+    Project(
+      title: 'AuthForge',
+      subtitle: 'Centralized OAuth 2.0 / OpenID Connect Identity Provider',
+      problem:
+          'Campus ecosystems require centralized identity management to authenticate users '
+          'across multiple services while handling authorization securely.',
+      stack: ['Java', 'Node.js', 'OAuth 2.0', 'PKCE', 'JWT', 'SQLite', 'Distributed Systems'],
+      features: [
+        'Centralized OAuth 2.0 & OpenID Connect identity provider for campus services',
+        'Implemented full authorization code flow with PKCE to prevent code interception',
+        'JWT access control with refresh token rotation addressing token replay vectors',
+        'Built with security-first design patterns for reliable, scalable auth infrastructure',
+      ],
+      githubUrl: 'https://github.com/Ashwin-R05',
     ),
   ];
 

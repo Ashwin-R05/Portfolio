@@ -173,7 +173,7 @@ class _LogoBadgeState extends State<_LogoBadge> {
                 ),
                 child: const Center(
                   child: Icon(
-                    Icons.shield_rounded,
+                    Icons.code_rounded,
                     size: 18,
                     color: Colors.white,
                   ),
@@ -209,7 +209,7 @@ class _LogoBadgeState extends State<_LogoBadge> {
                 ),
                 const SizedBox(height: 1),
                 Text(
-                  'CYBER // SEC',
+                  'DEV // SEC',
                   style: TextStyle(
                     fontSize: 8,
                     fontWeight: FontWeight.w700,
