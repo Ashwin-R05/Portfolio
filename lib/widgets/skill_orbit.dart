@@ -393,13 +393,17 @@ class _MobileSkillGrid extends StatelessWidget {
                           child: Icon(skill.icon, size: 16, color: catColor),
                         ),
                         const SizedBox(width: 12),
-                        SizedBox(
-                          width: 80,
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 130),
                           child: Text(
                             skill.name,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.colorScheme.onSurface,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
                             ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         const SizedBox(width: 12),

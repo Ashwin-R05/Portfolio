@@ -6,6 +6,7 @@
 /// - Animated conic-gradient border that rotates on hover/expand
 /// - Subtle glass-surface card background
 /// - Smooth AnimatedCrossFade expand/collapse
+/// - Performance: Border animation ONLY runs when active (hovered or expanded)
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -56,7 +57,16 @@ class _ProjectCardState extends State<ProjectCard>
     _borderCtrl = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 4),
-    )..repeat();
+    );
+  }
+
+  void _updateAnimationState() {
+    final active = _isHovered || _isExpanded;
+    if (active && !_borderCtrl.isAnimating) {
+      _borderCtrl.repeat();
+    } else if (!active && _borderCtrl.isAnimating) {
+      _borderCtrl.stop();
+    }
   }
 
   @override
@@ -74,275 +84,290 @@ class _ProjectCardState extends State<ProjectCard>
     final surfaceColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: AnimatedBuilder(
-        animation: _borderCtrl,
-        builder: (context, child) {
-          final active = _isHovered || _isExpanded;
-          return Stack(
-            children: [
-              // ── Animated rotating gradient border ────────────────────
-              if (active)
-                Positioned.fill(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(21),
-                    child: CustomPaint(
-                      painter: _RotatingBorderPainter(
-                        progress: _borderCtrl.value,
-                        colors: _gradColors,
-                        borderRadius: 21,
-                        borderWidth: 2,
+    return RepaintBoundary(
+      child: MouseRegion(
+        onEnter: (_) {
+          setState(() => _isHovered = true);
+          _updateAnimationState();
+        },
+        onExit: (_) {
+          setState(() => _isHovered = false);
+          _updateAnimationState();
+        },
+        child: AnimatedBuilder(
+          animation: _borderCtrl,
+          builder: (context, child) {
+            final active = _isHovered || _isExpanded;
+            return Stack(
+              children: [
+                // ── Animated rotating gradient border ────────────────────
+                if (active)
+                  Positioned.fill(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(21),
+                      child: CustomPaint(
+                        painter: _RotatingBorderPainter(
+                          progress: _borderCtrl.value,
+                          colors: _gradColors,
+                          borderRadius: 21,
+                          borderWidth: 2,
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-              // ── Card body (inset by border width) ────────────────────
-              Padding(
-                padding: EdgeInsets.all(active ? 2.0 : 0.0),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 280),
-                  decoration: BoxDecoration(
-                    color: surfaceColor,
-                    borderRadius: BorderRadius.circular(20),
-                    border: active
-                        ? null
-                        : Border.all(
-                            color: borderColor.withValues(alpha: 0.25),
-                            width: 1,
-                          ),
-                    boxShadow: active
-                        ? [
-                            BoxShadow(
-                              color: primary.withValues(alpha: 0.18),
-                              blurRadius: 32,
-                              spreadRadius: 0,
-                            ),
-                            BoxShadow(
-                              color: secondary.withValues(alpha: 0.08),
-                              blurRadius: 60,
-                              spreadRadius: 0,
-                            ),
-                          ]
-                        : [],
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(20),
-                    child: InkWell(
+                // ── Card body (inset by border width) ────────────────────
+                Padding(
+                  padding: EdgeInsets.all(active ? 2.0 : 0.0),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 280),
+                    decoration: BoxDecoration(
+                      color: surfaceColor,
                       borderRadius: BorderRadius.circular(20),
-                      onTap: () => setState(() => _isExpanded = !_isExpanded),
-                      splashColor: primary.withValues(alpha: 0.08),
-                      highlightColor: primary.withValues(alpha: 0.04),
-                      child: Padding(
-                        padding: const EdgeInsets.all(28),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // ── Header ────────────────────────────────
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Gradient project number badge
-                                Container(
-                                  width: 52,
-                                  height: 52,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: _gradColors,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: primary.withValues(alpha: 0.4),
-                                        blurRadius: 14,
-                                        spreadRadius: 0,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Center(
-                                    child: Icon(
-                                      widget.index == 0
-                                          ? Icons.auto_awesome_rounded
-                                          : Icons.task_alt_rounded,
-                                      color: Colors.white,
-                                      size: 24,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 18),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        widget.project.title,
-                                        style: theme.textTheme.headlineSmall?.copyWith(
-                                          color: theme.colorScheme.onSurface,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      ShaderMask(
-                                        shaderCallback: (bounds) =>
-                                            LinearGradient(colors: _gradColors)
-                                                .createShader(bounds),
-                                        child: Text(
-                                          widget.project.subtitle,
-                                          style: theme.textTheme.bodyMedium?.copyWith(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                AnimatedRotation(
-                                  turns: _isExpanded ? 0.5 : 0,
-                                  duration: const Duration(milliseconds: 300),
-                                  child: Container(
-                                    width: 30,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: primary.withValues(alpha: 0.1),
-                                    ),
-                                    child: Icon(
-                                      Icons.keyboard_arrow_down_rounded,
-                                      color: primary,
-                                      size: 20,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                      border: active
+                          ? null
+                          : Border.all(
+                              color: borderColor.withValues(alpha: 0.25),
+                              width: 1,
                             ),
-
-                            const SizedBox(height: 20),
-
-                            // ── Tech Stack Chips ───────────────────────
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: widget.project.stack.map((tech) {
-                                return Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 5,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: primary.withValues(alpha: 0.08),
-                                    border: Border.all(
-                                      color: primary.withValues(alpha: 0.22),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    tech,
-                                    style: theme.textTheme.labelMedium?.copyWith(
-                                      color: primary,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-
-                            // ── Expanded content ───────────────────────
-                            AnimatedCrossFade(
-                              firstChild: const SizedBox.shrink(),
-                              secondChild: Column(
+                      boxShadow: active
+                          ? [
+                              BoxShadow(
+                                color: primary.withValues(alpha: 0.18),
+                                blurRadius: 32,
+                                spreadRadius: 0,
+                              ),
+                              BoxShadow(
+                                color: secondary.withValues(alpha: 0.08),
+                                blurRadius: 60,
+                                spreadRadius: 0,
+                              ),
+                            ]
+                          : [],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(20),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(20),
+                        onTap: () {
+                          setState(() => _isExpanded = !_isExpanded);
+                          _updateAnimationState();
+                        },
+                        splashColor: primary.withValues(alpha: 0.08),
+                        highlightColor: primary.withValues(alpha: 0.04),
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // ── Header ────────────────────────────────
+                              Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const SizedBox(height: 24),
-                                  _GradientDivider(colors: _gradColors),
-                                  const SizedBox(height: 20),
-
-                                  _ExpandedLabel('The Problem', theme: theme),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    widget.project.problem,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      height: 1.7,
-                                      color: theme.colorScheme.onSurface
-                                          .withValues(alpha: 0.75),
+                                  // Gradient project number badge
+                                  Container(
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: _gradColors,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: primary.withValues(alpha: 0.4),
+                                          blurRadius: 14,
+                                          spreadRadius: 0,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        widget.index == 0
+                                            ? Icons.auto_awesome_rounded
+                                            : Icons.task_alt_rounded,
+                                        color: Colors.white,
+                                        size: 22,
+                                      ),
                                     ),
                                   ),
-                                  const SizedBox(height: 24),
-
-                                  _ExpandedLabel('Key Features', theme: theme),
-                                  const SizedBox(height: 12),
-                                  ...widget.project.features.map((f) => Padding(
-                                        padding: const EdgeInsets.only(bottom: 9),
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              margin: const EdgeInsets.only(top: 5),
-                                              width: 7,
-                                              height: 7,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                gradient: LinearGradient(
-                                                  colors: _gradColors,
-                                                ),
-                                              ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          widget.project.title,
+                                          style: theme.textTheme.headlineSmall?.copyWith(
+                                            color: theme.colorScheme.onSurface,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        ShaderMask(
+                                          shaderCallback: (bounds) =>
+                                              LinearGradient(colors: _gradColors)
+                                                  .createShader(bounds),
+                                          child: Text(
+                                            widget.project.subtitle,
+                                            style: theme.textTheme.bodyMedium?.copyWith(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 13,
                                             ),
-                                            const SizedBox(width: 12),
-                                            Expanded(
-                                              child: Text(
-                                                f,
-                                                style: theme.textTheme.bodyMedium
-                                                    ?.copyWith(height: 1.6),
-                                              ),
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                      )),
-
-                                  const SizedBox(height: 20),
-
-                                  Wrap(
-                                    spacing: 12,
-                                    children: [
-                                      if (widget.project.githubUrl != null)
-                                        _ActionChip(
-                                          icon: Icons.code_rounded,
-                                          label: 'View Source',
-                                          onTap: () => _launchUrl(widget.project.githubUrl!),
-                                          gradColors: _gradColors,
-                                        ),
-                                      if (widget.project.liveUrl != null)
-                                        _ActionChip(
-                                          icon: Icons.launch_rounded,
-                                          label: 'Live Demo',
-                                          onTap: () => _launchUrl(widget.project.liveUrl!),
-                                          gradColors: [_gradColors[1], _gradColors[0]],
-                                        ),
-                                    ],
+                                      ],
+                                    ),
+                                  ),
+                                  AnimatedRotation(
+                                    turns: _isExpanded ? 0.5 : 0,
+                                    duration: const Duration(milliseconds: 300),
+                                    child: Container(
+                                      width: 30,
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: primary.withValues(alpha: 0.1),
+                                      ),
+                                      child: Icon(
+                                        Icons.keyboard_arrow_down_rounded,
+                                        color: primary,
+                                        size: 20,
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
-                              crossFadeState: _isExpanded
-                                  ? CrossFadeState.showSecond
-                                  : CrossFadeState.showFirst,
-                              duration: const Duration(milliseconds: 400),
-                              sizeCurve: Curves.easeInOut,
-                            ),
-                          ],
+
+                              const SizedBox(height: 18),
+
+                              // ── Tech Stack Chips ───────────────────────
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: widget.project.stack.map((tech) {
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: primary.withValues(alpha: 0.08),
+                                      border: Border.all(
+                                        color: primary.withValues(alpha: 0.22),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      tech,
+                                      style: theme.textTheme.labelMedium?.copyWith(
+                                        color: primary,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+
+                              // ── Expanded content ───────────────────────
+                              AnimatedCrossFade(
+                                firstChild: const SizedBox.shrink(),
+                                secondChild: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 20),
+                                    _GradientDivider(colors: _gradColors),
+                                    const SizedBox(height: 16),
+
+                                    _ExpandedLabel('The Problem', theme: theme),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      widget.project.problem,
+                                      style: theme.textTheme.bodyMedium?.copyWith(
+                                        height: 1.6,
+                                        color: theme.colorScheme.onSurface
+                                            .withValues(alpha: 0.75),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+
+                                    _ExpandedLabel('Key Features', theme: theme),
+                                    const SizedBox(height: 10),
+                                    ...widget.project.features.map((f) => Padding(
+                                          padding: const EdgeInsets.only(bottom: 8),
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                margin: const EdgeInsets.only(top: 6),
+                                                width: 6,
+                                                height: 6,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  gradient: LinearGradient(
+                                                    colors: _gradColors,
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 10),
+                                              Expanded(
+                                                child: Text(
+                                                  f,
+                                                  style: theme.textTheme.bodyMedium
+                                                      ?.copyWith(height: 1.5),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )),
+
+                                    const SizedBox(height: 18),
+
+                                    Wrap(
+                                      spacing: 12,
+                                      runSpacing: 10,
+                                      children: [
+                                        if (widget.project.githubUrl != null)
+                                          _ActionChip(
+                                            icon: Icons.code_rounded,
+                                            label: 'View Source',
+                                            onTap: () => _launchUrl(widget.project.githubUrl!),
+                                            gradColors: _gradColors,
+                                          ),
+                                        if (widget.project.liveUrl != null)
+                                          _ActionChip(
+                                            icon: Icons.launch_rounded,
+                                            label: 'Live Demo',
+                                            onTap: () => _launchUrl(widget.project.liveUrl!),
+                                            gradColors: [_gradColors[1], _gradColors[0]],
+                                          ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                crossFadeState: _isExpanded
+                                    ? CrossFadeState.showSecond
+                                    : CrossFadeState.showFirst,
+                                duration: const Duration(milliseconds: 300),
+                                sizeCurve: Curves.easeInOut,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -465,7 +490,7 @@ class _ActionChipState extends State<_ActionChip> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             gradient: _isHovered
@@ -492,14 +517,14 @@ class _ActionChipState extends State<_ActionChip> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(widget.icon,
-                  size: 16,
+                  size: 15,
                   color: _isHovered ? Colors.white : widget.gradColors[0]),
-              const SizedBox(width: 8),
+              const SizedBox(width: 6),
               Text(
                 widget.label,
                 style: TextStyle(
                   color: _isHovered ? Colors.white : widget.gradColors[0],
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
               ),

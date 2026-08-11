@@ -1,13 +1,10 @@
 /// Hero / Landing section.
 ///
-/// Full-viewport-height introduction with:
-/// - Animated particle canvas background with aurora vortex
-/// - Gradient-shimmer name in Space Grotesk (shader animation)
-/// - Animated availability badge with pulsing border
-/// - Simple role title
-/// - Typewriter tagline cycling through phrases
-/// - Glowing CTA + Download Resume button
-/// - Staggered entrance animations
+/// Responsive introduction section:
+/// - Fully responsive across mobile, tablet, and desktop viewports
+/// - Min-height constraints ensure no content clipping or yellow stripe overflow
+/// - Optimized particle canvas background
+/// - Responsive font scaling and staggered entrance animations
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -67,8 +64,13 @@ class _HeroSectionState extends State<HeroSection>
     final isDark = theme.brightness == Brightness.dark;
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 900;
+    final isSmallPhone = screenWidth < 480;
     final primaryColor = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
     final secondaryColor = isDark ? AppColors.darkSecondary : AppColors.lightSecondary;
+
+    // Responsive Name Font Size
+    final nameFontSize = isSmallPhone ? 32.0 : (isMobile ? 42.0 : 58.0);
+    final roleFontSize = isSmallPhone ? 15.0 : (isMobile ? 18.0 : 22.0);
 
     // Text content column
     final textContent = Column(
@@ -87,7 +89,7 @@ class _HeroSectionState extends State<HeroSection>
             .fadeIn(duration: 700.ms, delay: 100.ms)
             .slideY(begin: -0.3, end: 0, duration: 700.ms),
 
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
 
         // ── Greeting ──────────────────────────────────────
         Text(
@@ -95,6 +97,7 @@ class _HeroSectionState extends State<HeroSection>
           style: theme.textTheme.headlineSmall?.copyWith(
             color: primaryColor,
             fontWeight: FontWeight.w400,
+            fontSize: isSmallPhone ? 16 : 20,
             letterSpacing: 2,
           ),
         )
@@ -102,7 +105,7 @@ class _HeroSectionState extends State<HeroSection>
             .fadeIn(duration: 600.ms, delay: 200.ms)
             .slideX(begin: -0.2, end: 0, duration: 600.ms),
 
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
 
         // ── Name with shimmer gradient ─────────────────────
         AnimatedBuilder(
@@ -126,14 +129,12 @@ class _HeroSectionState extends State<HeroSection>
               },
               child: Text(
                 ProfileData.name,
-                style: (isMobile
-                        ? theme.textTheme.displayMedium
-                        : theme.textTheme.displayLarge)
-                    ?.copyWith(
+                style: TextStyle(
                   color: Colors.white,
+                  fontSize: nameFontSize,
                   fontWeight: FontWeight.w900,
-                  letterSpacing: -1.5,
-                  height: 1.0,
+                  letterSpacing: -1.2,
+                  height: 1.1,
                 ),
                 textAlign: isMobile ? TextAlign.center : TextAlign.start,
               ),
@@ -144,15 +145,17 @@ class _HeroSectionState extends State<HeroSection>
             .fadeIn(duration: 600.ms, delay: 400.ms)
             .slideY(begin: 0.2, end: 0, duration: 600.ms),
 
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
 
         // ── Role title ─────────────────────────
         Text(
           ProfileData.role,
-          style: theme.textTheme.headlineMedium?.copyWith(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
-            fontWeight: FontWeight.w300,
-            letterSpacing: 0.5,
+          style: TextStyle(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.85),
+            fontSize: roleFontSize,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.3,
+            height: 1.3,
           ),
           textAlign: isMobile ? TextAlign.center : TextAlign.start,
         )
@@ -160,27 +163,28 @@ class _HeroSectionState extends State<HeroSection>
             .fadeIn(duration: 600.ms, delay: 600.ms)
             .slideY(begin: 0.2, end: 0, duration: 600.ms),
 
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
 
         // ── Typewriter tagline ────────────────────────────
         AnimatedTypewriter(
           phrases: ProfileData.heroTypingPhrases,
-          style: theme.textTheme.titleLarge?.copyWith(
+          style: theme.textTheme.titleMedium?.copyWith(
             color: isDark
                 ? AppColors.darkSecondary
                 : AppColors.lightSecondary,
             fontWeight: FontWeight.w400,
+            fontSize: isSmallPhone ? 13 : 16,
           ),
         )
             .animate()
             .fadeIn(duration: 600.ms, delay: 800.ms),
 
-        const SizedBox(height: 32),
+        const SizedBox(height: 28),
 
         // ── CTA buttons ───────────────────────────────────
         Wrap(
-          spacing: 16,
-          runSpacing: 12,
+          spacing: 12,
+          runSpacing: 10,
           alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
           children: [
             GlowButton(
@@ -200,7 +204,7 @@ class _HeroSectionState extends State<HeroSection>
             .fadeIn(duration: 600.ms, delay: 1000.ms)
             .slideY(begin: 0.4, end: 0, duration: 600.ms),
 
-        const SizedBox(height: 36),
+        const SizedBox(height: 28),
 
         // ── Quick Glassmorphic Stats Row ──────────────────────
         _HeroStatsRow(
@@ -215,75 +219,63 @@ class _HeroSectionState extends State<HeroSection>
       ],
     );
 
-    // Falling ID Card widget — realistic free-fall with pendulum settle
     final idCardWidget = DeveloperIdCard(isDark: isDark)
         .animate()
         .fadeIn(duration: 400.ms, delay: 200.ms)
-        .slideY(
-          begin: -2.0,
-          end: 0,
-          duration: 1400.ms,
-          delay: 200.ms,
-          curve: Curves.bounceOut,
-        )
-        .rotate(
-          begin: 0.06,
-          end: 0,
-          duration: 1800.ms,
-          delay: 400.ms,
-          curve: Curves.elasticOut,
-        )
         .scale(
-          begin: const Offset(0.85, 0.85),
+          begin: const Offset(0.9, 0.9),
           end: const Offset(1.0, 1.0),
-          duration: 800.ms,
-          delay: 200.ms,
+          duration: 600.ms,
           curve: Curves.easeOutBack,
         );
 
-    return SizedBox(
+    return Container(
       width: double.infinity,
-      height: MediaQuery.of(context).size.height,
+      constraints: BoxConstraints(
+        minHeight: MediaQuery.of(context).size.height,
+      ),
       child: Stack(
         children: [
           // ── Particle background ───────────────────────────────────────
           const Positioned.fill(child: ParticleCanvas()),
 
           // ── Ambient Glow Orbs in background ───────────────────────────
-          Positioned(
-            left: screenWidth * 0.15,
-            top: MediaQuery.of(context).size.height * 0.2,
-            child: Container(
-              width: 320,
-              height: 320,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    primaryColor.withValues(alpha: 0.18),
-                    primaryColor.withValues(alpha: 0.0),
-                  ],
+          if (!isMobile) ...[
+            Positioned(
+              left: screenWidth * 0.15,
+              top: MediaQuery.of(context).size.height * 0.2,
+              child: Container(
+                width: 320,
+                height: 320,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      primaryColor.withValues(alpha: 0.15),
+                      primaryColor.withValues(alpha: 0.0),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            right: screenWidth * 0.15,
-            bottom: MediaQuery.of(context).size.height * 0.15,
-            child: Container(
-              width: 380,
-              height: 380,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    secondaryColor.withValues(alpha: 0.15),
-                    secondaryColor.withValues(alpha: 0.0),
-                  ],
+            Positioned(
+              right: screenWidth * 0.15,
+              bottom: MediaQuery.of(context).size.height * 0.15,
+              child: Container(
+                width: 380,
+                height: 380,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      secondaryColor.withValues(alpha: 0.12),
+                      secondaryColor.withValues(alpha: 0.0),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
 
           // ── Diagonal gradient overlay ──────────────────────────────────
           Positioned.fill(
@@ -311,16 +303,16 @@ class _HeroSectionState extends State<HeroSection>
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: isMobile ? 24 : 48,
-                    vertical: 40,
+                    horizontal: isSmallPhone ? 16 : (isMobile ? 24 : 48),
+                    vertical: isMobile ? 32 : 48,
                   ),
                   child: isMobile
                       ? Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const SizedBox(height: 40),
+                            const SizedBox(height: 24),
                             idCardWidget,
-                            const SizedBox(height: 36),
+                            const SizedBox(height: 28),
                             textContent,
                           ],
                         )
@@ -344,33 +336,34 @@ class _HeroSectionState extends State<HeroSection>
           ),
 
           // ── Scroll indicator ──────────────────────────────────────────
-          Positioned(
-            bottom: 28,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Column(
-                children: [
-                  Text(
-                    'scroll down',
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.35),
-                      letterSpacing: 3,
+          if (!isMobile)
+            Positioned(
+              bottom: 24,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Column(
+                  children: [
+                    Text(
+                      'scroll down',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.35),
+                        letterSpacing: 3,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Icon(
-                    Icons.keyboard_double_arrow_down_rounded,
-                    color: primaryColor.withValues(alpha: 0.5),
-                    size: 26,
-                  )
-                      .animate(onPlay: (c) => c.repeat(reverse: true))
-                      .slideY(begin: 0, end: 0.35, duration: 1100.ms, curve: Curves.easeInOut)
-                      .fadeIn(duration: 600.ms, delay: 1400.ms),
-                ],
+                    const SizedBox(height: 6),
+                    Icon(
+                      Icons.keyboard_double_arrow_down_rounded,
+                      color: primaryColor.withValues(alpha: 0.5),
+                      size: 26,
+                    )
+                        .animate(onPlay: (c) => c.repeat(reverse: true))
+                        .slideY(begin: 0, end: 0.35, duration: 1100.ms, curve: Curves.easeInOut)
+                        .fadeIn(duration: 600.ms, delay: 1400.ms),
+                  ],
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -499,7 +492,7 @@ class _OutlineButtonState extends State<_OutlineButton> {
         onTap: widget.onPressed,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 220),
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
@@ -528,7 +521,7 @@ class _OutlineButtonState extends State<_OutlineButton> {
                 style: TextStyle(
                   color: widget.primaryColor.withValues(alpha: _isHovered ? 1 : 0.7),
                   fontWeight: FontWeight.w500,
-                  fontSize: 15,
+                  fontSize: 14,
                   letterSpacing: 0.3,
                 ),
               ),
@@ -576,12 +569,12 @@ class _HeroStatsRow extends StatelessWidget {
     ];
 
     return Wrap(
-      spacing: 16,
-      runSpacing: 14,
+      spacing: 12,
+      runSpacing: 10,
       alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
       children: stats.map((stat) {
         return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.04),
             borderRadius: BorderRadius.circular(14),
@@ -600,18 +593,18 @@ class _HeroStatsRow extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
                   color: primaryColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
                   stat['icon'] as IconData,
-                  size: 18,
+                  size: 16,
                   color: primaryColor,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -619,18 +612,18 @@ class _HeroStatsRow extends StatelessWidget {
                   Text(
                     stat['value'] as String,
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: FontWeight.w800,
                       color: isDark
                           ? AppColors.darkTextPrimary
                           : AppColors.lightTextPrimary,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 1),
                   Text(
                     stat['title'] as String,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 10,
                       fontWeight: FontWeight.w400,
                       color: (isDark
                               ? AppColors.darkTextSecondary
@@ -647,4 +640,3 @@ class _HeroStatsRow extends StatelessWidget {
     );
   }
 }
-

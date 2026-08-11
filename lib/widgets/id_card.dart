@@ -84,49 +84,50 @@ class _DeveloperIdCardState extends State<DeveloperIdCard>
         ? const Color(0xFF0F172A).withValues(alpha: 0.85)
         : Colors.white.withValues(alpha: 0.90);
 
+    final isMobile = MediaQuery.of(context).size.width < 768;
+
     return AnimatedBuilder(
       animation: _swayAnimation,
       builder: (context, child) {
-        // When hovered, mouse tilt overrides the idle sway
-        final swayAngle = _isHovered ? 0.0 : _swayAnimation.value;
+        // Skip 3D sway on mobile to save GPU cycles
+        final swayAngle = (isMobile || _isHovered) ? 0.0 : _swayAnimation.value;
 
         return Transform(
-          alignment: Alignment.topCenter, // Pivot from the lanyard attachment
+          alignment: Alignment.topCenter,
           transform: Matrix4.identity()
-            ..setEntry(3, 2, 0.0008) // Subtle perspective
+            ..setEntry(3, 2, 0.0008)
             ..rotateZ(swayAngle),
           child: child,
         );
       },
-      child: // ── 3D Interactive Card Body ─────────────────────────────────
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final cardWidth = math.min(
-                340.0,
-                MediaQuery.of(context).size.width - 48,
-              );
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final cardWidth = math.min(
+            340.0,
+            MediaQuery.of(context).size.width - 32,
+          );
 
-              return MouseRegion(
-                onHover: (e) => _onHover(e, Size(cardWidth, 480)),
-                onExit: _onExit,
-                cursor: SystemMouseCursors.click,
-                child: AnimatedContainer(
-                  duration: _isHovered
-                      ? const Duration(milliseconds: 80)
-                      : const Duration(milliseconds: 500),
-                  curve: Curves.easeOutCubic,
-                  transform: Matrix4.identity()
-                    ..setEntry(3, 2, 0.001) // Perspective
-                    ..rotateX(_rotateX)
-                    ..rotateY(_rotateY),
-                  transformAlignment: Alignment.center,
-                  child: AnimatedScale(
-                    scale: _isHovered ? 1.03 : 1.0,
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeOut,
-                    child: Container(
-                      width: cardWidth,
-                      padding: const EdgeInsets.all(20),
+          return MouseRegion(
+            onHover: isMobile ? null : (e) => _onHover(e, Size(cardWidth, 480)),
+            onExit: _onExit,
+            cursor: SystemMouseCursors.click,
+            child: AnimatedContainer(
+              duration: _isHovered
+                  ? const Duration(milliseconds: 80)
+                  : const Duration(milliseconds: 400),
+              curve: Curves.easeOutCubic,
+              transform: Matrix4.identity()
+                ..setEntry(3, 2, 0.001)
+                ..rotateX(isMobile ? 0 : _rotateX)
+                ..rotateY(isMobile ? 0 : _rotateY),
+              transformAlignment: Alignment.center,
+              child: AnimatedScale(
+                scale: _isHovered ? 1.02 : 1.0,
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeOut,
+                child: Container(
+                  width: cardWidth,
+                  padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
                         color: cardBg,
                         borderRadius: BorderRadius.circular(22),
