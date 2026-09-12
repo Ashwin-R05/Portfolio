@@ -1,0 +1,2842 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ashwin R — Cybersecurity, Cloud & DevSecOps</title>
+  <meta name="description"
+    content="Portfolio of Ashwin R — Pre-final year IT student at KRCE, Trichy. Building at the intersection of Cloud Infrastructure, Application Security, and Post-Quantum Cryptography." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@500;600;700;800&display=swap"
+    rel="stylesheet" />
+
+  <!-- Three.js for 3D Cyber Core -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #030508;
+      --bg-card: rgba(8, 14, 26, 0.65);
+      --c1: #00f2fe;
+      /* Cyber Cyan */
+      --c1-glow: rgba(0, 242, 254, 0.4);
+      --c2: #8b5cf6;
+      /* Quantum Purple */
+      --c2-glow: rgba(139, 92, 246, 0.35);
+      --c3: #00ffa3;
+      /* Terminal Green */
+      --c3-glow: rgba(0, 255, 163, 0.35);
+      --border: rgba(0, 242, 254, 0.14);
+      --border-bright: rgba(0, 242, 254, 0.35);
+      --text: #f0f4fc;
+      --dim: #79859f;
+      --dimmer: #3b4458;
+      --glass: rgba(10, 18, 36, 0.45);
+      --glass-hover: rgba(15, 28, 56, 0.65);
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    ::selection {
+      background: rgba(0, 242, 254, 0.25);
+      color: #fff;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ═══ CUSTOM CURSOR ═══ */
+    #cursor {
+      position: fixed;
+      width: 28px;
+      height: 28px;
+      border: 1.5px solid var(--c1);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%);
+      transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        height 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.25s ease,
+        background 0.25s ease;
+      mix-blend-mode: screen;
+      box-shadow: 0 0 12px var(--c1-glow);
+    }
+
+    #cursor.hover {
+      width: 54px;
+      height: 54px;
+      background: rgba(0, 242, 254, 0.08);
+      border-color: var(--c2);
+      box-shadow: 0 0 20px var(--c2-glow);
+    }
+
+    #cursor-dot {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      background: #fff;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10001;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 8px #fff;
+    }
+
+    @media (max-width: 900px) {
+
+      #cursor,
+      #cursor-dot {
+        display: none !important;
+      }
+
+      body {
+        cursor: auto !important;
+      }
+    }
+
+    /* ═══ NOISE & ATMOSPHERE ═══ */
+    .noise-layer {
+      position: fixed;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .grid-lines {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 242, 254, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 242, 254, 0.03) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(circle at 50% 45%, black 20%, transparent 80%);
+      -webkit-mask-image: radial-gradient(circle at 50% 45%, black 20%, transparent 80%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Ambient Glow Blobs */
+    .glow-blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(130px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.18;
+      animation: pulse-glow 14s ease-in-out infinite alternate;
+    }
+
+    .blob-1 {
+      width: 550px;
+      height: 550px;
+      background: var(--c1);
+      top: -150px;
+      left: -150px;
+    }
+
+    .blob-2 {
+      width: 500px;
+      height: 500px;
+      background: var(--c2);
+      bottom: -120px;
+      right: -100px;
+      animation-delay: -6s;
+    }
+
+    .blob-3 {
+      width: 380px;
+      height: 380px;
+      background: var(--c3);
+      top: 35%;
+      right: 15%;
+      animation-delay: -10s;
+      opacity: 0.09;
+    }
+
+    @keyframes pulse-glow {
+      0% {
+        transform: scale(1) translate(0, 0);
+      }
+
+      50% {
+        transform: scale(1.15) translate(30px, -20px);
+      }
+
+      100% {
+        transform: scale(0.92) translate(-25px, 25px);
+      }
+    }
+
+    /* Scanning Laser Line */
+    .laser-scan {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 5%, var(--c1) 50%, transparent 95%);
+      box-shadow: 0 0 15px var(--c1);
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 2;
+      animation: scan-pass 8s ease-in-out infinite;
+    }
+
+    @keyframes scan-pass {
+      0% {
+        top: -2%;
+        opacity: 0;
+      }
+
+      15% {
+        opacity: 0.4;
+      }
+
+      85% {
+        opacity: 0.4;
+      }
+
+      100% {
+        top: 102%;
+        opacity: 0;
+      }
+    }
+
+    /* ═══ PROGRESS BAR & HUD TOPBAR ═══ */
+    #progress-line {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--c1), var(--c2), var(--c3));
+      box-shadow: 0 0 10px var(--c1);
+      z-index: 1000;
+      transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      z-index: 500;
+      background: linear-gradient(to bottom, rgba(3, 5, 8, 0.8) 0%, transparent 100%);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .brand-icon {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border-bright);
+      background: rgba(0, 242, 254, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      color: var(--c1);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      box-shadow: 0 0 12px rgba(0, 242, 254, 0.15);
+    }
+
+    .brand-text {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: #fff;
+    }
+
+    .brand-text span {
+      color: var(--c1);
+    }
+
+    .top-center-hud {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--dim);
+      letter-spacing: 0.12em;
+    }
+
+    .top-center-hud .coord {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .top-center-hud .coord span {
+      color: var(--text);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 99px;
+      background: rgba(0, 255, 163, 0.05);
+      border: 1px solid rgba(0, 255, 163, 0.2);
+      box-shadow: 0 0 15px rgba(0, 255, 163, 0.08);
+    }
+
+    .status-beacon {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--c3);
+      box-shadow: 0 0 8px var(--c3);
+      animation: beacon-pulse 2s infinite;
+    }
+
+    @keyframes beacon-pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.85);
+      }
+    }
+
+    .status-text {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--c3);
+    }
+
+    .clock-display {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--dim);
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .clock-display em {
+      font-style: normal;
+      color: var(--c1);
+      font-size: 0.55rem;
+      padding: 2px 5px;
+      background: rgba(0, 242, 254, 0.08);
+      border-radius: 4px;
+    }
+
+    @media (max-width: 900px) {
+      #topbar {
+        padding: 0 20px;
+      }
+
+      .top-center-hud,
+      .clock-display {
+        display: none;
+      }
+
+      .status-badge {
+        padding: 4px 10px;
+      }
+    }
+
+    /* ═══ SIDE SLIDE NAVIGATION ═══ */
+    #side-nav {
+      position: fixed;
+      left: 36px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 400;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sn-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 0;
+      cursor: pointer;
+      group: relative;
+    }
+
+    .sn-bullet {
+      width: 20px;
+      height: 1.5px;
+      background: var(--dimmer);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-origin: left;
+    }
+
+    .sn-item.active .sn-bullet {
+      width: 44px;
+      background: var(--c1);
+      box-shadow: 0 0 10px var(--c1);
+    }
+
+    .sn-item:hover .sn-bullet {
+      background: #fff;
+    }
+
+    .sn-name {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--dim);
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .sn-item:hover .sn-name,
+    .sn-item.active .sn-name {
+      opacity: 1;
+      transform: translateX(0);
+      color: var(--c1);
+    }
+
+    @media (max-width: 900px) {
+      #side-nav {
+        display: none;
+      }
+    }
+
+    /* ═══ SLIDE COUNTER & CONTROLS ═══ */
+    #hud-bottom {
+      position: fixed;
+      bottom: 24px;
+      left: 40px;
+      right: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 400;
+      pointer-events: none;
+    }
+
+    .hud-ticker {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--dimmer);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hud-ticker span {
+      color: var(--dim);
+    }
+
+    .hud-ticker-tag {
+      color: var(--c1) !important;
+      font-weight: 600;
+    }
+
+    .hud-slide-counter {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+    }
+
+    .slide-num-current {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--c1);
+      text-shadow: 0 0 15px var(--c1-glow);
+      min-width: 2ch;
+    }
+
+    .slide-num-total {
+      color: var(--dimmer);
+      letter-spacing: 0.1em;
+    }
+
+    .slide-nav-arrows {
+      display: flex;
+      gap: 6px;
+      margin-left: 10px;
+    }
+
+    .hud-nav-btn {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--dim);
+      cursor: pointer;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+
+    .hud-nav-btn:hover {
+      border-color: var(--c1);
+      color: #fff;
+      box-shadow: 0 0 12px var(--c1-glow);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 900px) {
+      #hud-bottom {
+        left: 20px;
+        right: 20px;
+        bottom: 16px;
+      }
+
+      .hud-ticker {
+        display: none;
+      }
+    }
+
+    /* ═══ SLIDES CONTAINER ═══ */
+    #slides-root {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      will-change: transform, opacity, filter;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .slide.entering {
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    /* ═══ REVEAL ANIMATION HELPERS ═══ */
+    .r-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .r-up.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .r-left {
+      opacity: 0;
+      transform: translateX(-50px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .r-left.in {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .r-right {
+      opacity: 0;
+      transform: translateX(50px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .r-right.in {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .r-scale {
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .r-scale.in {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .d-1 {
+      transition-delay: 0.08s !important;
+    }
+
+    .d-2 {
+      transition-delay: 0.16s !important;
+    }
+
+    .d-3 {
+      transition-delay: 0.24s !important;
+    }
+
+    .d-4 {
+      transition-delay: 0.32s !important;
+    }
+
+    .d-5 {
+      transition-delay: 0.40s !important;
+    }
+
+    .d-6 {
+      transition-delay: 0.48s !important;
+    }
+
+    /* ═══ COMMON UI COMPONENTS ═══ */
+    .glass-panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(24px) saturate(160%);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 242, 254, 0.3), transparent);
+    }
+
+    .glass-panel:hover {
+      border-color: var(--border-bright);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 242, 254, 0.08);
+      transform: translateY(-4px);
+    }
+
+    .tag-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.05em;
+      color: var(--c1);
+      background: rgba(0, 242, 254, 0.05);
+      border: 1px solid rgba(0, 242, 254, 0.12);
+      border-radius: 6px;
+      transition: all 0.25s;
+    }
+
+    .tag-chip:hover {
+      background: rgba(0, 242, 254, 0.12);
+      border-color: var(--c1);
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.15);
+    }
+
+    .btn-cyber {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      color: #030508;
+      background: linear-gradient(135deg, var(--c1) 0%, #4facfe 50%, #00f2fe 100%);
+      box-shadow: 0 0 25px rgba(0, 242, 254, 0.25);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 45px rgba(0, 242, 254, 0.45), 0 8px 25px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    .btn-outline {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.03);
+      border-color: var(--border-bright);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-outline:hover {
+      background: rgba(0, 242, 254, 0.08);
+      border-color: var(--c1);
+      box-shadow: 0 0 25px rgba(0, 242, 254, 0.15);
+      transform: translateY(-2px);
+      color: var(--c1);
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       SLIDE 0: HERO (REDESIGNED ULTRA-FUTURISTIC CYBER CENTERPIECE)
+       ═════════════════════════════════════════════════════════════════ */
+    .hero-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: center;
+      padding: 0 max(48px, 7vw);
+      z-index: 10;
+    }
+
+    @media (max-width: 1050px) {
+      .hero-container {
+        grid-template-columns: 1fr;
+        padding: 90px 24px 70px;
+        align-content: center;
+      }
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 680px;
+      z-index: 20;
+    }
+
+    /* Security Terminal Prompt Pill */
+    .hero-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      background: rgba(0, 242, 254, 0.05);
+      border: 1px solid rgba(0, 242, 254, 0.18);
+      width: fit-content;
+      margin-bottom: 24px;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-pill-badge .sys-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--c1);
+      box-shadow: 0 0 8px var(--c1);
+      animation: beacon-pulse 1.8s infinite;
+    }
+
+    .hero-pill-badge span {
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--c1);
+      font-weight: 500;
+    }
+
+    /* Identity Name */
+    .hero-author-tag {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-author-tag strong {
+      color: #fff;
+      letter-spacing: 0.28em;
+    }
+
+    .hero-author-tag .divider-line {
+      width: 32px;
+      height: 1px;
+      background: var(--border-bright);
+    }
+
+    /* Grand Headlines */
+    .hero-title-group {
+      margin-bottom: 20px;
+    }
+
+    .hero-h1-main {
+      font-family: var(--font-display);
+      font-size: clamp(3.2rem, 6.8vw, 6.2rem);
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+      display: block;
+    }
+
+    .hero-h1-italic {
+      font-family: var(--font-display);
+      font-size: clamp(3.2rem, 6.8vw, 6.2rem);
+      font-weight: 800;
+      line-height: 0.95;
+      font-style: italic;
+      letter-spacing: -0.01em;
+      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 35%, #a855f7 70%, #00ffa3 100%);
+      background-size: 250% 250%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: aura-shift 8s ease infinite;
+      display: inline-block;
+      filter: drop-shadow(0 0 25px rgba(0, 242, 254, 0.25));
+    }
+
+    @keyframes aura-shift {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Dynamic Terminal Typing Shell */
+    .hero-terminal-shell {
+      background: rgba(4, 9, 20, 0.75);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 18px;
+      max-width: 540px;
+      margin-bottom: 26px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .term-prompt {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--c1);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .term-typing-area {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .term-cursor {
+      display: inline-block;
+      width: 7px;
+      height: 14px;
+      background: var(--c1);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: cursor-blink 0.9s step-end infinite;
+      box-shadow: 0 0 8px var(--c1);
+    }
+
+    @keyframes cursor-blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+
+    /* Telemetry Quick Chips */
+    .hero-chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    .tele-chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: var(--dim);
+      transition: all 0.3s;
+    }
+
+    .tele-chip span {
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .tele-chip:hover {
+      border-color: var(--border-bright);
+      background: rgba(0, 242, 254, 0.05);
+      color: var(--c1);
+      transform: translateY(-2px);
+    }
+
+    /* Buttons */
+    .hero-btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .hero-copy-cmd {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--dim);
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px dashed rgba(255, 255, 255, 0.12);
+      padding: 12px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-copy-cmd:hover {
+      border-color: var(--c1);
+      color: var(--c1);
+      background: rgba(0, 242, 254, 0.04);
+    }
+
+    /* ═══ 3D HOLOGRAM STAGE (RIGHT COLUMN) ═══ */
+    .hero-stage-right {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      padding: 20px;
+    }
+
+    @media (max-width: 1050px) {
+      .hero-stage-right {
+        position: absolute;
+        inset: 0;
+        opacity: 0.25;
+        pointer-events: none;
+        z-index: 1;
+        padding: 0;
+      }
+    }
+
+    /* Bounded 1:1 Stage Wrapper to prevent canvas distortion or overflow */
+    .stage-hologram-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      height: 520px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #hero-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100% !important;
+      height: 100% !important;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Floating Holographic Cyber HUD Elements around 3D core - safely outside geometry */
+    .hologram-hud-box {
+      position: absolute;
+      pointer-events: none;
+      z-index: 6;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--dim);
+      padding: 8px 14px;
+      background: rgba(4, 9, 20, 0.78);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 242, 254, 0.05);
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .hologram-hud-box strong {
+      color: var(--c1);
+      display: block;
+      font-size: 0.66rem;
+      margin-bottom: 2px;
+      letter-spacing: 0.12em;
+    }
+
+    .hud-tl {
+      top: 18px;
+      left: 16px;
+    }
+
+    .hud-tr {
+      top: 18px;
+      right: 16px;
+      text-align: right;
+    }
+
+    .hud-bl {
+      bottom: 20px;
+      left: 16px;
+    }
+
+    .hud-br {
+      bottom: 20px;
+      right: 16px;
+      text-align: right;
+    }
+
+    @media (max-width: 1250px) {
+      .stage-hologram-wrapper {
+        max-width: 440px;
+        height: 440px;
+      }
+
+      .hud-tl,
+      .hud-tr,
+      .hud-bl,
+      .hud-br {
+        font-size: 0.54rem;
+        padding: 6px 10px;
+      }
+    }
+
+    @media (max-width: 1050px) {
+      .stage-hologram-wrapper {
+        max-width: 380px;
+        height: 380px;
+      }
+
+      .hologram-hud-box {
+        display: none;
+      }
+    }
+
+    /* Radar Reticle Ring behind 3D core */
+    .hologram-reticle {
+      position: absolute;
+      width: 380px;
+      height: 380px;
+      border: 1px dashed rgba(0, 242, 254, 0.16);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+      animation: rotate-radar 36s linear infinite;
+    }
+
+    .hologram-reticle::before {
+      content: '';
+      position: absolute;
+      inset: 24px;
+      border: 1px solid rgba(139, 92, 246, 0.12);
+      border-radius: 50%;
+    }
+
+    .hologram-reticle::after {
+      content: '';
+      position: absolute;
+      inset: 56px;
+      border: 1px dashed rgba(0, 255, 163, 0.08);
+      border-radius: 50%;
+      animation: rotate-radar 22s linear infinite reverse;
+    }
+
+    @keyframes rotate-radar {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       SLIDE 1: ABOUT (SECURITY DOSSIER & CREDENTIALS)
+       ═════════════════════════════════════════════════════════════════ */
+    .about-wrap {
+      max-width: 1160px;
+      width: 100%;
+      padding: 0 40px;
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    @media (max-width: 950px) {
+      .about-wrap {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 90px 24px 60px;
+        overflow-y: auto;
+        max-height: 95vh;
+      }
+    }
+
+    .about-left-header {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--c1);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-eyebrow::before {
+      content: '//';
+      color: var(--c2);
+    }
+
+    .about-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.05;
+      color: #fff;
+      margin-bottom: 24px;
+    }
+
+    .about-title span {
+      color: var(--c1);
+    }
+
+    .stats-matrix {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 10px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+      border-color: var(--border-bright);
+      background: rgba(0, 242, 254, 0.04);
+      transform: translateY(-2px);
+    }
+
+    .stat-digit {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-digit.cyan {
+      color: var(--c1);
+      text-shadow: 0 0 15px var(--c1-glow);
+    }
+
+    .stat-digit.purple {
+      color: var(--c2);
+      text-shadow: 0 0 15px var(--c2-glow);
+    }
+
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .about-dossier-card {
+      padding: 36px;
+    }
+
+    .about-dossier-card p {
+      font-size: 0.92rem;
+      line-height: 1.75;
+      color: #cbd5e1;
+      margin-bottom: 18px;
+    }
+
+    .about-dossier-card strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .about-dossier-card .highlight {
+      color: var(--c1);
+      font-weight: 500;
+    }
+
+    .about-tech-stack-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       SLIDE 2: EXPERTISE (6-PILLAR SECURITY & CLOUD MATRIX)
+       ═════════════════════════════════════════════════════════════════ */
+    .exp-container {
+      max-width: 1200px;
+      width: 100%;
+      padding: 80px 40px 40px;
+      position: relative;
+      z-index: 10;
+      max-height: 96vh;
+      overflow-y: auto;
+    }
+
+    @media (max-width: 900px) {
+      .exp-container {
+        padding: 80px 20px 60px;
+      }
+    }
+
+    .exp-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .exp-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      color: #fff;
+      margin-top: 8px;
+    }
+
+    .exp-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 1050px) {
+      .exp-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 650px) {
+      .exp-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .exp-card {
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 220px;
+    }
+
+    .exp-card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(0, 242, 254, 0.06);
+      border: 1px solid rgba(0, 242, 254, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--c1);
+      margin-bottom: 18px;
+      transition: all 0.3s;
+    }
+
+    .exp-card:hover .exp-card-icon {
+      background: rgba(0, 242, 254, 0.15);
+      border-color: var(--c1);
+      box-shadow: 0 0 20px var(--c1-glow);
+      transform: scale(1.08);
+    }
+
+    .exp-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .exp-card p {
+      font-size: 0.82rem;
+      color: var(--dim);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       SLIDE 3: WORK (FEATURED PROJECTS CAROUSEL)
+       ═════════════════════════════════════════════════════════════════ */
+    .work-container {
+      width: 100%;
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-height: 95vh;
+      padding: 80px 0 40px;
+    }
+
+    .work-header {
+      text-align: center;
+      margin-bottom: 32px;
+      padding: 0 24px;
+    }
+
+    .work-carousel-track-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      cursor: grab;
+      scroll-snap-type: x mandatory;
+      padding: 10px 0;
+    }
+
+    .work-carousel-track-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    .work-carousel-track-wrapper:active {
+      cursor: grabbing;
+    }
+
+    .work-cards-track {
+      display: flex;
+      gap: 24px;
+      padding: 0 max(36px, calc((100vw - 1200px) / 2));
+      width: max-content;
+    }
+
+    .project-card {
+      width: 420px;
+      flex-shrink: 0;
+      scroll-snap-align: center;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (max-width: 600px) {
+      .project-card {
+        width: 310px;
+      }
+    }
+
+    .proj-thumb-container {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      border-radius: 20px 20px 0 0;
+      background: #060b14;
+    }
+
+    .proj-thumb-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .project-card:hover .proj-thumb-container img {
+      transform: scale(1.08);
+    }
+
+    .proj-thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(8, 14, 26, 0.95) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .proj-content {
+      padding: 22px 24px 26px;
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 20px 20px;
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .proj-meta-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .proj-meta-bar span {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .proj-content h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .proj-content p {
+      font-size: 0.82rem;
+      color: var(--dim);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .carousel-drag-guide {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 24px;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dimmer);
+    }
+
+    .carousel-drag-guide .guide-line {
+      width: 32px;
+      height: 1px;
+      background: var(--border-bright);
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       SLIDE 4: CONTACT & FOOTER TERMINAL
+       ═════════════════════════════════════════════════════════════════ */
+    .contact-container {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      max-width: 680px;
+      padding: 0 24px 70px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .contact-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.05;
+      margin-top: 10px;
+    }
+
+    .contact-title .cyber-text {
+      background: linear-gradient(135deg, var(--c1) 0%, var(--c2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-style: italic;
+    }
+
+    .contact-description {
+      font-size: 0.95rem;
+      color: var(--dim);
+      line-height: 1.7;
+      margin: 20px auto 32px;
+      max-width: 520px;
+    }
+
+    .contact-actions-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+      margin-bottom: 36px;
+    }
+
+    /* Footer Bottom Strip inside Contact Slide */
+    .footer-strip {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      background: rgba(3, 5, 8, 0.95);
+      z-index: 20;
+    }
+
+    .footer-strip p {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--dimmer);
+      letter-spacing: 0.08em;
+    }
+
+    .footer-links-group {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links-group a {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--dim);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      transition: color 0.3s;
+    }
+
+    .footer-links-group a:hover {
+      color: var(--c1);
+    }
+
+    @media (max-width: 700px) {
+      .footer-strip {
+        flex-direction: column;
+        gap: 10px;
+        padding: 16px;
+        text-align: center;
+      }
+    }
+
+    /* Copy Feedback Toast */
+    #toast-msg {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(0, 242, 254, 0.95);
+      color: #030508;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      padding: 10px 22px;
+      border-radius: 99px;
+      box-shadow: 0 0 25px rgba(0, 242, 254, 0.5);
+      z-index: 100000;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #toast-msg.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Custom Glow Cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-dot"></div>
+
+  <!-- Noise & Background Grids -->
+  <div class="noise-layer"></div>
+  <div class="grid-lines"></div>
+  <div class="laser-scan"></div>
+
+  <!-- Glowing Ambient Blobs -->
+  <div class="glow-blob blob-1"></div>
+  <div class="glow-blob blob-2"></div>
+  <div class="glow-blob blob-3"></div>
+
+  <!-- Top Progress Line -->
+  <div id="progress-line" style="width: 20%;"></div>
+
+  <!-- Top Navigation Bar -->
+  <header id="topbar">
+    <a href="#" class="brand" onclick="goSlide(0); return false;">
+      <div class="brand-icon">&lt;/&gt;</div>
+      <div class="brand-text">Ashwin<span>.R</span></div>
+    </a>
+
+    <div class="top-center-hud">
+      <div class="coord">LOC: <span>TRICHY, TN</span></div>
+      <div style="opacity:0.3;">/</div>
+      <div class="coord">SEC_STATUS: <span style="color:var(--c3);">ACTIVE</span></div>
+    </div>
+
+    <div class="top-actions">
+      <div class="status-badge">
+        <div class="status-beacon"></div>
+        <span class="status-text">Open to Internships</span>
+      </div>
+      <div class="clock-display">
+        <span id="live-clock">--:--:--</span>
+        <em>IST</em>
+      </div>
+    </div>
+  </header>
+
+  <!-- Left Side Slide Indicators -->
+  <nav id="side-nav" aria-label="Slide navigation">
+    <div class="sn-item active" onclick="goSlide(0)">
+      <div class="sn-bullet"></div>
+      <span class="sn-name">Hero</span>
+    </div>
+    <div class="sn-item" onclick="goSlide(1)">
+      <div class="sn-bullet"></div>
+      <span class="sn-name">02 // About</span>
+    </div>
+    <div class="sn-item" onclick="goSlide(2)">
+      <div class="sn-bullet"></div>
+      <span class="sn-name">03 // Expertise</span>
+    </div>
+    <div class="sn-item" onclick="goSlide(3)">
+      <div class="sn-bullet"></div>
+      <span class="sn-name">04 // Work</span>
+    </div>
+    <div class="sn-item" onclick="goSlide(4)">
+      <div class="sn-bullet"></div>
+      <span class="sn-name">05 // Contact</span>
+    </div>
+  </nav>
+
+  <!-- HUD Bottom Bar -->
+  <div id="hud-bottom">
+    <div class="hud-ticker">
+      <span class="hud-ticker-tag">KRCE IT</span>
+      <span>//</span>
+      <span>10.7905° N, 78.7047° E</span>
+      <span>//</span>
+      <span>ZERO TRUST CLOUD ARCHITECTURE</span>
+      <span>//</span>
+      <span>POST-QUANTUM DILITHIUM</span>
+    </div>
+
+    <div class="hud-slide-counter">
+      <span class="slide-num-current" id="sc-cur">01</span>
+      <span class="slide-num-total">/ 05</span>
+      <div class="slide-nav-arrows">
+        <button class="hud-nav-btn" onclick="prevSlide()" aria-label="Previous Slide">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <button class="hud-nav-btn" onclick="nextSlide()" aria-label="Next Slide">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-msg">COPIED TO CLIPBOARD</div>
+
+  <!-- ═════════════════════════════════════════════════════════════════
+       SLIDES CONTAINER
+       ═════════════════════════════════════════════════════════════════ -->
+  <main id="slides-root">
+
+    <!-- ──── SLIDE 0: HERO (REDESIGNED ULTRA-FUTURISTIC CYBER CENTERPIECE) ──── -->
+    <section class="slide active" data-slide="0">
+      <div class="hero-container">
+
+        <!-- Left Column: Typography & Commands -->
+        <div class="hero-content">
+          <div class="hero-pill-badge r-up d-1">
+            <div class="sys-dot"></div>
+            <span>SYS_OPERATIONAL // SECURING CLOUD FRONTIERS</span>
+          </div>
+
+          <div class="hero-author-tag r-up d-2">
+            <span>DEFENSE PROFILE</span>
+            <div class="divider-line"></div>
+            <strong>ASHWIN R</strong>
+          </div>
+
+          <div class="hero-title-group">
+            <span class="hero-h1-main r-up d-2">SECURING</span>
+            <span class="hero-h1-italic r-up d-3">The Cloud.</span>
+          </div>
+
+          <!-- Dynamic Typing Terminal Shell -->
+          <div class="hero-terminal-shell r-up d-4">
+            <span class="term-prompt">ashwin@defense:~$</span>
+            <div class="term-typing-area">
+              <span id="typed-text"></span><span class="term-cursor"></span>
+            </div>
+          </div>
+
+          <!-- Quick Telemetry Chips -->
+          <div class="hero-chips-row r-up d-5">
+            <div class="tele-chip">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--c1)" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+              <span>AppSec & OAuth 2.0</span>
+            </div>
+            <div class="tele-chip">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--c2)" stroke-width="2">
+                <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
+              </svg>
+              <span>Cloud IAM & Least Privilege</span>
+            </div>
+            <div class="tele-chip">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--c3)" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <span>Post-Quantum Auth</span>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="hero-btn-row r-up d-6">
+            <a class="btn-cyber btn-primary" onclick="goSlide(3)">
+              Explore Projects
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </a>
+            <a class="btn-cyber btn-outline" onclick="goSlide(4)">
+              Connect
+            </a>
+            <div class="hero-copy-cmd" onclick="copyContact()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+              </svg>
+              <span>curl -s Ashwin.R/contact</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Interactive 3D Cyber Shield Hologram Stage -->
+        <div class="hero-stage-right r-scale d-3">
+          <div class="stage-hologram-wrapper">
+            <canvas id="hero-canvas"></canvas>
+            <div class="hologram-reticle"></div>
+
+            <!-- Floating Cyber HUD Readout Boxes positioned cleanly at corners -->
+            <div class="hologram-hud-box hud-tl">
+              <strong>PROTOCOL:</strong>
+              POST-QUANTUM ML-DSA-44
+            </div>
+            <div class="hologram-hud-box hud-tr">
+              <strong>IDENTITY:</strong>
+              ZERO TRUST RBAC
+            </div>
+            <div class="hologram-hud-box hud-bl">
+              <strong>NETWORK:</strong>
+              BGP / RPKI SECURED
+            </div>
+            <div class="hologram-hud-box hud-br">
+              <strong>LATENCY:</strong>
+              0.4ms DEFENSE CORE
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ──── SLIDE 1: ABOUT ──── -->
+    <section class="slide" data-slide="1">
+      <div class="about-wrap">
+        <div class="about-left-header">
+          <span class="section-eyebrow r-up d-1">Security Dossier</span>
+          <h2 class="about-title r-up d-2">Security-first<br />architect<span>.</span></h2>
+          <p style="font-size:0.88rem;color:var(--dim);line-height:1.6;" class="r-up d-3">
+            Pre-final year Information Technology student at <strong>K. Ramakrishnan College of Engineering</strong> in
+            Trichy, Tamil Nadu.
+          </p>
+
+          <div class="stats-matrix r-up d-4">
+            <div class="stat-card">
+              <div class="stat-digit cyan">04+</div>
+              <div class="stat-label">Core Projects</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-digit purple">05</div>
+              <div class="stat-label">Research Gaps</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-digit">0.0</div>
+              <div class="stat-label">Trust Assumed</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-panel about-dossier-card r-right d-2">
+          <p>
+            I build at the intersection of <span class="highlight">cloud infrastructure, application security, and
+              post-quantum cryptography</span>. My background spans full-stack engineering with Flutter, Firebase,
+            Node.js, and Docker — but my obsession is hardening the architecture.
+          </p>
+          <p>
+            Specializing in <strong>OAuth 2.0 / JWT / PKCE</strong> authorization mechanisms, Cloud IAM privilege
+            scoping, and network vulnerability mitigation.
+          </p>
+          <p>
+            The DevSecOps principle guides every build: <strong>security isn't an afterthought checkpoint</strong> — it
+            is designed, automated, and enforced from the very first pull request.
+          </p>
+
+          <div class="about-tech-stack-row">
+            <span class="tag-chip">Python</span>
+            <span class="tag-chip">Flutter</span>
+            <span class="tag-chip">Dart</span>
+            <span class="tag-chip">Firebase</span>
+            <span class="tag-chip">Node.js</span>
+            <span class="tag-chip">Docker</span>
+            <span class="tag-chip">OAuth 2.0</span>
+            <span class="tag-chip">Wireshark</span>
+            <span class="tag-chip">Nmap</span>
+            <span class="tag-chip">Linux</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──── SLIDE 2: EXPERTISE ──── -->
+    <section class="slide" data-slide="2">
+      <div class="exp-container">
+        <div class="exp-header">
+          <span class="section-eyebrow r-up d-1">Capabilities</span>
+          <h2 class="exp-title r-up d-2">Specialized Disciplines<span style="color:var(--c1);">.</span></h2>
+        </div>
+
+        <div class="exp-grid">
+          <!-- Card 1 -->
+          <div class="glass-panel exp-card r-up d-1">
+            <div>
+              <div class="exp-card-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+              </div>
+              <h3>Application Security</h3>
+              <p>Robust authorization models: OAuth 2.0, PKCE, signed JWT validation, RBAC matrices, and defense against
+                OWASP Top 10 vulnerabilities.</p>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;">
+              <span class="tag-chip">OAuth2</span>
+              <span class="tag-chip">PKCE</span>
+              <span class="tag-chip">JWT</span>
+              <span class="tag-chip">RBAC</span>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="glass-panel exp-card r-up d-2">
+            <div>
+              <div class="exp-card-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
+                </svg>
+              </div>
+              <h3>Cloud Security & IAM</h3>
+              <p>IAM privilege governance, blast-radius reduction, cloud asset posture management, and container
+                isolation policies in multi-tenant environments.</p>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;">
+              <span class="tag-chip">IAM</span>
+              <span class="tag-chip">CSPM</span>
+              <span class="tag-chip">Docker</span>
+              <span class="tag-chip">Audit</span>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="glass-panel exp-card r-up d-3">
+            <div>
+              <div class="exp-card-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+              </div>
+              <h3>Network Security & SDRTA</h3>
+              <p>BGP routing infrastructure research, RIPE Labs taxonomy evaluation, RPKI validation mechanisms, and
+                protocol hijacking vulnerability analysis.</p>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;">
+              <span class="tag-chip">BGP</span>
+              <span class="tag-chip">RPKI</span>
+              <span class="tag-chip">SDRTA</span>
+              <span class="tag-chip">Research</span>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="glass-panel exp-card r-up d-4">
+            <div>
+              <div class="exp-card-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              </div>
+              <h3>Post-Quantum Cryptography</h3>
+              <p>Lattice-based digital signature schemes: Dilithium (ML-DSA-44) implementation with ECDSA fallback for
+                next-generation aerospace telemetry authentication.</p>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;">
+              <span class="tag-chip">ML-DSA-44</span>
+              <span class="tag-chip">Dilithium</span>
+              <span class="tag-chip">PQC</span>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="glass-panel exp-card r-up d-5">
+            <div>
+              <div class="exp-card-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path
+                    d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                </svg>
+              </div>
+              <h3>Security Tooling & Ops</h3>
+              <p>Offensive and defensive security tool experience: Wireshark packet inspection, Nmap network scanning,
+                vulnerability auditing, and automated CI/CD pipeline gating.</p>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;">
+              <span class="tag-chip">Wireshark</span>
+              <span class="tag-chip">Nmap</span>
+              <span class="tag-chip">OpenVAS</span>
+              <span class="tag-chip">DevSecOps</span>
+            </div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="glass-panel exp-card r-up d-6">
+            <div>
+              <div class="exp-card-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="16 18 22 12 16 6" />
+                  <polyline points="8 6 2 12 8 18" />
+                </svg>
+              </div>
+              <h3>Full-Stack Foundation</h3>
+              <p>Architecting production apps with Flutter, Firebase real-time sync, Node.js backend services,
+                containerized deployment, and high-fidelity Figma design systems.</p>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;">
+              <span class="tag-chip">Flutter</span>
+              <span class="tag-chip">Firebase</span>
+              <span class="tag-chip">Node.js</span>
+              <span class="tag-chip">CI/CD</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──── SLIDE 3: WORK ──── -->
+    <section class="slide" data-slide="3">
+      <div class="work-container">
+        <div class="work-header">
+          <span class="section-eyebrow r-up d-1">Engineering Archive</span>
+          <h2 class="exp-title r-up d-2">Featured Projects<span style="color:var(--c1);">.</span></h2>
+        </div>
+
+        <div class="work-carousel-track-wrapper r-up d-3" id="work-scroll">
+          <div class="work-cards-track">
+
+            <!-- Project 1: Space Spectrum 2026 -->
+            <div class="project-card glass-panel">
+              <div class="proj-thumb-container">
+                <img src="assets/space_spectrum.jpg" alt="Space Spectrum 2026 satellite security" loading="lazy" />
+                <div class="proj-thumb-overlay"></div>
+              </div>
+              <div class="proj-content">
+                <div>
+                  <div class="proj-meta-bar">
+                    <span style="color:var(--c1);">Space Day Ideathon</span>
+                    <span style="color:var(--dimmer);">//</span>
+                    <span style="color:var(--dim);">Flagship 2026</span>
+                  </div>
+                  <h3>Space Spectrum 2026</h3>
+                  <p>Post-quantum satellite authentication simulation. Implemented Dilithium ML-DSA-44 lattice
+                    cryptography with ECDSA fallback across 3 synchronized Python processes.</p>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                  <span class="tag-chip">ML-DSA-44</span>
+                  <span class="tag-chip">Dilithium</span>
+                  <span class="tag-chip">Python</span>
+                  <span class="tag-chip">Satellite Auth</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project 2: SDRTA BGP Research -->
+            <div class="project-card glass-panel">
+              <div class="proj-thumb-container">
+                <img src="assets/sdrta_bgp.jpg" alt="SDRTA BGP routing security research" loading="lazy" />
+                <div class="proj-thumb-overlay"></div>
+              </div>
+              <div class="proj-content">
+                <div>
+                  <div class="proj-meta-bar">
+                    <span style="color:var(--c2);">Security Research</span>
+                    <span style="color:var(--dimmer);">//</span>
+                    <span style="color:var(--dim);">Phase 0 Complete</span>
+                  </div>
+                  <h3>SDRTA Routing Security</h3>
+                  <p>In-depth research on Border Gateway Protocol (BGP) security, route leaks, and RPKI adoption.
+                    Synthesized RIPE Labs datasets to define 5 high-impact research gaps.</p>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                  <span class="tag-chip">BGP Security</span>
+                  <span class="tag-chip">RPKI</span>
+                  <span class="tag-chip">RIPE Labs</span>
+                  <span class="tag-chip">Autonomous Systems</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project 3: Task Flow -->
+            <div class="project-card glass-panel">
+              <div class="proj-thumb-container">
+                <img src="assets/task_flow.jpg" alt="Task Flow microservice platform" loading="lazy" />
+                <div class="proj-thumb-overlay"></div>
+              </div>
+              <div class="proj-content">
+                <div>
+                  <div class="proj-meta-bar">
+                    <span style="color:var(--c3);">DevSecOps & Cloud</span>
+                    <span style="color:var(--dimmer);">//</span>
+                    <span style="color:var(--dim);">Production Ready</span>
+                  </div>
+                  <h3>Task Flow</h3>
+                  <p>Distributed multi-tenant task automation platform. Designed containerized microservices in Docker
+                    with automated CI/CD pipelines and role-scoped JWT session protection.</p>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                  <span class="tag-chip">Docker</span>
+                  <span class="tag-chip">Node.js</span>
+                  <span class="tag-chip">CI/CD</span>
+                  <span class="tag-chip">Multi-Tenant</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project 4: Summarizit -->
+            <div class="project-card glass-panel">
+              <div class="proj-thumb-container">
+                <img src="assets/summarizit.jpg" alt="Summarizit AI mobile app" loading="lazy" />
+                <div class="proj-thumb-overlay"></div>
+              </div>
+              <div class="proj-content">
+                <div>
+                  <div class="proj-meta-bar">
+                    <span style="color:var(--c1);">Mobile Application</span>
+                    <span style="color:var(--dimmer);">//</span>
+                    <span style="color:var(--dim);">Cross-Platform</span>
+                  </div>
+                  <h3>Summarizit</h3>
+                  <p>Cross-platform mobile application transforming unstructured long-form content into concise
+                    executive digests. Built with Flutter, Dart, and Firebase real-time synchronization.</p>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                  <span class="tag-chip">Flutter</span>
+                  <span class="tag-chip">Dart</span>
+                  <span class="tag-chip">Firebase</span>
+                  <span class="tag-chip">AI Integration</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="carousel-drag-guide r-up d-4">
+          <div class="guide-line"></div>
+          <span>Drag or Scroll to inspect architecture</span>
+          <div class="guide-line"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──── SLIDE 4: CONTACT & TERMINAL ──── -->
+    <section class="slide" data-slide="4">
+      <div class="contact-container">
+        <span class="section-eyebrow r-up d-1">Direct Transmission</span>
+        <h2 class="contact-title r-up d-2">Let's build something<br /><span class="cyber-text">resilient.</span></h2>
+
+        <p class="contact-description r-up d-3">
+          Currently seeking internship roles in <strong>Cybersecurity, Cloud Engineering, DevSecOps, and Software
+            Engineering</strong>. Let's discuss vulnerabilities, infrastructure, or exciting challenges.
+        </p>
+
+        <div class="contact-actions-grid r-up d-4">
+          <a href="mailto:ashwinindira05@gmail.com" class="btn-cyber btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            Send Email
+          </a>
+
+          <a href="https://github.com/Ashwin-R05" target="_blank" rel="noopener noreferrer"
+            class="btn-cyber btn-outline">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+            </svg>
+            GitHub
+          </a>
+
+          <a href="https://www.linkedin.com/in/ashwin-r05/" target="_blank" rel="noopener noreferrer"
+            class="btn-cyber btn-outline">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+            </svg>
+            LinkedIn
+          </a>
+
+          <button class="btn-cyber btn-outline" onclick="copyContact()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+            Copy Email
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer Strip -->
+      <footer class="footer-strip">
+        <p>© 2026 Ashwin R · K. Ramakrishnan College of Engineering, Trichy</p>
+        <div class="footer-links-group">
+          <a href="https://github.com/Ashwin-R05" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://www.linkedin.com/in/ashwin-r05/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="mailto:ashwinindira05@gmail.com">ashwinindira05@gmail.com</a>
+        </div>
+      </footer>
+    </section>
+
+  </main>
+
+  <!-- ═════════════════════════════════════════════════════════════════
+       SCRIPTS: SLIDE ENGINE, 3D WEBGL CORE & INTERACTIONS
+       ═════════════════════════════════════════════════════════════════ -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ═══ 1. LIVE CLOCK (ASIA/KOLKATA) ═══ */
+      const clockEl = document.getElementById('live-clock');
+      function updateClock() {
+        if (clockEl) {
+          clockEl.textContent = new Date().toLocaleTimeString('en-IN', {
+            timeZone: 'Asia/Kolkata',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+          });
+        }
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      /* ═══ 2. SMOOTH CUSTOM CURSOR ═══ */
+      const cursor = document.getElementById('cursor');
+      const dot = document.getElementById('cursor-dot');
+      let mouseX = window.innerWidth / 2;
+      let mouseY = window.innerHeight / 2;
+      let curX = mouseX;
+      let curY = mouseY;
+
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        if (dot) {
+          dot.style.left = mouseX + 'px';
+          dot.style.top = mouseY + 'px';
+        }
+      });
+
+      function cursorLoop() {
+        curX += (mouseX - curX) * 0.16;
+        curY += (mouseY - curY) * 0.16;
+        if (cursor) {
+          cursor.style.left = curX + 'px';
+          cursor.style.top = curY + 'px';
+        }
+        requestAnimationFrame(cursorLoop);
+      }
+      cursorLoop();
+
+      document.querySelectorAll('a, button, .btn-cyber, .sn-item, .glass-panel, .project-card, .tag-chip, .hud-nav-btn, .hero-copy-cmd').forEach(el => {
+        el.addEventListener('mouseenter', () => cursor && cursor.classList.add('hover'));
+        el.addEventListener('mouseleave', () => cursor && cursor.classList.remove('hover'));
+      });
+
+      /* ═══ 3. SLIDE ENGINE ═══ */
+      const slides = document.querySelectorAll('.slide');
+      const snItems = document.querySelectorAll('.sn-item');
+      const progressLine = document.getElementById('progress-line');
+      const scCur = document.getElementById('sc-cur');
+      const TOTAL_SLIDES = slides.length;
+      let currentSlide = 0;
+      let isTransitioning = false;
+
+      function goSlide(targetIndex) {
+        if (targetIndex < 0 || targetIndex >= TOTAL_SLIDES || targetIndex === currentSlide || isTransitioning) {
+          return;
+        }
+        isTransitioning = true;
+        const direction = targetIndex > currentSlide ? 1 : -1;
+        const prevSlide = slides[currentSlide];
+        const nextSlide = slides[targetIndex];
+
+        // Prepare next slide reveal elements
+        nextSlide.querySelectorAll('.r-up, .r-left, .r-right, .r-scale').forEach(el => el.classList.remove('in'));
+
+        // Next slide initial state
+        nextSlide.style.transition = 'none';
+        nextSlide.style.transform = `translateY(${direction * 40}px) scale(0.96)`;
+        nextSlide.style.opacity = '0';
+        nextSlide.style.filter = 'blur(6px)';
+        nextSlide.classList.add('entering');
+        nextSlide.offsetHeight; // force reflow
+
+        // Current slide exit
+        prevSlide.style.transition = 'opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.6s ease';
+        prevSlide.style.transform = `translateY(${-direction * 30}px) scale(0.98)`;
+        prevSlide.style.opacity = '0';
+        prevSlide.style.filter = 'blur(4px)';
+
+        // Next slide entrance
+        nextSlide.style.transition = 'opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), filter 0.7s ease';
+        nextSlide.style.transform = 'translateY(0) scale(1)';
+        nextSlide.style.opacity = '1';
+        nextSlide.style.filter = 'blur(0px)';
+
+        setTimeout(() => {
+          prevSlide.classList.remove('active', 'entering');
+          prevSlide.style.transition = 'none';
+          prevSlide.style.transform = '';
+          prevSlide.style.opacity = '';
+          prevSlide.style.filter = '';
+
+          nextSlide.classList.remove('entering');
+          nextSlide.classList.add('active');
+
+          // Trigger reveal animations with small delay
+          setTimeout(() => {
+            nextSlide.querySelectorAll('.r-up, .r-left, .r-right, .r-scale').forEach(el => el.classList.add('in'));
+          }, 60);
+
+          currentSlide = targetIndex;
+          updateSlideHUD();
+          isTransitioning = false;
+        }, 700);
+      }
+
+      function nextSlide() { goSlide(currentSlide + 1); }
+      function prevSlide() { goSlide(currentSlide - 1); }
+      window.goSlide = goSlide;
+      window.nextSlide = nextSlide;
+      window.prevSlide = prevSlide;
+
+      function updateSlideHUD() {
+        snItems.forEach((item, idx) => item.classList.toggle('active', idx === currentSlide));
+        if (scCur) scCur.textContent = String(currentSlide + 1).padStart(2, '0');
+        if (progressLine) progressLine.style.width = `${((currentSlide + 1) / TOTAL_SLIDES) * 100}%`;
+      }
+
+      // Mouse wheel navigation with debounce & nested scroll protection
+      let wheelCooldown = false;
+      window.addEventListener('wheel', (e) => {
+        // Work carousel check
+        const workScroll = document.getElementById('work-scroll');
+        if (currentSlide === 3 && workScroll && workScroll.contains(e.target)) {
+          if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+          const sl = workScroll.scrollLeft;
+          const maxScroll = workScroll.scrollWidth - workScroll.clientWidth;
+          if (e.deltaY > 0 && sl < maxScroll - 10) return;
+          if (e.deltaY < 0 && sl > 10) return;
+        }
+
+        // Expertise scroll check
+        if (currentSlide === 2) {
+          const expContainer = document.querySelector('.exp-container');
+          if (expContainer) {
+            const st = expContainer.scrollTop;
+            const maxSt = expContainer.scrollHeight - expContainer.clientHeight;
+            if (e.deltaY > 0 && st < maxSt - 10) return;
+            if (e.deltaY < 0 && st > 10) return;
+          }
+        }
+
+        if (wheelCooldown) return;
+        if (Math.abs(e.deltaY) > 25) {
+          wheelCooldown = true;
+          if (e.deltaY > 0) nextSlide();
+          else prevSlide();
+          setTimeout(() => { wheelCooldown = false; }, 900);
+        }
+      }, { passive: false });
+
+      // Keyboard Navigation
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+          e.preventDefault();
+          nextSlide();
+        } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+          e.preventDefault();
+          prevSlide();
+        }
+      });
+
+      // Touch Swiping for Mobile
+      let touchStartY = 0;
+      window.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+
+      window.addEventListener('touchend', (e) => {
+        const deltaY = touchStartY - e.changedTouches[0].clientY;
+        if (Math.abs(deltaY) > 50) {
+          if (deltaY > 0) nextSlide();
+          else prevSlide();
+        }
+      }, { passive: true });
+
+      // Initialize first slide elements
+      setTimeout(() => {
+        slides[0].querySelectorAll('.r-up, .r-left, .r-right, .r-scale').forEach(el => el.classList.add('in'));
+      }, 150);
+
+      /* ═══ 4. DYNAMIC TERMINAL TYPING EFFECT ═══ */
+      const typedEl = document.getElementById('typed-text');
+      const phrases = [
+        'Architecting Zero-Trust Cloud & IAM Guardrails',
+        'Post-Quantum Auth Prototyping (Dilithium ML-DSA-44)',
+        'BGP Routing Security Research (SDRTA Taxonomy)',
+        'Hardening Full-Stack Deployments from Commit to Cloud',
+        'DevSecOps · AppSec · Network Vulnerability Mitigation'
+      ];
+      let phraseIdx = 0;
+      let charIdx = 0;
+      let isDeleting = false;
+      let pauseTicks = 0;
+
+      function runTypingLoop() {
+        if (!typedEl) return;
+        const targetPhrase = phrases[phraseIdx];
+
+        if (!isDeleting) {
+          typedEl.textContent = targetPhrase.substring(0, charIdx + 1);
+          charIdx++;
+          if (charIdx === targetPhrase.length) {
+            isDeleting = true;
+            pauseTicks = 45; // pause at phrase completion
+          }
+        } else {
+          if (pauseTicks > 0) {
+            pauseTicks--;
+            requestAnimationFrame(runTypingLoop);
+            return;
+          }
+          typedEl.textContent = targetPhrase.substring(0, charIdx - 1);
+          charIdx--;
+          if (charIdx === 0) {
+            isDeleting = false;
+            phraseIdx = (phraseIdx + 1) % phrases.length;
+          }
+        }
+        setTimeout(runTypingLoop, isDeleting ? 20 : 45);
+      }
+      setTimeout(runTypingLoop, 1000);
+
+      /* ═══ 5. DRAG SCROLL FOR PROJECTS CAROUSEL ═══ */
+      const workScroll = document.getElementById('work-scroll');
+      if (workScroll) {
+        let isDown = false;
+        let startX, scrollLeft;
+
+        workScroll.addEventListener('mousedown', (e) => {
+          isDown = true;
+          workScroll.style.cursor = 'grabbing';
+          startX = e.pageX - workScroll.offsetLeft;
+          scrollLeft = workScroll.scrollLeft;
+        });
+        workScroll.addEventListener('mouseleave', () => {
+          isDown = false;
+          workScroll.style.cursor = 'grab';
+        });
+        workScroll.addEventListener('mouseup', () => {
+          isDown = false;
+          workScroll.style.cursor = 'grab';
+        });
+        workScroll.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - workScroll.offsetLeft;
+          const walk = (x - startX) * 1.6;
+          workScroll.scrollLeft = scrollLeft - walk;
+        });
+      }
+
+      /* ═══ 6. COPY TO CLIPBOARD HELPER ═══ */
+      window.copyContact = function () {
+        const email = 'ashwinindira05@gmail.com';
+        navigator.clipboard.writeText(email).then(() => {
+          const toast = document.getElementById('toast-msg');
+          if (toast) {
+            toast.textContent = 'EMAIL COPIED: ' + email;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+          }
+        }).catch(() => {
+          window.location.href = 'mailto:' + email;
+        });
+      };
+
+      /* ═════════════════════════════════════════════════════════════════
+         7. THREE.JS INTERACTIVE 3D HOLOGRAPHIC CYBER SHIELD CORE
+         ═════════════════════════════════════════════════════════════════ */
+      const canvas = document.getElementById('hero-canvas');
+      if (!canvas || typeof THREE === 'undefined') return;
+
+      const renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: 'high-performance'
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setClearColor(0x000000, 0);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+      camera.position.set(0, 0, 5.6);
+
+      function handleResize() {
+        if (!canvas.parentElement) return;
+        const width = canvas.parentElement.clientWidth;
+        const height = canvas.parentElement.clientHeight;
+        if (width > 0 && height > 0) {
+          renderer.setSize(width, height);
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+        }
+      }
+      handleResize();
+      window.addEventListener('resize', handleResize);
+
+      // Smooth mouse tracking for parallax tilt
+      let mouseNormX = 0, mouseNormY = 0;
+      let targetRotX = 0, targetRotY = 0;
+
+      document.addEventListener('mousemove', (e) => {
+        mouseNormX = (e.clientX / window.innerWidth - 0.5) * 2;
+        mouseNormY = (e.clientY / window.innerHeight - 0.5) * 2;
+        targetRotY = mouseNormX * 0.35;
+        targetRotX = -mouseNormY * 0.25;
+      });
+
+      // Helper: Generate circular soft glowing point texture (no square pixels)
+      function createRoundGlowTexture() {
+        const c = document.createElement('canvas');
+        c.width = 64; c.height = 64;
+        const ctx = c.getContext('2d');
+        const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 30);
+        grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+        grad.addColorStop(0.3, 'rgba(0, 242, 254, 0.95)');
+        grad.addColorStop(0.65, 'rgba(0, 242, 254, 0.3)');
+        grad.addColorStop(1, 'rgba(0, 242, 254, 0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(32, 32, 30, 0, Math.PI * 2);
+        ctx.fill();
+        return new THREE.CanvasTexture(c);
+      }
+      const glowDotTex = createRoundGlowTexture();
+
+      // Root 3D container group
+      const cyberShieldGroup = new THREE.Group();
+      scene.add(cyberShieldGroup);
+
+      /* --- Geometry 1: Outer Smooth Geodesic Cyber Sphere (Perfectly Circular, Not Square) --- */
+      const outerRadius = 1.22;
+      // Detail 2 creates a smooth, beautifully proportioned geodesic cyber-sphere without blocky facets
+      const outerSphereGeo = new THREE.IcosahedronGeometry(outerRadius, 2);
+      const outerWireMat = new THREE.MeshBasicMaterial({
+        color: 0x00f2fe,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.32,
+        blending: THREE.AdditiveBlending
+      });
+      const outerSphereMesh = new THREE.Mesh(outerSphereGeo, outerWireMat);
+      cyberShieldGroup.add(outerSphereMesh);
+
+      // Glowing Round Vertex Nodes on the Sphere Surface
+      const vertexPointsGeo = new THREE.BufferGeometry();
+      const posArr = outerSphereGeo.attributes.position.array;
+      vertexPointsGeo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
+      const vertexPointsMat = new THREE.PointsMaterial({
+        color: 0x00f2fe,
+        size: 0.12,
+        map: glowDotTex,
+        transparent: true,
+        opacity: 0.85,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+      const vertexPoints = new THREE.Points(vertexPointsGeo, vertexPointsMat);
+      cyberShieldGroup.add(vertexPoints);
+
+      /* --- Geometry 2: Inner Quantum Faceted Crystal (Violet / Purple) --- */
+      const innerRadius = 0.65;
+      const innerGeo = new THREE.OctahedronGeometry(innerRadius, 0);
+      const innerWireMat = new THREE.MeshBasicMaterial({
+        color: 0xc084fc,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.75,
+        blending: THREE.AdditiveBlending
+      });
+      const innerCore = new THREE.Mesh(innerGeo, innerWireMat);
+      cyberShieldGroup.add(innerCore);
+
+      const innerSolidMat = new THREE.MeshBasicMaterial({
+        color: 0x4c1d95,
+        transparent: true,
+        opacity: 0.38,
+        blending: THREE.AdditiveBlending
+      });
+      const innerSolid = new THREE.Mesh(innerGeo, innerSolidMat);
+      cyberShieldGroup.add(innerSolid);
+
+      /* --- Geometry 3: Dual Concentric Orbital Rings --- */
+      const ringRadius1 = 1.52;
+      const ringRadius2 = 1.70;
+
+      // Ring 1 (Electric Cyan)
+      const ringGeo1 = new THREE.TorusGeometry(ringRadius1, 0.012, 16, 120);
+      const ringMat1 = new THREE.MeshBasicMaterial({
+        color: 0x00f2fe,
+        transparent: true,
+        opacity: 0.5,
+        blending: THREE.AdditiveBlending
+      });
+      const orbitRing1 = new THREE.Mesh(ringGeo1, ringMat1);
+      orbitRing1.rotation.x = Math.PI / 3;
+      orbitRing1.rotation.y = Math.PI / 9;
+      cyberShieldGroup.add(orbitRing1);
+
+      // Ring 2 (Quantum Violet)
+      const ringGeo2 = new THREE.TorusGeometry(ringRadius2, 0.012, 16, 120);
+      const ringMat2 = new THREE.MeshBasicMaterial({
+        color: 0xa855f7,
+        transparent: true,
+        opacity: 0.45,
+        blending: THREE.AdditiveBlending
+      });
+      const orbitRing2 = new THREE.Mesh(ringGeo2, ringMat2);
+      orbitRing2.rotation.x = -Math.PI / 3.2;
+      orbitRing2.rotation.y = -Math.PI / 7;
+      cyberShieldGroup.add(orbitRing2);
+
+      /* --- Geometry 4: Traveling Data Packets DIRECTLY LOCKED to Rings --- */
+      // Ring 1 Packets (attached as children of orbitRing1 so they orbit 100% physically on track)
+      const R1_COUNT = 4;
+      const r1PacketGeo = new THREE.BufferGeometry();
+      const r1Pos = new Float32Array(R1_COUNT * 3);
+      r1PacketGeo.setAttribute('position', new THREE.BufferAttribute(r1Pos, 3));
+      const r1PacketMat = new THREE.PointsMaterial({
+        color: 0x00ffa3,
+        size: 0.18,
+        map: glowDotTex,
+        transparent: true,
+        opacity: 0.95,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+      const r1Packets = new THREE.Points(r1PacketGeo, r1PacketMat);
+      orbitRing1.add(r1Packets);
+
+      // Ring 2 Packets (attached as children of orbitRing2)
+      const R2_COUNT = 4;
+      const r2PacketGeo = new THREE.BufferGeometry();
+      const r2Pos = new Float32Array(R2_COUNT * 3);
+      r2PacketGeo.setAttribute('position', new THREE.BufferAttribute(r2Pos, 3));
+      const r2PacketMat = new THREE.PointsMaterial({
+        color: 0x00f2fe,
+        size: 0.18,
+        map: glowDotTex,
+        transparent: true,
+        opacity: 0.95,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+      const r2Packets = new THREE.Points(r2PacketGeo, r2PacketMat);
+      orbitRing2.add(r2Packets);
+
+      /* --- Geometry 5: Expanding Defense Pulse Wave --- */
+      const pulseGeo = new THREE.RingGeometry(0.85, 0.88, 64);
+      const pulseMat = new THREE.MeshBasicMaterial({
+        color: 0x00f2fe,
+        transparent: true,
+        opacity: 0.25,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending
+      });
+      const pulseRing = new THREE.Mesh(pulseGeo, pulseMat);
+      pulseRing.rotation.x = Math.PI / 2;
+      cyberShieldGroup.add(pulseRing);
+
+      /* --- Geometry 6: Ambient Cyber Dust Particles --- */
+      const DUST_COUNT = 70;
+      const dustGeo = new THREE.BufferGeometry();
+      const dustPos = new Float32Array(DUST_COUNT * 3);
+      const dustSpeeds = [];
+      for (let i = 0; i < DUST_COUNT; i++) {
+        dustPos[i * 3] = (Math.random() - 0.5) * 6;
+        dustPos[i * 3 + 1] = (Math.random() - 0.5) * 5;
+        dustPos[i * 3 + 2] = (Math.random() - 0.5) * 3.5;
+        dustSpeeds.push({
+          vx: (Math.random() - 0.5) * 0.002,
+          vy: (Math.random() - 0.5) * 0.002,
+          vz: (Math.random() - 0.5) * 0.0015
+        });
+      }
+      dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+      const dustMat = new THREE.PointsMaterial({
+        color: 0x00f2fe,
+        size: 0.06,
+        map: glowDotTex,
+        transparent: true,
+        opacity: 0.35,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+      const dustPoints = new THREE.Points(dustGeo, dustMat);
+      scene.add(dustPoints);
+
+      /* --- Central Core Soft Glow Point --- */
+      const coreGlowGeo = new THREE.BufferGeometry();
+      coreGlowGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0, 0, 0]), 3));
+      const coreGlowMat = new THREE.PointsMaterial({
+        color: 0x00f2fe,
+        size: 2.8,
+        map: glowDotTex,
+        transparent: true,
+        opacity: 0.18,
+        sizeAttenuation: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+      cyberShieldGroup.add(new THREE.Points(coreGlowGeo, coreGlowMat));
+
+      /* --- Render & Animation Loop --- */
+      const clock = new THREE.Clock();
+
+      function renderCyberCore() {
+        requestAnimationFrame(renderCyberCore);
+        const elapsed = clock.getElapsedTime();
+
+        // Smooth parallax mouse follow interpolation
+        cyberShieldGroup.rotation.y += (targetRotY + elapsed * 0.12 - cyberShieldGroup.rotation.y) * 0.04;
+        cyberShieldGroup.rotation.x += (targetRotX + Math.sin(elapsed * 0.35) * 0.06 - cyberShieldGroup.rotation.x) * 0.04;
+
+        // Geodesic outer sphere subtle counter-rotation
+        outerSphereMesh.rotation.y = elapsed * 0.08;
+        vertexPoints.rotation.y = outerSphereMesh.rotation.y;
+
+        // Inner Core Counter-Rotation & Pulse
+        innerCore.rotation.x = -elapsed * 0.28;
+        innerCore.rotation.y = -elapsed * 0.38;
+        innerSolid.rotation.x = innerCore.rotation.x;
+        innerSolid.rotation.y = innerCore.rotation.y;
+
+        const breathe = 1 + Math.sin(elapsed * 2.2) * 0.05;
+        innerCore.scale.set(breathe, breathe, breathe);
+        innerSolid.scale.set(breathe, breathe, breathe);
+
+        // Smooth Orbital Ring Rotation
+        orbitRing1.rotation.z = elapsed * 0.25;
+        orbitRing2.rotation.z = -elapsed * 0.20;
+
+        // Update Traveling Data Packets (Smooth circular orbits locked on ring tracks)
+        for (let i = 0; i < R1_COUNT; i++) {
+          const angle = elapsed * 1.6 + (i * Math.PI * 2 / R1_COUNT);
+          r1Pos[i * 3] = Math.cos(angle) * ringRadius1;
+          r1Pos[i * 3 + 1] = Math.sin(angle) * ringRadius1;
+          r1Pos[i * 3 + 2] = 0;
+        }
+        r1PacketGeo.attributes.position.needsUpdate = true;
+
+        for (let i = 0; i < R2_COUNT; i++) {
+          const angle = -elapsed * 1.3 + (i * Math.PI * 2 / R2_COUNT);
+          r2Pos[i * 3] = Math.cos(angle) * ringRadius2;
+          r2Pos[i * 3 + 1] = Math.sin(angle) * ringRadius2;
+          r2Pos[i * 3 + 2] = 0;
+        }
+        r2PacketGeo.attributes.position.needsUpdate = true;
+
+        // Defense Pulse Expansion
+        const pulseProg = (elapsed * 0.6) % 1;
+        const pulseScale = 1 + pulseProg * 0.85;
+        pulseRing.scale.set(pulseScale, pulseScale, pulseScale);
+        pulseMat.opacity = 0.25 * (1 - pulseProg);
+
+        // Ambient Cyber Dust Drift
+        for (let i = 0; i < DUST_COUNT; i++) {
+          dustPos[i * 3] += dustSpeeds[i].vx;
+          dustPos[i * 3 + 1] += dustSpeeds[i].vy;
+          dustPos[i * 3 + 2] += dustSpeeds[i].vz;
+
+          if (Math.abs(dustPos[i * 3]) > 3) dustSpeeds[i].vx *= -1;
+          if (Math.abs(dustPos[i * 3 + 1]) > 2.5) dustSpeeds[i].vy *= -1;
+          if (Math.abs(dustPos[i * 3 + 2]) > 1.8) dustSpeeds[i].vz *= -1;
+        }
+        dustGeo.attributes.position.needsUpdate = true;
+
+        // Gentle core glow breathing
+        coreGlowMat.opacity = 0.16 + Math.sin(elapsed * 2.8) * 0.04;
+
+        renderer.render(scene, camera);
+      }
+      renderCyberCore();
+
+    })();
+  </script>
+</body>
+
+</html>
