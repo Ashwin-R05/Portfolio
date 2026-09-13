@@ -280,6 +280,37 @@
       box-shadow: 0 0 12px rgba(0, 242, 254, 0.15);
     }
 
+    .brand-avatar {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1.5px solid var(--border-bright);
+      box-shadow: 0 0 12px rgba(0, 242, 254, 0.25);
+      flex-shrink: 0;
+      background: #020408;
+    }
+
+    .brand-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .avatar-beacon {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--c3);
+      box-shadow: 0 0 6px var(--c3);
+      border: 1px solid #000;
+    }
+
     .brand-text {
       font-family: var(--font-mono);
       font-size: 0.85rem;
@@ -1160,12 +1191,12 @@
        SLIDE 1: ABOUT (SECURITY DOSSIER & CREDENTIALS)
        ═════════════════════════════════════════════════════════════════ */
     .about-wrap {
-      max-width: 1160px;
+      max-width: 1180px;
       width: 100%;
       padding: 0 40px;
       display: grid;
-      grid-template-columns: 1fr 1.15fr;
-      gap: 60px;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 48px;
       align-items: center;
       position: relative;
       z-index: 10;
@@ -1174,14 +1205,166 @@
     @media (max-width: 950px) {
       .about-wrap {
         grid-template-columns: 1fr;
-        gap: 30px;
-        padding: 90px 24px 60px;
+        gap: 28px;
+        padding: 90px 20px 60px;
         overflow-y: auto;
         max-height: 95vh;
       }
     }
 
-    .about-left-header {
+    .about-left-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ═══ BIOMETRIC OPERATIVE ID BADGE ═══ */
+    .operative-id-card {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(0, 242, 254, 0.05);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.35s ease;
+    }
+    .operative-id-card:hover {
+      border-color: var(--border-bright);
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.55), 0 0 35px rgba(0, 242, 254, 0.12);
+      transform: translateY(-3px);
+    }
+    .id-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      margin-bottom: 14px;
+    }
+    .id-chip-tag {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--c1);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .pulse-beacon {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--c1);
+      box-shadow: 0 0 8px var(--c1);
+      animation: beacon-pulse 2s infinite;
+    }
+    .id-serial {
+      color: var(--dim);
+    }
+    .id-photo-container {
+      position: relative;
+      width: 100%;
+      max-width: 250px;
+      aspect-ratio: 1 / 1;
+      margin: 0 auto 14px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 242, 254, 0.25);
+      background: #020408;
+      box-shadow: 0 0 25px rgba(0, 242, 254, 0.08);
+    }
+    .id-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+      filter: contrast(108%) brightness(98%);
+    }
+    .operative-id-card:hover .id-photo {
+      transform: scale(1.05);
+      filter: contrast(114%) brightness(102%);
+    }
+    .id-photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0, 242, 254, 0.04) 0%, transparent 55%, rgba(3, 5, 8, 0.75) 100%);
+      pointer-events: none;
+    }
+    .id-scan-laser {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 5%, var(--c1) 50%, transparent 95%);
+      box-shadow: 0 0 12px var(--c1);
+      opacity: 0.65;
+      pointer-events: none;
+      animation: laser-sweep 4s ease-in-out infinite;
+    }
+    @keyframes laser-sweep {
+      0% { top: 0%; opacity: 0; }
+      15% { opacity: 0.75; }
+      85% { opacity: 0.75; }
+      100% { top: 100%; opacity: 0; }
+    }
+    /* Sci-Fi Corner Brackets */
+    .id-corner {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-color: var(--c1);
+      pointer-events: none;
+    }
+    .id-c-tl { top: 8px; left: 8px; border-top: 2px solid; border-left: 2px solid; }
+    .id-c-tr { top: 8px; right: 8px; border-top: 2px solid; border-right: 2px solid; }
+    .id-c-bl { bottom: 8px; left: 8px; border-bottom: 2px solid; border-left: 2px solid; }
+    .id-c-br { bottom: 8px; right: 8px; border-bottom: 2px solid; border-right: 2px solid; }
+    .id-photo-tag {
+      position: absolute;
+      bottom: 8px;
+      left: 10px;
+      right: 10px;
+      background: rgba(3, 5, 8, 0.85);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      color: var(--c1);
+      text-align: center;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .id-meta-footer {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+    }
+    .id-meta-item .lbl {
+      display: block;
+      color: var(--dimmer);
+      font-size: 0.52rem;
+      letter-spacing: 0.12em;
+      margin-bottom: 2px;
+    }
+    .id-meta-item .val {
+      color: var(--text);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    .about-right-col {
       display: flex;
       flex-direction: column;
     }
@@ -1192,7 +1375,7 @@
       letter-spacing: 0.25em;
       text-transform: uppercase;
       color: var(--c1);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -1205,11 +1388,11 @@
 
     .about-title {
       font-family: var(--font-display);
-      font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+      font-size: clamp(2rem, 4vw, 3.4rem);
       font-weight: 800;
       line-height: 1.05;
       color: #fff;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .about-title span {
@@ -1219,18 +1402,16 @@
     .stats-matrix {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-top: 10px;
-      padding-top: 24px;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      gap: 10px;
     }
 
     .stat-card {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid rgba(255, 255, 255, 0.05);
       border-radius: 12px;
-      padding: 16px;
+      padding: 12px 10px;
       transition: all 0.3s;
+      text-align: center;
     }
 
     .stat-card:hover {
@@ -1681,7 +1862,10 @@
   <!-- Top Navigation Bar -->
   <header id="topbar">
     <a href="#" class="brand" onclick="goSlide(0); return false;">
-      <div class="brand-icon">&lt;/&gt;</div>
+      <div class="brand-avatar">
+        <img src="assets/ashwin.jpg" alt="Ashwin R" />
+        <div class="avatar-beacon"></div>
+      </div>
       <div class="brand-text">Ashwin<span>.R</span></div>
     </a>
 
@@ -1871,15 +2055,41 @@
     <!-- ──── SLIDE 1: ABOUT ──── -->
     <section class="slide" data-slide="1">
       <div class="about-wrap">
-        <div class="about-left-header">
-          <span class="section-eyebrow r-up d-1">Security Dossier</span>
-          <h2 class="about-title r-up d-2">Security-first<br />architect<span>.</span></h2>
-          <p style="font-size:0.88rem;color:var(--dim);line-height:1.6;" class="r-up d-3">
-            Pre-final year Information Technology student at <strong>K. Ramakrishnan College of Engineering</strong> in
-            Trichy, Tamil Nadu.
-          </p>
+        
+        <!-- Left Column: Biometric Operative ID Badge + Telemetry Stats -->
+        <div class="about-left-col">
+          <div class="operative-id-card r-left d-1">
+            <div class="id-card-header">
+              <div class="id-chip-tag">
+                <span class="pulse-beacon"></span>
+                <span>BIOMETRIC CLEARANCE // LVL-04</span>
+              </div>
+              <span class="id-serial">SEC-ID: 0x415348</span>
+            </div>
+            <div class="id-photo-container">
+              <img src="assets/ashwin.jpg" alt="Ashwin R — Cybersecurity & Cloud Engineer" class="id-photo" />
+              <div class="id-photo-overlay"></div>
+              <div class="id-scan-laser"></div>
+              <!-- Sci-Fi Corner Reticles -->
+              <span class="id-corner id-c-tl"></span>
+              <span class="id-corner id-c-tr"></span>
+              <span class="id-corner id-c-bl"></span>
+              <span class="id-corner id-c-br"></span>
+              <div class="id-photo-tag">OPERATIVE: ASHWIN R</div>
+            </div>
+            <div class="id-meta-footer">
+              <div class="id-meta-item">
+                <span class="lbl">INSTITUTION</span>
+                <span class="val">KRCE TRICHY (TN)</span>
+              </div>
+              <div class="id-meta-item">
+                <span class="lbl">DISCIPLINE</span>
+                <span class="val">CLOUD & CYBERSEC</span>
+              </div>
+            </div>
+          </div>
 
-          <div class="stats-matrix r-up d-4">
+          <div class="stats-matrix r-left d-2">
             <div class="stat-card">
               <div class="stat-digit cyan">04+</div>
               <div class="stat-label">Core Projects</div>
@@ -1895,34 +2105,36 @@
           </div>
         </div>
 
-        <div class="glass-panel about-dossier-card r-right d-2">
-          <p>
-            I build at the intersection of <span class="highlight">cloud infrastructure, application security, and
-              post-quantum cryptography</span>. My background spans full-stack engineering with Flutter, Firebase,
-            Node.js, and Docker — but my obsession is hardening the architecture.
-          </p>
-          <p>
-            Specializing in <strong>OAuth 2.0 / JWT / PKCE</strong> authorization mechanisms, Cloud IAM privilege
-            scoping, and network vulnerability mitigation.
-          </p>
-          <p>
-            The DevSecOps principle guides every build: <strong>security isn't an afterthought checkpoint</strong> — it
-            is designed, automated, and enforced from the very first pull request.
-          </p>
+        <!-- Right Column: Narrative Dossier Card -->
+        <div class="about-right-col">
+          <span class="section-eyebrow r-up d-1">Security Dossier</span>
+          <h2 class="about-title r-up d-2">Security-first<br />architect<span>.</span></h2>
+          <div class="glass-panel about-dossier-card r-right d-3">
+            <p>
+              I'm a pre-final year Information Technology student at <strong>K. Ramakrishnan College of Engineering</strong> in Trichy, Tamil Nadu — building toward a career in <span class="highlight">cybersecurity, cloud infrastructure, and post-quantum cryptography</span>.
+            </p>
+            <p>
+              My foundation began in full-stack engineering with Flutter, Firebase, Node.js, and Docker — but my obsession quickly shifted toward hardening the systems I build. Specializing in <strong>OAuth 2.0 / JWT / PKCE</strong> authorization mechanisms, Cloud IAM privilege scoping, and network vulnerability mitigation.
+            </p>
+            <p>
+              The DevSecOps principle guides every build: <strong>security isn't an afterthought checkpoint</strong> — it is designed, automated, and enforced from the very first pull request.
+            </p>
 
-          <div class="about-tech-stack-row">
-            <span class="tag-chip">Python</span>
-            <span class="tag-chip">Flutter</span>
-            <span class="tag-chip">Dart</span>
-            <span class="tag-chip">Firebase</span>
-            <span class="tag-chip">Node.js</span>
-            <span class="tag-chip">Docker</span>
-            <span class="tag-chip">OAuth 2.0</span>
-            <span class="tag-chip">Wireshark</span>
-            <span class="tag-chip">Nmap</span>
-            <span class="tag-chip">Linux</span>
+            <div class="about-tech-stack-row">
+              <span class="tag-chip">Python</span>
+              <span class="tag-chip">Flutter</span>
+              <span class="tag-chip">Dart</span>
+              <span class="tag-chip">Firebase</span>
+              <span class="tag-chip">Node.js</span>
+              <span class="tag-chip">Docker</span>
+              <span class="tag-chip">OAuth 2.0</span>
+              <span class="tag-chip">Wireshark</span>
+              <span class="tag-chip">Nmap</span>
+              <span class="tag-chip">Linux</span>
+            </div>
           </div>
         </div>
+
       </div>
     </section>
 
