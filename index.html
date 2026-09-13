@@ -227,17 +227,7 @@
       }
     }
 
-    /* ═══ PROGRESS BAR & HUD TOPBAR ═══ */
-    #progress-line {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--c1), var(--c2), var(--c3));
-      box-shadow: 0 0 10px var(--c1);
-      z-index: 1000;
-      transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+    /* ═══ HUD TOPBAR ═══ */
 
     #topbar {
       position: fixed;
@@ -1858,8 +1848,6 @@
   <div class="glow-blob blob-2"></div>
   <div class="glow-blob blob-3"></div>
 
-  <!-- Top Progress Line -->
-  <div id="progress-line" style="width: 20%;"></div>
 
   <!-- Top Navigation Bar -->
   <header id="topbar">
@@ -2520,7 +2508,6 @@
       /* ═══ 3. SLIDE ENGINE ═══ */
       const slides = document.querySelectorAll('.slide');
       const snItems = document.querySelectorAll('.sn-item');
-      const progressLine = document.getElementById('progress-line');
       const scCur = document.getElementById('sc-cur');
       const TOTAL_SLIDES = slides.length;
       let currentSlide = 0;
@@ -2588,7 +2575,6 @@
       function updateSlideHUD() {
         snItems.forEach((item, idx) => item.classList.toggle('active', idx === currentSlide));
         if (scCur) scCur.textContent = String(currentSlide + 1).padStart(2, '0');
-        if (progressLine) progressLine.style.width = `${((currentSlide + 1) / TOTAL_SLIDES) * 100}%`;
       }
 
       // Mouse wheel navigation with debounce & nested scroll protection
