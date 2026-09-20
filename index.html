@@ -2991,6 +2991,10 @@
       }
       handleResize();
       window.addEventListener('resize', handleResize);
+      window.addEventListener('orientationchange', () => setTimeout(handleResize, 150));
+      if (window.screen?.orientation) {
+        window.screen.orientation.addEventListener('change', () => setTimeout(handleResize, 150));
+      }
 
       // Smooth mouse tracking for parallax tilt
       let mouseNormX = 0, mouseNormY = 0;
